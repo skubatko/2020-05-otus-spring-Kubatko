@@ -27,10 +27,10 @@ public class QuizControllerImpl implements QuizController {
 
     private InputStream in = System.in;
     private PrintStream out = System.out;
+    private Scanner sc = new Scanner(in);
 
     @Override
     public String getParticipantName() {
-        Scanner sc = new Scanner(in);
         out.println("Enter your name (q - for exit):");
         return sc.nextLine();
     }
@@ -59,8 +59,6 @@ public class QuizControllerImpl implements QuizController {
     }
 
     private int getReply(List<Answer> answers) {
-        Scanner sc = new Scanner(in);
-
         out.println("please enter answer number:");
         int reply = sc.nextInt();
         if (reply < 1) {
