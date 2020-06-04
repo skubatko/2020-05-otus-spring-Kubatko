@@ -11,12 +11,12 @@ import org.mockito.internal.util.io.IOUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.io.IOException;
 import java.util.Collection;
 
-@Component
+@Repository
 public class QuizDaoImpl implements QuizDao {
     private static final String COLON = ":";
     private static final String QUESTION_TAG = "Q";
