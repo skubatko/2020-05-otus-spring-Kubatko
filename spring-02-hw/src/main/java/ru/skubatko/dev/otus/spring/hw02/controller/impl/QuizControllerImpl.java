@@ -21,15 +21,18 @@ import java.util.Set;
 @Controller
 @RequiredArgsConstructor
 public class QuizControllerImpl implements QuizController {
+
     private final QuizService service;
 
     private PrintStream out = System.out;
     private Scanner sc = new Scanner(System.in);
 
+    @Override
     public void setIn(InputStream in) {
         sc = new Scanner(in);
     }
 
+    @Override
     public void setOut(PrintStream out) {
         this.out = out;
     }

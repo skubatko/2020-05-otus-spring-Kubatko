@@ -2,7 +2,7 @@ package ru.skubatko.dev.otus.spring.hw02.it.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import ru.skubatko.dev.otus.spring.hw02.controller.impl.QuizControllerImpl;
+import ru.skubatko.dev.otus.spring.hw02.controller.QuizController;
 import ru.skubatko.dev.otus.spring.hw02.it.IntegrationTest;
 
 import org.junit.Before;
@@ -20,7 +20,7 @@ import java.io.PrintStream;
 public class QuizControllerITCase {
 
     @Autowired
-    private QuizControllerImpl controller;
+    private QuizController controller;
 
     private String participantName = "testName";
     private ByteArrayOutputStream output;
