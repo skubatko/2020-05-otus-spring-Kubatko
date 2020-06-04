@@ -4,7 +4,7 @@
 package ru.skubatko.dev.otus.spring.hw02;
 
 import ru.skubatko.dev.otus.spring.hw02.controller.QuizController;
-import ru.skubatko.dev.otus.spring.hw02.controller.impl.QuizControllerImpl;
+import ru.skubatko.dev.otus.spring.hw02.controller.QuizControllerImpl;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -17,19 +17,11 @@ import org.springframework.context.annotation.PropertySource;
 @PropertySource("classpath:application.properties")
 public class App {
 
-    public static final String QUIT_ENTER = "q";
-
     public static void main(String[] args) {
         ApplicationContext ctx = new AnnotationConfigApplicationContext(App.class);
         QuizController controller = ctx.getBean(QuizControllerImpl.class);
 
-        while (true) {
-            String participantName = controller.getParticipantName();
-            if (QUIT_ENTER.equalsIgnoreCase(participantName)) {
-                break;
-            }
-
-            controller.makeQuizzed(participantName);
-        }
+        String participantName = controller.getParticipantName();
+        controller.makeQuizzed(participantName);
     }
 }

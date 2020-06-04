@@ -39,9 +39,9 @@ shadowJar {
 test {
     useJUnit()
     maxHeapSize = '1G'
-//    if (System.properties['test.profile'] != 'integration') {
-//        exclude '**/*/*ITCase*'
-//    } else {
-//        forkEvery = 1
-//    }
+    if (System.properties['test.profile'] != 'integration') {
+        exclude '**/*/*ITCase*'
+    } else {
+        forkEvery = 1
+    }
 }
