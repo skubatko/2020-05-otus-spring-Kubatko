@@ -43,9 +43,11 @@ public class QuizControllerITCase {
 
     @Test
     public void makeQuizzed() {
-        System.setIn(new ByteArrayInputStream("1\n1\n1\n1\n".getBytes()));
+        controller.setIn(new ByteArrayInputStream("1\n1\n1\n1\n".getBytes()));
 
         controller.makeQuizzed(participantName);
-        assertThat(output.toString()).contains("Q:");
+        assertThat(output.toString())
+                .contains("Q:")
+                .contains("Your result is");
     }
 }
