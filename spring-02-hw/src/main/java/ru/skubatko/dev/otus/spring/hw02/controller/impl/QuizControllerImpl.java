@@ -9,7 +9,6 @@ import ru.skubatko.dev.otus.spring.hw02.service.QuizService;
 
 import com.google.common.collect.Multimap;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import org.springframework.stereotype.Controller;
 
 import java.io.InputStream;
@@ -20,14 +19,20 @@ import java.util.Scanner;
 import java.util.Set;
 
 @Controller
-@Setter
 @RequiredArgsConstructor
 public class QuizControllerImpl implements QuizController {
     private final QuizService service;
 
-    private InputStream in = System.in;
     private PrintStream out = System.out;
-    private Scanner sc = new Scanner(in);
+    private Scanner sc = new Scanner(System.in);
+
+    public void setIn(InputStream in) {
+        sc = new Scanner(in);
+    }
+
+    public void setOut(PrintStream out) {
+        this.out = out;
+    }
 
     @Override
     public String getParticipantName() {
