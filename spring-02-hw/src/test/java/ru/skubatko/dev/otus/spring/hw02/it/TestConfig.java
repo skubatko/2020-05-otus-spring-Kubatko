@@ -35,7 +35,7 @@ public class TestConfig {
         return new InputReader() {
             @Override
             public String nextLine() {
-                return "testName";
+                return PARTICIPANT_NAME;
             }
 
             @Override
