@@ -45,3 +45,9 @@ test {
         forkEvery = 1
     }
 }
+
+task integrationTest(type: Test) {
+    group 'verification'
+    description 'Integration tests'
+    filter { includeTestsMatching '*ITCase*' }
+}
