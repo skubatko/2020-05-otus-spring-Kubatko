@@ -1,11 +1,13 @@
 package ru.skubatko.dev.otus.spring.hw02.aspect;
 
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
 
+@Slf4j
 @Aspect
 @Component
 public class BenchmarkingAspect {
@@ -18,7 +20,7 @@ public class BenchmarkingAspect {
             return joinPoint.proceed();
         } finally {
             clock.stop();
-            System.out.println(clock.prettyPrint());
+            log.debug(clock.prettyPrint());
         }
     }
 }
