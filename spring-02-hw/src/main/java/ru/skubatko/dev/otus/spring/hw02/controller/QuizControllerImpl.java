@@ -27,15 +27,11 @@ public class QuizControllerImpl implements QuizController {
     private final InputReader reader;
     private final OutputPrinter printer;
 
-    @Override
-    public String getParticipantName() {
-        printer.println("Please enter your name:");
-        return reader.nextLine();
-    }
-
     @Benchmark
     @Override
-    public void makeQuizzed(String participantName) {
+    public void makeQuizzed() {
+        String participantName = getParticipantName();
+
         QuizAttempt quizAttempt = new QuizAttempt();
         quizAttempt.setParticipantName(participantName);
 
@@ -55,6 +51,11 @@ public class QuizControllerImpl implements QuizController {
 
         Mark mark = service.getQuizAttemptMark(quizAttempt);
         printer.printf("%s, your result is: %s%n", participantName, mark);
+    }
+
+    private String getParticipantName() {
+        printer.println("Please enter your name:");
+        return reader.nextLine();
     }
 
     private int getReply(List<Answer> answers) {

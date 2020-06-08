@@ -20,16 +20,8 @@ public class QuizControllerITCase {
     private QuizController controller;
 
     @Test
-    public void getParticipantName() {
-        String actual = controller.getParticipantName();
-
-        assertThat(actual).isNotBlank().isEqualTo(PARTICIPANT_NAME);
-        assertThat(OUTPUT.toString()).contains("Please enter your name:");
-    }
-
-    @Test
     public void makeQuizzed() {
-        controller.makeQuizzed(PARTICIPANT_NAME);
+        controller.makeQuizzed();
 
         assertThat(OUTPUT.toString())
                 .contains("Q:")

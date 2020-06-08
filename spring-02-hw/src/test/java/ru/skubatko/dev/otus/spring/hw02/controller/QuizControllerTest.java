@@ -1,6 +1,5 @@
 package ru.skubatko.dev.otus.spring.hw02.controller;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -23,8 +22,6 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -42,29 +39,10 @@ public class QuizControllerTest {
     @InjectMocks
     private QuizControllerImpl controller;
 
-    @Captor
-    ArgumentCaptor<String> printerArgCaptor;
-
-    private String participantName = "testName";
-
-    @Test
-    public void getParticipantName() {
-        when(reader.nextLine()).thenReturn(participantName);
-
-        String actual = controller.getParticipantName();
-
-        assertThat(actual).isNotBlank().isEqualTo(participantName);
-
-        verify(printer).println(printerArgCaptor.capture());
-        assertThat(printerArgCaptor.getValue()).isEqualTo("Please enter your name:");
-
-        verify(reader).nextLine();
-
-        verifyNoMoreInteractions(service, reader, printer);
-    }
-
     @Test
     public void makeQuizzed() {
+        when(reader.nextLine()).thenReturn("testName");
+
         Multimap<Question, Answer> quizContent = HashMultimap.create();
 
         Question q1 = new Question("q1");
@@ -86,7 +64,10 @@ public class QuizControllerTest {
                 .thenReturn(1)
                 .thenReturn(2);
 
-        controller.makeQuizzed(participantName);
+        controller.makeQuizzed();
+
+        verify(printer).println("Please enter your name:");
+        verify(reader).nextLine();
 
         verify(service).getQuiz();
         verify(service).getQuizAttemptMark(any(QuizAttempt.class));
@@ -96,7 +77,7 @@ public class QuizControllerTest {
         verify(printer, times(2)).printf(eq("[%d] %s%n"), eq(1), anyString());
         verify(printer, times(2)).printf(eq("[%d] %s%n"), eq(2), anyString());
         verify(printer, times(2)).println("Please enter answer number:");
-        verify(printer).printf("%s, your result is: %s%n", participantName, mark);
+        verify(printer).printf("%s, your result is: %s%n", "testName", mark);
 
         verify(reader, times(2)).nextInt();
 

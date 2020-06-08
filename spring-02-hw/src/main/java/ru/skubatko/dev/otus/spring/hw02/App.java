@@ -21,8 +21,6 @@ public class App {
     public static void main(String[] args) {
         ApplicationContext ctx = new AnnotationConfigApplicationContext(App.class);
         QuizController controller = ctx.getBean(QuizController.class);
-
-        String participantName = controller.getParticipantName();
-        controller.makeQuizzed(participantName);
+        controller.makeQuizzed();
     }
 }
