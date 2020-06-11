@@ -1,0 +1,59 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'org.springframework.boot' version '2.3.0.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+    id "io.freefair.lombok" version "5.1.0"
+}
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
+
+    implementation 'org.apache.commons:commons-lang3:3.10'
+    implementation 'com.google.guava:guava:28.2-jre'
+    implementation 'org.mockito:mockito-core:3.3.3'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.6.0'
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+}
+
+application {
+    mainClassName = 'ru.skubatko.dev.otus.spring.hw03.App'
+}
+
+group = 'ru.skubatko.dev'
+description = 'spring-03-hw'
+sourceCompatibility = '11'
+targetCompatibility = '11'
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+test {
+    useJUnitPlatform()
+    maxHeapSize = '1G'
+    if (System.properties['test.profile'] != 'integration') {
+        exclude '**/*/*ITCase*'
+    } else {
+        forkEvery = 1
+    }
+}
+
+task integrationTest(type: Test) {
+    group 'verification'
+    description 'Integration tests'
+    filter { includeTestsMatching '*ITCase*' }
+
+    useJUnitPlatform()
+    maxHeapSize = '1G'
+    forkEvery = 1
+}
