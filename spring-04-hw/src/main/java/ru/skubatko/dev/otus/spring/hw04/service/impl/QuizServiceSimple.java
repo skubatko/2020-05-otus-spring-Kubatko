@@ -16,7 +16,7 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
-public class QuizServiceImpl implements QuizService {
+public class QuizServiceSimple implements QuizService {
 
     private final QuizDao dao;
 

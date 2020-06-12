@@ -12,7 +12,7 @@ import ru.skubatko.dev.otus.spring.hw04.domain.Question;
 import ru.skubatko.dev.otus.spring.hw04.domain.Quiz;
 import ru.skubatko.dev.otus.spring.hw04.domain.QuizAttempt;
 import ru.skubatko.dev.otus.spring.hw04.enums.Mark;
-import ru.skubatko.dev.otus.spring.hw04.service.impl.QuizServiceImpl;
+import ru.skubatko.dev.otus.spring.hw04.service.impl.QuizServiceSimple;
 
 import com.google.common.collect.Multimap;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,7 +31,7 @@ public class QuizServiceTest {
     private QuizDao dao;
 
     @InjectMocks
-    private QuizServiceImpl service;
+    private QuizServiceSimple service;
 
     private Quiz quiz;
     private Question testQuestion1 = new Question("testQuestion1");

@@ -1,2 +1,5 @@
 app:
-  quiz: quiz.csv
+  quiz:
+    numberOfQuestions: 6
+    numberOfAnswersPerQuestion: 4
+  locale: ru_RU

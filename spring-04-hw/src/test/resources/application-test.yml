@@ -1,2 +1,5 @@
 app:
-  quiz: quiz-test.csv
+  quiz:
+    numberOfQuestions: 4
+    numberOfAnswersPerQuestion: 4
+  locale: en_US
