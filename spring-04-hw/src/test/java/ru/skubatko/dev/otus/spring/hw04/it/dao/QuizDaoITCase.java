@@ -1,6 +1,7 @@
 package ru.skubatko.dev.otus.spring.hw04.it.dao;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import ru.skubatko.dev.otus.spring.hw04.App;
 import ru.skubatko.dev.otus.spring.hw04.dao.QuizDao;
@@ -27,44 +28,24 @@ public class QuizDaoITCase {
     @Test
     public void get() {
         Quiz actual = dao.get();
-
         assertThat(actual).isNotNull();
 
         Multimap<Question, Answer> content = actual.getContent();
         assertThat(content).isNotNull();
 
         Set<Question> questions = content.keySet();
-        assertThat(questions)
-                .isNotNull()
-                .isNotEmpty()
-                .hasSize(4);
+        assertThat(questions).isNotNull().isNotEmpty().hasSize(4);
 
         Collection<Answer> test1 = content.get(new Question("test1"));
-        assertThat(test1)
-                .isNotNull()
-                .isNotEmpty()
-                .hasSize(4)
-                .contains(new Answer("right11", true));
-
         Collection<Answer> test2 = content.get(new Question("test2"));
-        assertThat(test2)
-                .isNotNull()
-                .isNotEmpty()
-                .hasSize(4)
-                .contains(new Answer("right22", true));
-
         Collection<Answer> test3 = content.get(new Question("test3"));
-        assertThat(test3)
-                .isNotNull()
-                .isNotEmpty()
-                .hasSize(4)
-                .contains(new Answer("right33", true));
-
         Collection<Answer> test4 = content.get(new Question("test4"));
-        assertThat(test4)
-                .isNotNull()
-                .isNotEmpty()
-                .hasSize(4)
-                .contains(new Answer("right44", true));
+
+        assertAll(
+                () -> assertThat(test1).isNotNull().isNotEmpty().hasSize(4).contains(new Answer("right11", true)),
+                () -> assertThat(test2).isNotNull().isNotEmpty().hasSize(4).contains(new Answer("right22", true)),
+                () -> assertThat(test3).isNotNull().isNotEmpty().hasSize(4).contains(new Answer("right33", true)),
+                () -> assertThat(test4).isNotNull().isNotEmpty().hasSize(4).contains(new Answer("right44", true))
+        );
     }
 }
