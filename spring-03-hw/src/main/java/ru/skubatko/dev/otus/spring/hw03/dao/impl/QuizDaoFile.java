@@ -1,5 +1,6 @@
 package ru.skubatko.dev.otus.spring.hw03.dao.impl;
 
+import ru.skubatko.dev.otus.spring.hw03.config.AppProps;
 import ru.skubatko.dev.otus.spring.hw03.dao.QuizDao;
 import ru.skubatko.dev.otus.spring.hw03.domain.Answer;
 import ru.skubatko.dev.otus.spring.hw03.domain.Question;
@@ -8,7 +9,6 @@ import ru.skubatko.dev.otus.spring.hw03.domain.Quiz;
 import com.google.common.collect.Multimap;
 import org.apache.commons.lang3.StringUtils;
 import org.mockito.internal.util.io.IOUtil;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Repository;
@@ -17,16 +17,16 @@ import java.io.IOException;
 import java.util.Collection;
 
 @Repository
-public class QuizDaoImpl implements QuizDao {
+public class QuizDaoFile implements QuizDao {
     private static final String COLON = ":";
     private static final String QUESTION_TAG = "Q";
     private static final char CORRECT_ANSWER_TAG = '+';
 
     private Quiz quiz;
 
-    public QuizDaoImpl(@Value("${app.quiz}") String fileName) {
+    public QuizDaoFile(AppProps props) {
         try {
-            Resource resource = new ClassPathResource(fileName);
+            Resource resource = new ClassPathResource(props.getQuiz());
             quiz = new Quiz();
             Multimap<Question, Answer> quizContent = quiz.getContent();
 

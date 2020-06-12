@@ -3,26 +3,21 @@
  */
 package ru.skubatko.dev.otus.spring.hw03;
 
+import ru.skubatko.dev.otus.spring.hw03.config.AppProps;
 import ru.skubatko.dev.otus.spring.hw03.controller.QuizController;
 
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
+@EnableConfigurationProperties(AppProps.class)
 public class App {
 
     public static void main(String[] args) {
-        SpringApplication.run(App.class, args);
-    }
-
-    @Bean
-    public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
-        return args -> {
-            QuizController controller = ctx.getBean(QuizController.class);
-            controller.makeQuizzed();
-        };
+        ApplicationContext ctx = SpringApplication.run(App.class, args);
+        QuizController controller = ctx.getBean(QuizController.class);
+        controller.makeQuizzed();
     }
 }

@@ -9,6 +9,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
+import ru.skubatko.dev.otus.spring.hw03.controller.impl.QuizControllerConsole;
 import ru.skubatko.dev.otus.spring.hw03.domain.Answer;
 import ru.skubatko.dev.otus.spring.hw03.domain.Question;
 import ru.skubatko.dev.otus.spring.hw03.domain.Quiz;
@@ -37,7 +38,7 @@ public class QuizControllerTest {
     private OutputPrinter printer;
 
     @InjectMocks
-    private QuizControllerImpl controller;
+    private QuizControllerConsole controller;
 
     @Test
     public void makeQuizzed() {

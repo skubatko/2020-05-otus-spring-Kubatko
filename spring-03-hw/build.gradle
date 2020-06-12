@@ -13,6 +13,7 @@ repositories {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'org.springframework.boot:spring-boot-starter-aop'
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
     implementation 'org.apache.commons:commons-lang3:3.10'
     implementation 'com.google.guava:guava:28.2-jre'

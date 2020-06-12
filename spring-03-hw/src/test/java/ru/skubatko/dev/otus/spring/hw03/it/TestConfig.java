@@ -7,13 +7,11 @@ import ru.skubatko.dev.otus.spring.hw03.service.OutputPrinter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-import org.springframework.context.annotation.PropertySource;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
 @Configuration
-@PropertySource("classpath:application-test.properties")
 public class TestConfig {
 
     public static final String PARTICIPANT_NAME = "testName";

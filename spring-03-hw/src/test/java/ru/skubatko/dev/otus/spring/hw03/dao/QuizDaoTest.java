@@ -3,7 +3,8 @@ package ru.skubatko.dev.otus.spring.hw03.dao;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import ru.skubatko.dev.otus.spring.hw03.dao.impl.QuizDaoImpl;
+import ru.skubatko.dev.otus.spring.hw03.config.AppProps;
+import ru.skubatko.dev.otus.spring.hw03.dao.impl.QuizDaoFile;
 import ru.skubatko.dev.otus.spring.hw03.domain.Answer;
 import ru.skubatko.dev.otus.spring.hw03.domain.Question;
 import ru.skubatko.dev.otus.spring.hw03.domain.Quiz;
@@ -18,10 +19,10 @@ public class QuizDaoTest {
 
     @Test
     public void get() {
-        QuizDaoImpl dao = new QuizDaoImpl("quiz-test.csv");
-        Answer right = new Answer("right", true);
+        AppProps props = new AppProps();
+        props.setQuiz("quiz-test.csv");
 
-        Quiz actual = dao.get();
+        Quiz actual = new QuizDaoFile(props).get();
 
         assertThat(actual).isNotNull();
 
@@ -33,6 +34,8 @@ public class QuizDaoTest {
                 .isNotNull()
                 .isNotEmpty()
                 .hasSize(4);
+
+        Answer right = new Answer("right", true);
 
         Collection<Answer> test1 = content.get(new Question("test1"));
         assertThat(test1)
@@ -74,6 +77,6 @@ public class QuizDaoTest {
 
     @Test
     public void initFailed() {
-        assertThatThrownBy(() -> new QuizDaoImpl("undefined")).isInstanceOf(RuntimeException.class);
+        assertThatThrownBy(() -> new QuizDaoFile(new AppProps())).isInstanceOf(RuntimeException.class);
     }
 }

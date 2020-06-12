@@ -1,7 +1,8 @@
-package ru.skubatko.dev.otus.spring.hw03.controller;
+package ru.skubatko.dev.otus.spring.hw03.controller.impl;
 
 import ru.skubatko.dev.otus.spring.hw03.aspect.Benchmark;
 import ru.skubatko.dev.otus.spring.hw03.aspect.Logging;
+import ru.skubatko.dev.otus.spring.hw03.controller.QuizController;
 import ru.skubatko.dev.otus.spring.hw03.domain.Answer;
 import ru.skubatko.dev.otus.spring.hw03.domain.Question;
 import ru.skubatko.dev.otus.spring.hw03.domain.QuizAttempt;
@@ -21,7 +22,7 @@ import java.util.Set;
 @Logging
 @Controller
 @RequiredArgsConstructor
-public class QuizControllerImpl implements QuizController {
+public class QuizControllerConsole implements QuizController {
 
     private final QuizService service;
     private final InputReader reader;
