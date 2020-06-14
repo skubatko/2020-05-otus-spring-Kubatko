@@ -1,5 +1,7 @@
 package ru.skubatko.dev.otus.spring.hw04.enums;
 
+import java.util.Arrays;
+
 public enum Mark {
     A(0, 29), B(30, 59), C(60, 74), D(75, 90), F(91, 100);
 
@@ -12,22 +14,9 @@ public enum Mark {
     }
 
     public static Mark getMark(int result) {
-        if (F.fromInclusive <= result && result <= F.toInclusive) {
-            return F;
-        }
-
-        if (D.fromInclusive <= result && result <= D.toInclusive) {
-            return D;
-        }
-
-        if (C.fromInclusive <= result && result <= C.toInclusive) {
-            return C;
-        }
-
-        if (B.fromInclusive <= result && result <= B.toInclusive) {
-            return B;
-        }
-
-        return A;
+        return Arrays.stream(Mark.values())
+                .filter(mark -> mark.fromInclusive <= result && result <= mark.toInclusive)
+                .findFirst()
+                .orElse(Mark.A);
     }
 }
