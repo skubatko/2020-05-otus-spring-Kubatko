@@ -1,0 +1,5 @@
+app:
+  quiz:
+    numberOfQuestions: 4
+    numberOfAnswersPerQuestion: 4
+  locale: en_US
