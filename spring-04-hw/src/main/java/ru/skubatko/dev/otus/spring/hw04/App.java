@@ -9,15 +9,18 @@ import ru.skubatko.dev.otus.spring.hw04.controller.QuizController;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.ApplicationContext;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.scheduling.annotation.EnableAsync;
 
+@EnableAsync
 @SpringBootApplication
 @EnableConfigurationProperties(AppProps.class)
 public class App {
 
     public static void main(String[] args) {
-        ApplicationContext ctx = SpringApplication.run(App.class, args);
+        ConfigurableApplicationContext ctx = SpringApplication.run(App.class, args);
         QuizController controller = ctx.getBean(QuizController.class);
         controller.makeQuizzed();
+        ctx.close();
     }
 }

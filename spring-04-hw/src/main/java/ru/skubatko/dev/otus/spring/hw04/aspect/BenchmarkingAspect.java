@@ -1,16 +1,20 @@
 package ru.skubatko.dev.otus.spring.hw04.aspect;
 
-import lombok.extern.slf4j.Slf4j;
+import ru.skubatko.dev.otus.spring.hw04.service.BenchmarkingService;
+
+import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
 
-@Slf4j
 @Aspect
 @Component
+@RequiredArgsConstructor
 public class BenchmarkingAspect {
+
+    private final BenchmarkingService service;
 
     @Around("@annotation(ru.skubatko.dev.otus.spring.hw04.aspect.Benchmark)")
     public Object benchmarkAdvice(ProceedingJoinPoint joinPoint) throws Throwable {
@@ -20,7 +24,7 @@ public class BenchmarkingAspect {
             return joinPoint.proceed();
         } finally {
             clock.stop();
-            log.debug(clock.prettyPrint());
+            service.report(clock);
         }
     }
 }
