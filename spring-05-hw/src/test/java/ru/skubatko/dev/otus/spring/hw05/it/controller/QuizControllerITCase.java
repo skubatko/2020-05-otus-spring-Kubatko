@@ -21,11 +21,12 @@ public class QuizControllerITCase {
 
     @Test
     public void makeQuizzed() {
-        controller.makeQuizzed();
+        controller.makeQuizzed(PARTICIPANT_NAME);
 
         assertThat(OUTPUT.toString())
-                .contains("Q:")
-                .contains(PARTICIPANT_NAME)
-                .contains("your result is");
+                .contains("Q: test1")
+                .contains("Q: test2")
+                .contains("Q: test3")
+                .contains("Q: test4");
     }
 }

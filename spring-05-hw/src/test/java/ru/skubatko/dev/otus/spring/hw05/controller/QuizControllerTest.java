@@ -42,8 +42,6 @@ public class QuizControllerTest {
 
     @Test
     public void makeQuizzed() {
-        when(reader.nextLine()).thenReturn("testName");
-
         Multimap<Question, Answer> quizContent = HashMultimap.create();
 
         Question q1 = new Question("q1");
@@ -65,10 +63,7 @@ public class QuizControllerTest {
                 .thenReturn(1)
                 .thenReturn(2);
 
-        controller.makeQuizzed();
-
-        verify(printer).println("Please enter your name:");
-        verify(reader).nextLine();
+        controller.makeQuizzed("testUser");
 
         verify(service).getQuiz();
         verify(service).getQuizAttemptMark(any(QuizAttempt.class));
@@ -78,7 +73,6 @@ public class QuizControllerTest {
         verify(printer, times(2)).printf(eq("[%d] %s%n"), eq(1), anyString());
         verify(printer, times(2)).printf(eq("[%d] %s%n"), eq(2), anyString());
         verify(printer, times(2)).println("Please enter answer number:");
-        verify(printer).printf("%s, your result is: %s%n", "testName", mark);
 
         verify(reader, times(2)).nextInt();
 
