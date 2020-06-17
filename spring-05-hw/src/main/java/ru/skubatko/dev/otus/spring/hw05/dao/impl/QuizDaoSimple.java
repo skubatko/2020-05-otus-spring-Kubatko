@@ -19,7 +19,7 @@ public class QuizDaoSimple implements QuizDao {
     private static final String DOT = ".";
     public static final String[] ARGS = new String[0];
 
-    private Quiz quiz;
+    private Quiz quiz = new Quiz();
 
     public QuizDaoSimple(AppProps props, MessageSource messageSource) {
         Locale locale = props.getLocale();
@@ -27,7 +27,6 @@ public class QuizDaoSimple implements QuizDao {
         int numberOfAnswersPerQuestion = props.getQuiz().getNumberOfAnswersPerQuestion();
         int numberOfQuestions = props.getQuiz().getNumberOfQuestions();
 
-        quiz = new Quiz();
         Multimap<Question, Answer> quizContent = quiz.getContent();
 
         for (int q = 1; q <= numberOfQuestions; q++) {

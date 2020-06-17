@@ -30,11 +30,10 @@ public class QuizControllerConsole implements QuizController {
 
     @Benchmark
     @Override
-    public void makeQuizzed() {
-        String participantName = getParticipantName();
+    public Mark makeQuizzed(String userName) {
 
         QuizAttempt quizAttempt = new QuizAttempt();
-        quizAttempt.setParticipantName(participantName);
+        quizAttempt.setParticipantName(userName);
 
         Multimap<Question, Answer> quizContent = service.getQuiz().getContent();
         Set<Question> questions = quizContent.keySet();
@@ -50,13 +49,7 @@ public class QuizControllerConsole implements QuizController {
             quizAttempt.getContent().put(question, answer);
         }
 
-        Mark mark = service.getQuizAttemptMark(quizAttempt);
-        printer.printf("%s, your result is: %s%n", participantName, mark);
-    }
-
-    private String getParticipantName() {
-        printer.println("Please enter your name:");
-        return reader.nextLine();
+        return service.getQuizAttemptMark(quizAttempt);
     }
 
     private int getReply(List<Answer> answers) {
