@@ -1,6 +1,7 @@
 package ru.skubatko.dev.otus.spring.hw05.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -16,22 +17,25 @@ import ru.skubatko.dev.otus.spring.hw05.service.impl.QuizServiceSimple;
 
 import com.google.common.collect.Multimap;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.Map;
 
-@ExtendWith(MockitoExtension.class)
+@DisplayName("Тест сервиса тестирования")
+@SpringBootTest
 public class QuizServiceTest {
 
-    @Mock
+    @MockBean
     private QuizDao dao;
 
-    @InjectMocks
+    @Autowired
     private QuizServiceSimple service;
+
+    private static final String PARTICIPANT_NAME = "testName";
 
     private Quiz quiz;
     private Question testQuestion1 = new Question("testQuestion1");
@@ -45,36 +49,39 @@ public class QuizServiceTest {
     @BeforeEach
     public void setUp() {
         quiz = new Quiz();
-        Multimap<Question, Answer> content = quiz.getContent();
-        content.put(testQuestion1, wrongAnswer);
-        content.put(testQuestion1, rightAnswer);
-        content.put(testQuestion2, wrongAnswer);
-        content.put(testQuestion2, rightAnswer);
-        content.put(testQuestion3, wrongAnswer);
-        content.put(testQuestion3, rightAnswer);
-        content.put(testQuestion4, wrongAnswer);
-        content.put(testQuestion4, rightAnswer);
-        content.put(testQuestion5, wrongAnswer);
-        content.put(testQuestion5, rightAnswer);
+        Multimap<Question, Answer> quizContent = quiz.getContent();
+        quizContent.put(testQuestion1, wrongAnswer);
+        quizContent.put(testQuestion1, rightAnswer);
+        quizContent.put(testQuestion2, wrongAnswer);
+        quizContent.put(testQuestion2, rightAnswer);
+        quizContent.put(testQuestion3, wrongAnswer);
+        quizContent.put(testQuestion3, rightAnswer);
+        quizContent.put(testQuestion4, wrongAnswer);
+        quizContent.put(testQuestion4, rightAnswer);
+        quizContent.put(testQuestion5, wrongAnswer);
+        quizContent.put(testQuestion5, rightAnswer);
     }
 
+    @DisplayName("должен вернуть не пустой опросник и вызвать один раз DAO")
     @Test
-    public void getQuiz() {
-        when(dao.get()).thenReturn(quiz);
+    public void shouldReturnNotEmptyQuizWithDaoOneTimeFire() {
+        given(dao.get()).willReturn(quiz);
 
         Quiz actual = service.getQuiz();
 
         assertThat(actual).isNotNull().isEqualTo(quiz);
 
-        verify(dao).get();
+        verify(dao, times(1)).get();
         verifyNoMoreInteractions(dao);
     }
 
+    @DisplayName("при всех верных ответах должен вернуть оценку F")
     @Test
-    public void getQuizAttemptMarkWithAllRight() {
+    public void whenAllAnswersRight_shouldReturnMarkF() {
         when(dao.get()).thenReturn(quiz);
+
         QuizAttempt quizAttempt = new QuizAttempt();
-        quizAttempt.setParticipantName("testName");
+        quizAttempt.setParticipantName(PARTICIPANT_NAME);
         Map<Question, Answer> content = quizAttempt.getContent();
         content.put(testQuestion1, rightAnswer);
         content.put(testQuestion2, rightAnswer);
@@ -90,11 +97,12 @@ public class QuizServiceTest {
         verifyNoMoreInteractions(dao);
     }
 
+    @DisplayName("при одном неверном ответе из пяти должен вернуть оценку D")
     @Test
-    public void getQuizAttemptMarkWithFourRight() {
+    public void whenOneOfFiveAnswerWrong_shouldReturnMarkD() {
         when(dao.get()).thenReturn(quiz);
         QuizAttempt quizAttempt = new QuizAttempt();
-        quizAttempt.setParticipantName("testName");
+        quizAttempt.setParticipantName(PARTICIPANT_NAME);
         Map<Question, Answer> content = quizAttempt.getContent();
         content.put(testQuestion1, rightAnswer);
         content.put(testQuestion2, rightAnswer);
@@ -110,11 +118,12 @@ public class QuizServiceTest {
         verifyNoMoreInteractions(dao);
     }
 
+    @DisplayName("при двух неверных ответах из пяти должен вернуть оценку C")
     @Test
-    public void getQuizAttemptMarkWithThreeRight() {
+    public void whenTwoOfFiveAnswersWrong_shouldReturnMarkC() {
         when(dao.get()).thenReturn(quiz);
         QuizAttempt quizAttempt = new QuizAttempt();
-        quizAttempt.setParticipantName("testName");
+        quizAttempt.setParticipantName(PARTICIPANT_NAME);
         Map<Question, Answer> content = quizAttempt.getContent();
         content.put(testQuestion1, rightAnswer);
         content.put(testQuestion2, rightAnswer);
@@ -130,11 +139,12 @@ public class QuizServiceTest {
         verifyNoMoreInteractions(dao);
     }
 
+    @DisplayName("при трех неверных ответах из пяти должен вернуть оценку B")
     @Test
-    public void getQuizAttemptMarkWithTwoRight() {
+    public void whenThreeOfFiveAnswersWrong_shouldReturnMarkB() {
         when(dao.get()).thenReturn(quiz);
         QuizAttempt quizAttempt = new QuizAttempt();
-        quizAttempt.setParticipantName("testName");
+        quizAttempt.setParticipantName(PARTICIPANT_NAME);
         Map<Question, Answer> content = quizAttempt.getContent();
         content.put(testQuestion1, rightAnswer);
         content.put(testQuestion2, rightAnswer);
@@ -150,11 +160,12 @@ public class QuizServiceTest {
         verifyNoMoreInteractions(dao);
     }
 
+    @DisplayName("при одном верном ответе из пяти должен вернуть оценку A")
     @Test
-    public void getQuizAttemptMarkWithOneRight() {
+    public void whenOneOfFiveAnswerRight_shouldReturnMarkA() {
         when(dao.get()).thenReturn(quiz);
         QuizAttempt quizAttempt = new QuizAttempt();
-        quizAttempt.setParticipantName("testName");
+        quizAttempt.setParticipantName(PARTICIPANT_NAME);
         Map<Question, Answer> content = quizAttempt.getContent();
         content.put(testQuestion1, rightAnswer);
         content.put(testQuestion2, wrongAnswer);
@@ -170,11 +181,12 @@ public class QuizServiceTest {
         verifyNoMoreInteractions(dao);
     }
 
+    @DisplayName("при всех неверных ответах должен вернуть оценку A")
     @Test
-    public void getQuizAttemptMarkWithAllWrong() {
+    public void whenAllAnswersWrong_shouldReturnMarkA() {
         when(dao.get()).thenReturn(quiz);
         QuizAttempt quizAttempt = new QuizAttempt();
-        quizAttempt.setParticipantName("testName");
+        quizAttempt.setParticipantName(PARTICIPANT_NAME);
         Map<Question, Answer> content = quizAttempt.getContent();
         content.put(testQuestion1, wrongAnswer);
         content.put(testQuestion2, wrongAnswer);

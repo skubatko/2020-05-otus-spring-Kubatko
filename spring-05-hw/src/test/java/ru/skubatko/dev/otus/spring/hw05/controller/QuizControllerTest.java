@@ -1,5 +1,6 @@
 package ru.skubatko.dev.otus.spring.hw05.controller;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -21,27 +22,29 @@ import ru.skubatko.dev.otus.spring.hw05.service.QuizService;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
-@ExtendWith(MockitoExtension.class)
+@DisplayName("Тест контроллера тестирования")
+@SpringBootTest
 public class QuizControllerTest {
 
-    @Mock
+    @MockBean
     private QuizService service;
-    @Mock
+    @MockBean
     private InputReader reader;
-    @Mock
+    @MockBean
     private OutputPrinter printer;
 
-    @InjectMocks
+    @Autowired
     private QuizControllerConsole controller;
 
+    @DisplayName("должен пройти тестирование с оценкой C")
     @Test
-    public void makeQuizzed() {
+    public void shouldReturnMarkCAfterQuizMade() {
         Multimap<Question, Answer> quizContent = HashMultimap.create();
 
         Question q1 = new Question("q1");
@@ -56,14 +59,16 @@ public class QuizControllerTest {
         when(service.getQuiz()).thenReturn(quiz);
         when(quiz.getContent()).thenReturn(quizContent);
 
-        Mark mark = Mark.C;
-        when(service.getQuizAttemptMark(any(QuizAttempt.class))).thenReturn(mark);
+        Mark expected = Mark.C;
+        when(service.getQuizAttemptMark(any(QuizAttempt.class))).thenReturn(expected);
 
         when(reader.nextInt())
                 .thenReturn(1)
                 .thenReturn(2);
 
-        controller.makeQuizzed("testUser");
+        Mark actual = controller.makeQuizzed("testUser");
+
+        assertThat(actual).isEqualTo(expected);
 
         verify(service).getQuiz();
         verify(service).getQuizAttemptMark(any(QuizAttempt.class));

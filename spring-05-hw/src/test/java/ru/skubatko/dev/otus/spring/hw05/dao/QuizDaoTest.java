@@ -1,32 +1,35 @@
-package ru.skubatko.dev.otus.spring.hw05.it.dao;
+package ru.skubatko.dev.otus.spring.hw05.dao;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import ru.skubatko.dev.otus.spring.hw05.App;
-import ru.skubatko.dev.otus.spring.hw05.dao.QuizDao;
+import ru.skubatko.dev.otus.spring.hw05.config.AppProps;
+import ru.skubatko.dev.otus.spring.hw05.dao.impl.QuizDaoSimple;
 import ru.skubatko.dev.otus.spring.hw05.domain.Answer;
 import ru.skubatko.dev.otus.spring.hw05.domain.Question;
 import ru.skubatko.dev.otus.spring.hw05.domain.Quiz;
-import ru.skubatko.dev.otus.spring.hw05.it.IntegrationTest;
 
 import com.google.common.collect.Multimap;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 
 import java.util.Collection;
 import java.util.Set;
 
-@IntegrationTest
-@SpringBootTest(classes = App.class)
-public class QuizDaoITCase {
+@DisplayName("Тест слоя DAO тестирования")
+@SpringBootTest
+public class QuizDaoTest {
 
     @Autowired
     private QuizDao dao;
 
+    @DisplayName("должен вернуть тестовый набор данных")
     @Test
-    public void get() {
+    public void shouldReturnExpectedContent() {
         Quiz actual = dao.get();
         assertThat(actual).isNotNull();
 
@@ -47,5 +50,12 @@ public class QuizDaoITCase {
                 () -> assertThat(test3).isNotNull().isNotEmpty().hasSize(4).contains(new Answer("right33", true)),
                 () -> assertThat(test4).isNotNull().isNotEmpty().hasSize(4).contains(new Answer("right44", true))
         );
+    }
+
+    @DisplayName("должен выбросить RuntimeException при обычной инициализации")
+    @Test
+    public void shouldThrowRuntimeExceptionWithSimpleInit() {
+        assertThatThrownBy(() -> new QuizDaoSimple(new AppProps(), new ReloadableResourceBundleMessageSource()))
+                .isInstanceOf(RuntimeException.class);
     }
 }
