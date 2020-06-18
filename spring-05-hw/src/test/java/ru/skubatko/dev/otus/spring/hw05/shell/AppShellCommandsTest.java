@@ -63,7 +63,7 @@ class AppShellCommandsTest {
         assertThat(actual).isInstanceOf(CommandNotCurrentlyAvailable.class);
     }
 
-    @DisplayName("должен возвращать результаты тестирования при выполнении команды quiz после логина пользователя")
+    @DisplayName("должен возвращать результаты проведения опроса при выполнении команды quiz после логина пользователя")
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     public void shouldReturnExpectedQuizResultMessageWhenUserAlreadyLoggedInAfterQuizCommandEvaluated() {

@@ -20,14 +20,14 @@ import org.springframework.context.support.ReloadableResourceBundleMessageSource
 import java.util.Collection;
 import java.util.Set;
 
-@DisplayName("Тест слоя DAO тестирования")
+@DisplayName("Тест слоя DAO проведения опросов")
 @SpringBootTest
 public class QuizDaoTest {
 
     @Autowired
     private QuizDao dao;
 
-    @DisplayName("должен вернуть тестовый набор данных")
+    @DisplayName("должен вернуть ожидаемый набор данных")
     @Test
     public void shouldReturnExpectedContent() {
         Quiz actual = dao.get();

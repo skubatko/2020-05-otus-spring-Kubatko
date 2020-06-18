@@ -28,7 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-@DisplayName("Тест контроллера тестирования")
+@DisplayName("Тест контроллера проведения опросов")
 @SpringBootTest
 public class QuizControllerTest {
 
@@ -42,7 +42,7 @@ public class QuizControllerTest {
     @Autowired
     private QuizControllerConsole controller;
 
-    @DisplayName("должен пройти тестирование с оценкой C")
+    @DisplayName("должен пройти опрос с оценкой C")
     @Test
     public void shouldReturnMarkCAfterQuizMade() {
         Multimap<Question, Answer> quizContent = HashMultimap.create();
