@@ -1,0 +1,10 @@
+spring:
+  shell:
+    interactive:
+      enabled: false
+
+app:
+  quiz:
+    numberOfQuestions: 4
+    numberOfAnswersPerQuestion: 4
+  locale: en_US
