@@ -8,7 +8,9 @@
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <charset>UTF-8</charset>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %highlight(%-5level) %cyan(%logger{5}) %magenta([%file:%line]) - %msg %n</pattern>
+            <pattern>
+                %d{HH:mm:ss.SSS} [%thread] %highlight(%-5level) %cyan(%logger{5}) %magenta([%file:%line]) - %msg %n
+            </pattern>
         </encoder>
     </appender>
 
@@ -31,6 +33,11 @@
     </appender>
 
     <logger name="ru.skubatko.dev" level="TRACE" additivity="false">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="FILE-ROLLING" />
+    </logger>
+
+    <logger name="org.springframework.jdbc.core" level="TRACE" additivity="false">
         <appender-ref ref="CONSOLE" />
         <appender-ref ref="FILE-ROLLING" />
     </logger>

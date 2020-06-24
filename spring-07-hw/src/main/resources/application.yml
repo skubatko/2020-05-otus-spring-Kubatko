@@ -1,0 +1,10 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:library
+
+#logging:
+#  level:
+#    org:
+#      springframework:
+#        jdbc:
+#          core: TRACE
