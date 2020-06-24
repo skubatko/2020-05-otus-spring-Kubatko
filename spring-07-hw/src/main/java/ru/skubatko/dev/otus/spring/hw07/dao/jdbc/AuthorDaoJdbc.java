@@ -1,5 +1,6 @@
-package ru.skubatko.dev.otus.spring.hw07.dao;
+package ru.skubatko.dev.otus.spring.hw07.dao.jdbc;
 
+import ru.skubatko.dev.otus.spring.hw07.dao.AuthorDao;
 import ru.skubatko.dev.otus.spring.hw07.domain.Author;
 
 import lombok.RequiredArgsConstructor;

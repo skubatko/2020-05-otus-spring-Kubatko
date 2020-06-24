@@ -4,9 +4,9 @@ import org.h2.tools.Console;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class H2Console {
+public class H2ConsoleConfig {
 
-    public H2Console(AppProps props) throws Exception {
+    public H2ConsoleConfig(AppProps props) throws Exception {
         if (props.isH2ConsoleEnabled()) {
             Console.main();
         }
