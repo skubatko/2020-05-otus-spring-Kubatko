@@ -1,5 +1,6 @@
 package ru.skubatko.dev.otus.spring.hw07.shell;
 
+import ru.skubatko.dev.otus.spring.hw07.domain.Author;
 import ru.skubatko.dev.otus.spring.hw07.service.AuthorService;
 
 import lombok.RequiredArgsConstructor;
@@ -9,6 +10,8 @@ import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellMethodAvailability;
 import org.springframework.shell.standard.ShellOption;
+
+import java.util.stream.Collectors;
 
 @ShellComponent
 @RequiredArgsConstructor
@@ -28,7 +31,14 @@ public class AppShellCommands {
     @ShellMethod(value = "Get all authors in the library", key = {"gaa", "getAllAuthors"})
     @ShellMethodAvailability(value = "isUserLoggedIn")
     public String getAllAuthors() {
-        return String.format("In the library now %d authors",authorService.count());
+        return String.format("Available authors: %s",
+                authorService.findAll().stream().map(Author::getName).collect(Collectors.joining(", ")));
+    }
+
+    @ShellMethod(value = "Get all authors in the library", key = {"gac", "getAuthorsCount"})
+    @ShellMethodAvailability(value = "isUserLoggedIn")
+    public String getAuthorsCount() {
+        return String.format("In the library now %d author(s)", authorService.count());
     }
 
     @ShellMethod(value = "Logout command", key = {"bye", "logout"})
