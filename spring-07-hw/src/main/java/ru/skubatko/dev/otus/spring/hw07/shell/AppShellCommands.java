@@ -31,7 +31,7 @@ public class AppShellCommands {
         return String.format("In the library now %d authors",authorService.count());
     }
 
-    @ShellMethod(value = "Logout command", key = {"lo", "logout"})
+    @ShellMethod(value = "Logout command", key = {"bye", "logout"})
     @ShellMethodAvailability(value = "isUserLoggedIn")
     public String logout() {
         String userName = this.userName;
