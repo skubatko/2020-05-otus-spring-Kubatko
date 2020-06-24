@@ -1,6 +1,8 @@
 spring:
   datasource:
     url: jdbc:h2:mem:library
-  h2:
-    console:
-      enabled: false
+    schema: sql/schema.sql
+    data: sql/data.sql
+
+app:
+  h2ConsoleEnabled: false

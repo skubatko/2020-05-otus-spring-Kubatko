@@ -5,3 +5,6 @@ spring:
   shell:
     interactive:
       enabled: false
+
+app:
+  h2ConsoleEnabled: false

@@ -3,10 +3,16 @@
  */
 package ru.skubatko.dev.otus.spring.hw07;
 
+import ru.skubatko.dev.otus.spring.hw07.config.AppProps;
+
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
 @SpringBootApplication
+@RequiredArgsConstructor
+@EnableConfigurationProperties(AppProps.class)
 public class App {
 
     public static void main(String[] args) {

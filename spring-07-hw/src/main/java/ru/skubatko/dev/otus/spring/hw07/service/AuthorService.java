@@ -4,6 +4,7 @@ import ru.skubatko.dev.otus.spring.hw07.dao.AuthorDao;
 import ru.skubatko.dev.otus.spring.hw07.domain.Author;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,7 +17,11 @@ public class AuthorService implements CrudService<Author> {
 
     @Override
     public Author findById(long id) {
-        return dao.findById(id);
+        try {
+            return dao.findById(id);
+        } catch (DataAccessException e) {
+            return null;
+        }
     }
 
     @Override
@@ -26,17 +31,29 @@ public class AuthorService implements CrudService<Author> {
 
     @Override
     public int insert(Author author) {
-        return dao.insert(author);
+        try {
+            return dao.insert(author);
+        } catch (DataAccessException e) {
+            return 0;
+        }
     }
 
     @Override
     public int update(Author author) {
-        return dao.update(author);
+        try {
+            return dao.update(author);
+        } catch (DataAccessException e) {
+            return 0;
+        }
     }
 
     @Override
     public int deleteById(long id) {
-        return dao.deleteById(id);
+        try {
+            return dao.deleteById(id);
+        } catch (DataAccessException e) {
+            return 0;
+        }
     }
 
     @Override
