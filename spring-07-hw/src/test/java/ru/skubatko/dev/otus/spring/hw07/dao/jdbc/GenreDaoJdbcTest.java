@@ -66,7 +66,7 @@ class GenreDaoJdbcTest {
         assertThat(actual).hasFieldOrPropertyWithValue("name", updatedName);
     }
 
-    @DisplayName("удалять жанр по заданному id")
+    @DisplayName("удалять жанр по заданному id из базы данных")
     @Test
     void shouldDeleteGenreById() {
         int result = dao.deleteById(1);

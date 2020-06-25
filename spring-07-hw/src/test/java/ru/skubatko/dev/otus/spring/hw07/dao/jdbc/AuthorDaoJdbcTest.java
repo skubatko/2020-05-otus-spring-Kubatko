@@ -66,7 +66,7 @@ class AuthorDaoJdbcTest {
         assertThat(actual).hasFieldOrPropertyWithValue("name", updatedName);
     }
 
-    @DisplayName("удалять автора по заданному id")
+    @DisplayName("удалять автора по заданному id из базы данных")
     @Test
     void shouldDeleteAuthorById() {
         int result = dao.deleteById(1);
