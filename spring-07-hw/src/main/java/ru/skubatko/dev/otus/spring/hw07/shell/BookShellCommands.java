@@ -47,7 +47,7 @@ public class BookShellCommands {
     public String findAllBooks() {
         List<Book> books = bookService.findAll();
 
-        return String.format("Available books: \n%s",
+        return String.format("Available books: %n%s",
                 books.stream()
                         .map(book -> String.join(
                                 StringUtils.SPACE,
