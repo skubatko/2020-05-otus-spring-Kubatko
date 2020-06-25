@@ -1,15 +1,21 @@
 package ru.skubatko.dev.otus.spring.hw07.shell;
 
+import ru.skubatko.dev.otus.spring.hw07.domain.Author;
 import ru.skubatko.dev.otus.spring.hw07.domain.Book;
+import ru.skubatko.dev.otus.spring.hw07.domain.Genre;
+import ru.skubatko.dev.otus.spring.hw07.service.AuthorService;
 import ru.skubatko.dev.otus.spring.hw07.service.BookService;
+import ru.skubatko.dev.otus.spring.hw07.service.GenreService;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.shell.Availability;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellMethodAvailability;
 import org.springframework.shell.standard.ShellOption;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @ShellComponent
@@ -18,6 +24,8 @@ import java.util.stream.Collectors;
 public class BookShellCommands {
 
     private final BookService bookService;
+    private final AuthorService authorService;
+    private final GenreService genreService;
     private final LoginShellCommands loginShellCommands;
 
     @ShellMethod(value = "Find book by id", key = {"fb", "findBookById"})
@@ -27,14 +35,28 @@ public class BookShellCommands {
         if (book == null) {
             return String.format("Book with id = %s not found", id);
         }
-        return String.format("Book: %s", book.getName());
+
+        Author author = authorService.findById(book.getAuthorId());
+        Genre genre = genreService.findById(book.getGenreId());
+
+        return String.format("Book: %s \"%s\" by %s", genre.getName(), book.getName(), author.getName());
     }
 
     @ShellMethod(value = "Find all books in the library", key = {"fab", "findAllBooks"})
     @ShellMethodAvailability(value = "loggedIn")
     public String findAllBooks() {
-        return String.format("Available books: %s",
-                bookService.findAll().stream().map(Book::getName).collect(Collectors.joining(", ")));
+        List<Book> books = bookService.findAll();
+
+        return String.format("Available books: \n%s",
+                books.stream()
+                        .map(book -> String.join(
+                                StringUtils.SPACE,
+                                genreService.findById(book.getGenreId()).getName(),
+                                "\"" + book.getName() + "\"",
+                                "by",
+                                authorService.findById(book.getAuthorId()).getName()
+                        ))
+                        .collect(Collectors.joining("\n")));
     }
 
     @ShellMethod(value = "Add book to the library", key = {"ab", "addBook"})
