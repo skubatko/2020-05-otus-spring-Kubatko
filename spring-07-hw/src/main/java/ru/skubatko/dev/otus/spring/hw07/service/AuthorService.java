@@ -4,11 +4,13 @@ import ru.skubatko.dev.otus.spring.hw07.dao.AuthorDao;
 import ru.skubatko.dev.otus.spring.hw07.domain.Author;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthorService implements CrudService<Author> {
@@ -20,6 +22,7 @@ public class AuthorService implements CrudService<Author> {
         try {
             return dao.findById(id);
         } catch (DataAccessException e) {
+            log.debug("findById() - verdict: db operation failed", e);
             return null;
         }
     }
@@ -34,6 +37,7 @@ public class AuthorService implements CrudService<Author> {
         try {
             return dao.insert(author);
         } catch (DataAccessException e) {
+            log.debug("insert() - verdict: db operation failed", e);
             return 0;
         }
     }
@@ -43,6 +47,7 @@ public class AuthorService implements CrudService<Author> {
         try {
             return dao.update(author);
         } catch (DataAccessException e) {
+            log.debug("update() - verdict: db operation failed", e);
             return 0;
         }
     }
@@ -52,6 +57,7 @@ public class AuthorService implements CrudService<Author> {
         try {
             return dao.deleteById(id);
         } catch (DataAccessException e) {
+            log.debug("deleteById() - verdict: db operation failed", e);
             return 0;
         }
     }
