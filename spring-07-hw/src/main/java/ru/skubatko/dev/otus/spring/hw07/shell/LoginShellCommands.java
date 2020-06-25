@@ -27,7 +27,7 @@ public class LoginShellCommands {
     public String logout() {
         String userName = this.userName;
         this.userName = StringUtils.EMPTY;
-        return String.format("Goodbye, %s", userName);
+        return String.format("Goodbye, %s!", userName);
     }
 
     public Availability loggedIn() {
