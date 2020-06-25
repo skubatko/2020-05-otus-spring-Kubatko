@@ -74,9 +74,9 @@ public class AuthorShellCommands {
         return String.format("Author %s deleted successfully", name);
     }
 
-    @ShellMethod(value = "Get number of authors in the library", key = {"ac", "getAuthorsCount"})
+    @ShellMethod(value = "Get number of authors in the library", key = {"ca", "countAuthors"})
     @ShellMethodAvailability(value = "loggedIn")
-    public String getAuthorsCount() {
+    public String countAuthors() {
         return String.format("In the library now %d author(s)", authorService.count());
     }
 
