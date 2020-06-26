@@ -17,6 +17,6 @@ CREATE TABLE `books` (
     `name` VARCHAR(255) NOT NULL,
     `author_id` BIGINT,
     `genre_id` BIGINT,
-    CONSTRAINT `fk_author_book` FOREIGN KEY (`author_id`) REFERENCES `authors`(`id`),
-    CONSTRAINT `fk_genre_book` FOREIGN KEY (`genre_id`) REFERENCES `genres`(`id`)
+    CONSTRAINT `fk_books_authors` FOREIGN KEY (`author_id`) REFERENCES `authors`(`id`),
+    CONSTRAINT `fk_books_genres` FOREIGN KEY (`genre_id`) REFERENCES `genres`(`id`)
 );

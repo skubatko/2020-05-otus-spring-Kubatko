@@ -17,6 +17,7 @@ dependencies {
     implementation 'org.springframework.shell:spring-shell-starter:2.0.1.RELEASE'
 
     implementation 'com.h2database:h2'
+    implementation 'org.liquibase:liquibase-core'
 
     implementation 'org.apache.commons:commons-lang3'
     implementation 'com.google.guava:guava:28.2-jre'

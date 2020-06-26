@@ -1,8 +1,11 @@
 spring:
   datasource:
     url: jdbc:h2:mem:library
-    schema: sql/schema.sql
-    data: data-test.sql
+#    schema: sql/schema.sql
+#    data: data-test.sql
+  liquibase:
+    enabled: true
+    change-log: db/changelog/db.changelog-master.xml
   shell:
     interactive:
       enabled: false
