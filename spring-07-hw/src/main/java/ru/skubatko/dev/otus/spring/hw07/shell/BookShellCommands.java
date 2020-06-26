@@ -28,7 +28,7 @@ public class BookShellCommands {
     private final GenreService genreService;
     private final LoginShellCommands loginShellCommands;
 
-    @ShellMethod(value = "Find book by id", key = {"fb", "findBookById"})
+    @ShellMethod(value = "Find book by id", key = {"fb", "findBook"})
     @ShellMethodAvailability(value = "loggedIn")
     public String findBookById(@ShellOption(defaultValue = "0") String id) {
         Book book = bookService.findById(Long.parseLong(id));
@@ -89,7 +89,7 @@ public class BookShellCommands {
         return String.format("Book %s updated successfully", name);
     }
 
-    @ShellMethod(value = "Delete book by id", key = {"db", "deleteBookById"})
+    @ShellMethod(value = "Delete book by id", key = {"db", "deleteBook"})
     @ShellMethodAvailability(value = "loggedIn")
     public String deleteBookById(@ShellOption(defaultValue = "0") String idString) {
         long id = Long.parseLong(idString);

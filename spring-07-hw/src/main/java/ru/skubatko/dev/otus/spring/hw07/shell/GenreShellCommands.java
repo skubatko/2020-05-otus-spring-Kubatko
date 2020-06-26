@@ -20,7 +20,7 @@ public class GenreShellCommands {
     private final GenreService genreService;
     private final LoginShellCommands loginShellCommands;
 
-    @ShellMethod(value = "Find genre by id", key = {"fg", "findGenreById"})
+    @ShellMethod(value = "Find genre by id", key = {"fg", "findGenre"})
     @ShellMethodAvailability(value = "loggedIn")
     public String findGenreById(@ShellOption(defaultValue = "0") String id) {
         Genre genre = genreService.findById(Long.parseLong(id));
@@ -61,7 +61,7 @@ public class GenreShellCommands {
         return String.format("Genre %s updated successfully", name);
     }
 
-    @ShellMethod(value = "Delete genre by id", key = {"dg", "deleteGenreById"})
+    @ShellMethod(value = "Delete genre by id", key = {"dg", "deleteGenre"})
     @ShellMethodAvailability(value = "loggedIn")
     public String deleteGenreById(@ShellOption(defaultValue = "0") String idString) {
         long id = Long.parseLong(idString);

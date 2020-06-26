@@ -20,7 +20,7 @@ public class AuthorShellCommands {
     private final AuthorService authorService;
     private final LoginShellCommands loginShellCommands;
 
-    @ShellMethod(value = "Find author by id", key = {"fa", "findAuthorById"})
+    @ShellMethod(value = "Find author by id", key = {"fa", "findAuthor"})
     @ShellMethodAvailability(value = "loggedIn")
     public String findAuthorById(@ShellOption(defaultValue = "0") String id) {
         Author author = authorService.findById(Long.parseLong(id));
@@ -61,7 +61,7 @@ public class AuthorShellCommands {
         return String.format("Author %s updated successfully", name);
     }
 
-    @ShellMethod(value = "Delete author by id", key = {"da", "deleteAuthorById"})
+    @ShellMethod(value = "Delete author by id", key = {"da", "deleteAuthor"})
     @ShellMethodAvailability(value = "loggedIn")
     public String deleteAuthorById(@ShellOption(defaultValue = "0") String idString) {
         long id = Long.parseLong(idString);
