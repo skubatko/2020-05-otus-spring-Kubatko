@@ -1,6 +1,6 @@
+DROP TABLE IF EXISTS `books`;
 DROP TABLE IF EXISTS `authors`;
 DROP TABLE IF EXISTS `genres`;
-DROP TABLE IF EXISTS `books`;
 
 CREATE TABLE `authors` (
    `id` BIGINT PRIMARY KEY,
