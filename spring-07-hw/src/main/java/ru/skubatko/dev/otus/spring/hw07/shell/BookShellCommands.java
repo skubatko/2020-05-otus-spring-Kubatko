@@ -16,6 +16,7 @@ import org.springframework.shell.standard.ShellMethodAvailability;
 import org.springframework.shell.standard.ShellOption;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @ShellComponent
@@ -46,15 +47,17 @@ public class BookShellCommands {
     @ShellMethodAvailability(value = "loggedIn")
     public String findAllBooks() {
         List<Book> books = bookService.findAll();
+        Map<Long, Author> authors = authorService.findAll().stream().collect(Collectors.toMap(Author::getId, a -> a));
+        Map<Long, Genre> genres = genreService.findAll().stream().collect(Collectors.toMap(Genre::getId, g -> g));
 
         return String.format("Available books: %n%s",
                 books.stream()
                         .map(book -> String.join(
                                 StringUtils.SPACE,
-                                genreService.findById(book.getGenreId()).getName(),
+                                genres.get(book.getGenreId()).getName(),
                                 "\"" + book.getName() + "\"",
                                 "by",
-                                authorService.findById(book.getAuthorId()).getName()
+                                authors.get(book.getAuthorId()).getName()
                         ))
                         .collect(Collectors.joining("\n")));
     }

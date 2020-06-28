@@ -23,7 +23,9 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @DisplayName("Команды shell работы с книгами библиотеки должны")
@@ -83,22 +85,24 @@ class BookShellCommandsTest {
     public void shouldReturnAllBooksWhenUserAlreadyLoggedInAfterFindAllBooksCommandEvaluated() {
         Author author = new Author(1, "testAuthor");
         Genre genre = new Genre(1, "testGenre");
-        Book book1 = new Book(1, "testBook1", 1, 1);
-        Book book2 = new Book(2, "testBook2", 1, 1);
+        Book book1 = new Book(1, "testBook1", 1L, 1L);
+        Book book2 = new Book(2, "testBook2", 1L, 1L);
         List<Book> books = Arrays.asList(book1, book2);
+        Map<Long, Author> authors = Map.of(1L, author);
+        Map<Long, Genre> genres = Map.of(1L, genre);
 
         given(bookService.findAll()).willReturn(books);
-        given(authorService.findById(1L)).willReturn(author);
-        given(genreService.findById(1L)).willReturn(genre);
+        given(authorService.findAll()).willReturn(Collections.singletonList(author));
+        given(genreService.findAll()).willReturn(Collections.singletonList(genre));
 
         String expected = String.format("Available books: %n%s",
                 books.stream()
                         .map(book -> String.join(
                                 StringUtils.SPACE,
-                                genreService.findById(book.getGenreId()).getName(),
+                                genres.get(book.getGenreId()).getName(),
                                 "\"" + book.getName() + "\"",
                                 "by",
-                                authorService.findById(book.getAuthorId()).getName()
+                                authors.get(book.getAuthorId()).getName()
                         ))
                         .collect(Collectors.joining("\n")));
 
