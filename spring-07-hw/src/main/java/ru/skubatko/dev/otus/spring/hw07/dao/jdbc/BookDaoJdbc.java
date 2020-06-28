@@ -24,12 +24,12 @@ public class BookDaoJdbc implements BookDao {
     @Override
     public Book findById(long id) {
         Map<String, Object> params = Collections.singletonMap("id", id);
-        return jdbc.queryForObject("select * from books where id = :id", params, this::bookRowMapper);
+        return jdbc.queryForObject("select id, name, author_id, genre_id from books where id = :id", params, this::bookRowMapper);
     }
 
     @Override
     public List<Book> findAll() {
-        return jdbc.query("select * from books", this::bookRowMapper);
+        return jdbc.query("select id, name, author_id, genre_id from books", this::bookRowMapper);
     }
 
     @Override
@@ -51,7 +51,7 @@ public class BookDaoJdbc implements BookDao {
 
     @Override
     public long count() {
-        return jdbc.queryForObject("select count(*) from books", Collections.emptyMap(), Long.class);
+        return jdbc.queryForObject("select count(id) from books", Collections.emptyMap(), Long.class);
     }
 
     private Book bookRowMapper(ResultSet resultSet, int i) throws SQLException {

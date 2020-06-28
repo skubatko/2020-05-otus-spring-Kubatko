@@ -8,11 +8,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @DisplayName("Сервис для работы с жанрами должен")
+@Transactional
 @SpringBootTest
 class GenreServiceTest {
 
@@ -28,7 +29,6 @@ class GenreServiceTest {
     }
 
     @DisplayName("находить все жанры")
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     @Test
     void shouldFindAllGenres() {
         List<Genre> genres = service.findAll();
@@ -72,7 +72,6 @@ class GenreServiceTest {
     }
 
     @DisplayName("возвращать ожидаемое количество жанров в базе данных")
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     @Test
     void shouldReturnExpectedGenresCount() {
         long actual = service.count();

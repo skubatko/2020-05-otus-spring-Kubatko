@@ -20,12 +20,14 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.shell.CommandNotCurrentlyAvailable;
 import org.springframework.shell.Shell;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @DisplayName("Команды shell работы с книгами библиотеки должны")
+@Transactional
 @SpringBootTest
 class BookShellCommandsTest {
 

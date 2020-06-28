@@ -24,12 +24,12 @@ public class AuthorDaoJdbc implements AuthorDao {
     @Override
     public Author findById(long id) {
         Map<String, Object> params = Collections.singletonMap("id", id);
-        return jdbc.queryForObject("select * from authors where id = :id", params, this::authorRowMapper);
+        return jdbc.queryForObject("select id, name from authors where id = :id", params, this::authorRowMapper);
     }
 
     @Override
     public List<Author> findAll() {
-        return jdbc.query("select * from authors", this::authorRowMapper);
+        return jdbc.query("select id, name from authors", this::authorRowMapper);
     }
 
     @Override
@@ -51,7 +51,7 @@ public class AuthorDaoJdbc implements AuthorDao {
 
     @Override
     public long count() {
-        return jdbc.queryForObject("select count(*) from authors", Collections.emptyMap(), Long.class);
+        return jdbc.queryForObject("select count(id) from authors", Collections.emptyMap(), Long.class);
     }
 
     private Author authorRowMapper(ResultSet resultSet, int i) throws SQLException {

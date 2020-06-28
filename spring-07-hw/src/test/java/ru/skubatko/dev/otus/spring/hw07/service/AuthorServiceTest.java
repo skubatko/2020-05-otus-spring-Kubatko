@@ -8,11 +8,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @DisplayName("Сервис для работы с авторами должен")
+@Transactional
 @SpringBootTest
 class AuthorServiceTest {
 
@@ -28,7 +29,6 @@ class AuthorServiceTest {
     }
 
     @DisplayName("находить всех авторов")
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     @Test
     void shouldFindAllAuthors() {
         List<Author> authors = service.findAll();
@@ -72,7 +72,6 @@ class AuthorServiceTest {
     }
 
     @DisplayName("возвращать ожидаемое количество авторов в базе данных")
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     @Test
     void shouldReturnExpectedAuthorsCount() {
         long actual = service.count();

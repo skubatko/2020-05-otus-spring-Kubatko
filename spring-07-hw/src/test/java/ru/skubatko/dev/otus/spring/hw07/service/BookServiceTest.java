@@ -8,11 +8,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @DisplayName("Сервис для работы с книгами должен")
+@Transactional
 @SpringBootTest
 class BookServiceTest {
 
@@ -28,7 +29,6 @@ class BookServiceTest {
     }
 
     @DisplayName("находить все книги")
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     @Test
     void shouldFindAllBooks() {
         List<Book> books = service.findAll();
@@ -73,7 +73,6 @@ class BookServiceTest {
     }
 
     @DisplayName("возвращать ожидаемое количество книг в базе данных")
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     @Test
     void shouldReturnExpectedBooksCount() {
         long actual = service.count();
