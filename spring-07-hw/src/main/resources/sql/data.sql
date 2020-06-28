@@ -1,0 +1,15 @@
+INSERT INTO `authors` (`id`, `name`) VALUES (1, 'Lev Tolstoy');
+INSERT INTO `authors` (`id`, `name`) VALUES (2, 'Alexander Pushkin');
+INSERT INTO `authors` (`id`, `name`) VALUES (3, 'Ivan Krylov');
+INSERT INTO `genres` (`id`, `name`) VALUES (1, 'novel');
+INSERT INTO `genres` (`id`, `name`) VALUES (2, 'poem');
+INSERT INTO `genres` (`id`, `name`) VALUES (3, 'fable');
+INSERT INTO `books` (`id`, `name`, `author_id`,`genre_id`) VALUES (1, 'War and Peace', 1, 1);
+INSERT INTO `books` (`id`, `name`, `author_id`,`genre_id`) VALUES (2, 'Resurrection', 1, 1);
+INSERT INTO `books` (`id`, `name`, `author_id`,`genre_id`) VALUES (3, 'The Three Hermits', 1, 3);
+INSERT INTO `books` (`id`, `name`, `author_id`,`genre_id`) VALUES (4, 'Ruslan and Ludmila', 2, 2);
+INSERT INTO `books` (`id`, `name`, `author_id`,`genre_id`) VALUES (5, 'The Tale of the Fisherman and the Fish', 2, 3);
+INSERT INTO `books` (`id`, `name`, `author_id`,`genre_id`) VALUES (6, 'Snowstorm', 2, 1);
+INSERT INTO `books` (`id`, `name`, `author_id`,`genre_id`) VALUES (7, 'A Crow and a fox', 3, 3);
+INSERT INTO `books` (`id`, `name`, `author_id`,`genre_id`) VALUES (8, 'Two dogs', 3, 3);
+INSERT INTO `books` (`id`, `name`, `author_id`,`genre_id`) VALUES (9, 'Mouses', 3, 3);
