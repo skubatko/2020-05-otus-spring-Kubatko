@@ -1,7 +1,9 @@
 package ru.skubatko.dev.otus.spring.hw09.shell;
 
+import ru.skubatko.dev.otus.spring.hw09.domain.Book;
 import ru.skubatko.dev.otus.spring.hw09.domain.BookComment;
 import ru.skubatko.dev.otus.spring.hw09.service.BookCommentService;
+import ru.skubatko.dev.otus.spring.hw09.service.BookService;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.shell.Availability;
@@ -17,6 +19,7 @@ import java.util.stream.Collectors;
 @SuppressWarnings("unused")
 public class BookCommentShellCommands {
 
+    private final BookService bookService;
     private final BookCommentService bookCommentService;
     private final LoginShellCommands loginShellCommands;
 
@@ -33,15 +36,24 @@ public class BookCommentShellCommands {
     @ShellMethod(value = "Find all book comments in the library", key = {"fabc", "findAllBookComments"})
     @ShellMethodAvailability(value = "loggedIn")
     public String findAllBookComments() {
-        return String.format("Available book comments: %n%s",
+        return String.format("Book comments: %n%s",
                 bookCommentService.findAll().stream().map(BookComment::getContent).collect(Collectors.joining("\n")));
     }
 
     @ShellMethod(value = "Add book comment", key = {"abc", "addBookComment"})
     @ShellMethodAvailability(value = "loggedIn")
     public String addBookComment(@ShellOption(defaultValue = "0") String id,
-                                 @ShellOption(defaultValue = "default comment") String content) {
-        bookCommentService.save(new BookComment(Long.parseLong(id), content));
+                                 @ShellOption(defaultValue = "default comment") String content,
+                                 @ShellOption(defaultValue = "0") String bookId) {
+
+        BookComment bookComment = new BookComment();
+        bookComment.setContent(content);
+        bookCommentService.save(bookComment);
+
+        Book book = bookService.findById(Long.parseLong(bookId));
+        book.getBookComments().add(bookComment);
+        bookService.update(book);
+
         return String.format("Book comment %s added successfully", content);
     }
 
@@ -49,7 +61,9 @@ public class BookCommentShellCommands {
     @ShellMethodAvailability(value = "loggedIn")
     public String updateBookComment(@ShellOption(defaultValue = "0") String id,
                                     @ShellOption(defaultValue = "default comment") String content) {
-        bookCommentService.update(new BookComment(Long.parseLong(id), content));
+        BookComment bookComment = bookCommentService.findById(Long.parseLong(id));
+        bookComment.setContent(content);
+        bookCommentService.update(bookComment);
         return String.format("Book comment with id = %s updated successfully", id);
     }
 

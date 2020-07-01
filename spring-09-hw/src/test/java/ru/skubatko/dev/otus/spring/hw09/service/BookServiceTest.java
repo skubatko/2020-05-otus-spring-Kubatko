@@ -2,7 +2,9 @@ package ru.skubatko.dev.otus.spring.hw09.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import ru.skubatko.dev.otus.spring.hw09.domain.Author;
 import ru.skubatko.dev.otus.spring.hw09.domain.Book;
+import ru.skubatko.dev.otus.spring.hw09.domain.Genre;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 
 @DisplayName("Сервис для работы с книгами должен")
@@ -23,9 +26,24 @@ class BookServiceTest {
     @DisplayName("находить ожидаемую книгу по её id")
     @Test
     void shouldFindExpectedBookById() {
-        Book expected = new Book(2, "testBook2", 2, 3);
+        Author author = new Author(2, "testAuthor2");
+        Genre genre = new Genre(3, "testGenre3");
+        Book expected = new Book(2, "testBook2", author, genre, Collections.emptyList());
+
         Book actual = service.findById(2);
-        assertThat(actual).isEqualTo(expected);
+
+        assertThat(actual).isEqualToComparingOnlyGivenFields(expected, "id", "name", "author", "genre");
+    }
+
+    @DisplayName("находить ожидаемую книгу по её имени")
+    @Test
+    void shouldFindExpectedBookByName() {
+        Author author = new Author(2, "testAuthor2");
+        Genre genre = new Genre(3, "testGenre3");
+        String name = "testBook2";
+        Book expected = new Book(2, name, author, genre, Collections.emptyList());
+        Book actual = service.findByName(name);
+        assertThat(actual).isEqualToComparingOnlyGivenFields(expected, "id", "name", "author", "genre");
     }
 
     @DisplayName("находить все книги")
@@ -38,41 +56,40 @@ class BookServiceTest {
                 .containsOnlyOnce("testBook1", "testBook2", "testBook3", "testBook4", "testBook5", "testBook6");
     }
 
-    @DisplayName("добавлять книгу в базу данных")
+    @DisplayName("добавлять книгу")
     @Test
     void shouldAddBook() {
-        Book expected = new Book(7, "testBook7", 2, 3);
-        int result = service.save(expected);
-        assertThat(result).isEqualTo(1);
+        Author author = new Author(2, "testAuthor2");
+        Genre genre = new Genre(3, "testGenre3");
+        Book expected = new Book(7, "testBook7", author, genre, Collections.emptyList());
+        service.save(expected);
 
         Book actual = service.findById(7);
         assertThat(actual).isEqualTo(expected);
     }
 
-    @DisplayName("обновлять книгу в базе данных")
+    @DisplayName("обновлять книгу")
     @Test
     void shouldUpdateBook() {
         Book book = service.findById(3);
         String updatedName = "testBook3Updated";
         book.setName(updatedName);
-        int result = service.update(book);
-        assertThat(result).isEqualTo(1);
+        service.update(book);
 
         Book actual = service.findById(3);
         assertThat(actual).hasFieldOrPropertyWithValue("name", updatedName);
     }
 
-    @DisplayName("удалять книгу по заданному id из базы данных")
+    @DisplayName("удалять книгу по заданному id")
     @Test
     void shouldDeleteBookById() {
-        int result = service.deleteById(1);
-        assertThat(result).isEqualTo(1);
+        service.deleteById(1);
 
         List<Book> books = service.findAll();
         assertThat(books).extracting("id").doesNotContain(1);
     }
 
-    @DisplayName("возвращать ожидаемое количество книг в базе данных")
+    @DisplayName("возвращать ожидаемое количество книг")
     @Test
     void shouldReturnExpectedBooksCount() {
         long actual = service.count();

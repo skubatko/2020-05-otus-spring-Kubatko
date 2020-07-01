@@ -2,6 +2,7 @@ package ru.skubatko.dev.otus.spring.hw09.shell;
 
 import ru.skubatko.dev.otus.spring.hw09.domain.Author;
 import ru.skubatko.dev.otus.spring.hw09.domain.Book;
+import ru.skubatko.dev.otus.spring.hw09.domain.BookComment;
 import ru.skubatko.dev.otus.spring.hw09.domain.Genre;
 import ru.skubatko.dev.otus.spring.hw09.service.AuthorService;
 import ru.skubatko.dev.otus.spring.hw09.service.BookService;
@@ -17,7 +18,6 @@ import org.springframework.shell.standard.ShellOption;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @ShellComponent
@@ -38,27 +38,30 @@ public class BookShellCommands {
             return String.format("Book with id = %s not found", id);
         }
 
-        Author author = authorService.findById(book.getAuthorId());
-        Genre genre = genreService.findById(book.getGenreId());
-
-        return String.format("Book: %s \"%s\" by %s", genre.getName(), book.getName(), author.getName());
+        String comments = book.getBookComments().stream()
+                                  .map(BookComment::getContent)
+                                  .collect(Collectors.joining(", "));
+        return String.format("Book: %s \"%s\" by %s has comment(s): %s",
+                book.getGenre().getName(), book.getName(), book.getAuthor().getName(), comments);
     }
 
     @ShellMethod(value = "Find all books in the library", key = {"fab", "findAllBooks"})
     @ShellMethodAvailability(value = "loggedIn")
     public String findAllBooks() {
         List<Book> books = bookService.findAll();
-        Map<Long, Author> authors = authorService.findAll().stream().collect(Collectors.toMap(Author::getId, a -> a));
-        Map<Long, Genre> genres = genreService.findAll().stream().collect(Collectors.toMap(Genre::getId, g -> g));
 
         return String.format("Available books: %n%s",
                 books.stream()
                         .map(book -> String.join(
                                 StringUtils.SPACE,
-                                genres.get(book.getGenreId()).getName(),
+                                book.getGenre().getName(),
                                 "\"" + book.getName() + "\"",
                                 "by",
-                                authors.get(book.getAuthorId()).getName()
+                                book.getAuthor().getName(),
+                                "has comment(s):",
+                                book.getBookComments().stream()
+                                        .map(BookComment::getContent)
+                                        .collect(Collectors.joining(", "))
                         ))
                         .collect(Collectors.joining("\n")));
     }
@@ -69,11 +72,15 @@ public class BookShellCommands {
                           @ShellOption(defaultValue = "unnamed") String name,
                           @ShellOption(defaultValue = "0") String authorId,
                           @ShellOption(defaultValue = "0") String genreId) {
+
+        Author author = authorService.findById(Long.parseLong(authorId));
+        Genre genre = genreService.findById(Long.parseLong(genreId));
+
         bookService.save(new Book(
                 Long.parseLong(id),
                 name,
-                Long.parseLong(authorId),
-                Long.parseLong(genreId),
+                author,
+                genre,
                 Collections.emptyList()));
 
         return String.format("Book %s added successfully", name);

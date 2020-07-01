@@ -24,6 +24,14 @@ public class BookCommentRepositoryJpa implements BookCommentRepository {
     }
 
     @Override
+    public Optional<BookComment> findByContent(String content) {
+        TypedQuery<BookComment> query =
+                em.createQuery("select bc from BookComment bc where bc.content = :content", BookComment.class);
+        query.setParameter("content", content);
+        return Optional.ofNullable(query.getSingleResult());
+    }
+
+    @Override
     public List<BookComment> findAll() {
         TypedQuery<BookComment> query = em.createQuery("select bc from BookComment bc", BookComment.class);
         return query.getResultList();
@@ -55,6 +63,6 @@ public class BookCommentRepositoryJpa implements BookCommentRepository {
 
     @Override
     public long count() {
-        return em.createQuery("select count(a) from BookComment bc", Long.class).getSingleResult();
+        return em.createQuery("select count(bc) from BookComment bc", Long.class).getSingleResult();
     }
 }

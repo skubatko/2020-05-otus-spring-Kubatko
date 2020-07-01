@@ -23,6 +23,11 @@ public class BookCommentService implements CrudService<BookComment> {
         return repository.findById(id).orElse(null);
     }
 
+    @Transactional(readOnly = true)
+    public BookComment findByName(String content) {
+        return repository.findByContent(content).orElse(null);
+    }
+
     @Override
     @Transactional(readOnly = true)
     public List<BookComment> findAll() {

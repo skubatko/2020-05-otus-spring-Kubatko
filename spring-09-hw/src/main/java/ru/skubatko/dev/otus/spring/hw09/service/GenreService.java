@@ -23,6 +23,11 @@ public class GenreService implements CrudService<Genre> {
         return repository.findById(id).orElse(null);
     }
 
+    @Transactional(readOnly = true)
+    public Genre findByName(String name) {
+        return repository.findByName(name).orElse(null);
+    }
+
     @Override
     @Transactional(readOnly = true)
     public List<Genre> findAll() {

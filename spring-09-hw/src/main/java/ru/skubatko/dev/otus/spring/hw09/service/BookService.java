@@ -23,6 +23,11 @@ public class BookService implements CrudService<Book> {
         return repository.findById(id).orElse(null);
     }
 
+    @Transactional(readOnly = true)
+    public Book findByName(String name) {
+        return repository.findByName(name).orElse(null);
+    }
+
     @Override
     @Transactional(readOnly = true)
     public List<Book> findAll() {

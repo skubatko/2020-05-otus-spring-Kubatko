@@ -28,6 +28,15 @@ class AuthorServiceTest {
         assertThat(actual).isEqualTo(expected);
     }
 
+    @DisplayName("находить ожидаемого автора по его имени")
+    @Test
+    void shouldFindExpectedAuthorByName() {
+        String name = "testAuthor2";
+        Author expected = new Author(2, name);
+        Author actual = service.findByName(name);
+        assertThat(actual).isEqualTo(expected);
+    }
+
     @DisplayName("находить всех авторов")
     @Test
     void shouldFindAllAuthors() {
@@ -37,41 +46,38 @@ class AuthorServiceTest {
                 .extracting("name").containsOnlyOnce("testAuthor1", "testAuthor2", "testAuthor3");
     }
 
-    @DisplayName("добавлять автора в базу данных")
+    @DisplayName("добавлять автора")
     @Test
     void shouldAddAuthor() {
         Author expected = new Author(4, "testAuthor4");
-        int result = service.save(expected);
-        assertThat(result).isEqualTo(1);
+        service.save(expected);
 
         Author actual = service.findById(4);
         assertThat(actual).isEqualTo(expected);
     }
 
-    @DisplayName("обновлять автора в базе данных")
+    @DisplayName("обновлять автора")
     @Test
     void shouldUpdateAuthor() {
         Author author = service.findById(3);
         String updatedName = "testAuthor3Updated";
         author.setName(updatedName);
-        int result = service.update(author);
-        assertThat(result).isEqualTo(1);
+        service.update(author);
 
         Author actual = service.findById(3);
         assertThat(actual).hasFieldOrPropertyWithValue("name", updatedName);
     }
 
-    @DisplayName("удалять автора по заданному id из базы данных")
+    @DisplayName("удалять автора по заданному id")
     @Test
     void shouldDeleteAuthorById() {
-        int result = service.deleteById(1);
-        assertThat(result).isEqualTo(1);
+        service.deleteById(1);
 
         List<Author> authors = service.findAll();
         assertThat(authors).extracting("id").doesNotContain(1);
     }
 
-    @DisplayName("возвращать ожидаемое количество авторов в базе данных")
+    @DisplayName("возвращать ожидаемое количество авторов")
     @Test
     void shouldReturnExpectedAuthorsCount() {
         long actual = service.count();

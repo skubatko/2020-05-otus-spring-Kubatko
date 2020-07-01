@@ -1,4 +1,4 @@
-package ru.skubatko.dev.otus.spring.hw09.jdbc;
+package ru.skubatko.dev.otus.spring.hw09.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -20,7 +20,7 @@ import java.util.List;
 @JdbcTest
 @Import(AuthorRepositoryJpa.class)
 @Transactional(propagation = Propagation.NOT_SUPPORTED)
-class AuthorDaoJdbcTest {
+class AuthorRepositoryJpaTest {
 
     @Autowired
     private AuthorRepositoryJpa dao;
@@ -29,7 +29,7 @@ class AuthorDaoJdbcTest {
     @Test
     void shouldFindExpectedAuthorById() {
         Author expected = new Author(2, "testAuthor2");
-        Author actual = dao.findById(2);
+        Author actual = dao.findById(2).orElse(null);
         assertThat(actual).isEqualTo(expected);
     }
 
@@ -47,31 +47,28 @@ class AuthorDaoJdbcTest {
     @Test
     void shouldAddAuthor() {
         Author expected = new Author(4, "testAuthor4");
-        int result = dao.save(expected);
-        assertThat(result).isEqualTo(1);
+        dao.save(expected);
 
-        Author actual = dao.findById(4);
+        Author actual = dao.findById(4).orElse(null);
         assertThat(actual).isEqualTo(expected);
     }
 
     @DisplayName("обновлять автора в базе данных")
     @Test
     void shouldUpdateAuthor() {
-        Author author = dao.findById(3);
+        Author author = dao.findById(3).orElse(null);
         String updatedName = "testAuthor3Updated";
         author.setName(updatedName);
-        int result = dao.update(author);
-        assertThat(result).isEqualTo(1);
+        dao.update(author);
 
-        Author actual = dao.findById(3);
+        Author actual = dao.findById(3).orElse(null);
         assertThat(actual).hasFieldOrPropertyWithValue("name", updatedName);
     }
 
     @DisplayName("удалять автора по заданному id из базы данных")
     @Test
     void shouldDeleteAuthorById() {
-        int result = dao.deleteById(1);
-        assertThat(result).isEqualTo(1);
+        dao.deleteById(1);
 
         List<Author> authors = dao.findAll();
         assertThat(authors).extracting("id").doesNotContain(1);

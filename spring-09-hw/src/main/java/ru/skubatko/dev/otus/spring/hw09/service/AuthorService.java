@@ -23,6 +23,11 @@ public class AuthorService implements CrudService<Author> {
         return repository.findById(id).orElse(null);
     }
 
+    @Transactional(readOnly = true)
+    public Author findByName(String name) {
+        return repository.findByName(name).orElse(null);
+    }
+
     @Override
     @Transactional(readOnly = true)
     public List<Author> findAll() {

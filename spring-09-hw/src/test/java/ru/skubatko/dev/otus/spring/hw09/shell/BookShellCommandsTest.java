@@ -1,7 +1,6 @@
 package ru.skubatko.dev.otus.spring.hw09.shell;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 import ru.skubatko.dev.otus.spring.hw09.domain.Author;
@@ -25,7 +24,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @DisplayName("Команды shell работы с книгами библиотеки должны")
@@ -65,7 +63,7 @@ class BookShellCommandsTest {
     public void shouldReturnBookWhenUserAlreadyLoggedInAfterFindBookCommandEvaluated() {
         Author author = new Author(1, "testAuthor");
         Genre genre = new Genre(1, "testGenre");
-        Book book = new Book(1, "testBook", 1, 1);
+        Book book = new Book(1, "testBook", author, genre, Collections.emptyList());
 
         given(bookService.findById(1L)).willReturn(book);
         given(authorService.findById(1L)).willReturn(author);
@@ -85,11 +83,9 @@ class BookShellCommandsTest {
     public void shouldReturnAllBooksWhenUserAlreadyLoggedInAfterFindAllBooksCommandEvaluated() {
         Author author = new Author(1, "testAuthor");
         Genre genre = new Genre(1, "testGenre");
-        Book book1 = new Book(1, "testBook1", 1L, 1L);
-        Book book2 = new Book(2, "testBook2", 1L, 1L);
+        Book book1 = new Book(1, "testBook1", author, genre, Collections.emptyList());
+        Book book2 = new Book(2, "testBook2", author, genre, Collections.emptyList());
         List<Book> books = Arrays.asList(book1, book2);
-        Map<Long, Author> authors = Map.of(1L, author);
-        Map<Long, Genre> genres = Map.of(1L, genre);
 
         given(bookService.findAll()).willReturn(books);
         given(authorService.findAll()).willReturn(Collections.singletonList(author));
@@ -99,10 +95,10 @@ class BookShellCommandsTest {
                 books.stream()
                         .map(book -> String.join(
                                 StringUtils.SPACE,
-                                genres.get(book.getGenreId()).getName(),
+                                book.getGenre().getName(),
                                 "\"" + book.getName() + "\"",
                                 "by",
-                                authors.get(book.getAuthorId()).getName()
+                                book.getAuthor().getName()
                         ))
                         .collect(Collectors.joining("\n")));
 
@@ -118,8 +114,6 @@ class BookShellCommandsTest {
     public void shouldAddBookWhenUserAlreadyLoggedInAfterAddBookCommandEvaluated() {
         String bookName = "testBook";
 
-        given(bookService.save(any(Book.class))).willReturn(1);
-
         String expected = String.format("Book %s added successfully", bookName);
 
         shell.evaluate(() -> LOGIN_COMMAND);
@@ -132,11 +126,12 @@ class BookShellCommandsTest {
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     public void shouldUpdateBookWhenUserAlreadyLoggedInAfterUpdateBookCommandEvaluated() {
-        Book book = new Book(1, "testBook", 1, 1);
+        Author author = new Author(1, "testAuthor");
+        Genre genre = new Genre(1, "testGenre");
+        Book book = new Book(1, "testBook", author, genre, Collections.emptyList());
         String updatedBookName = "testBookUpdated";
 
         given(bookService.findById(1)).willReturn(book);
-        given(bookService.update(any(Book.class))).willReturn(1);
 
         String expected = String.format("Book %s updated successfully", updatedBookName);
 
@@ -150,11 +145,12 @@ class BookShellCommandsTest {
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     public void shouldDeleteBookWhenUserAlreadyLoggedInAfterDeleteBookCommandEvaluated() {
+        Author author = new Author(1, "testAuthor");
+        Genre genre = new Genre(1, "testGenre");
         String bookName = "testBook";
-        Book book = new Book(1, bookName, 1, 1);
+        Book book = new Book(1, bookName, author, genre, Collections.emptyList());
 
         given(bookService.findById(1)).willReturn(book);
-        given(bookService.deleteById(1L)).willReturn(1);
 
         String expected = String.format("Book %s deleted successfully", bookName);
 

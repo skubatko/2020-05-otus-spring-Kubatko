@@ -28,6 +28,15 @@ class GenreServiceTest {
         assertThat(actual).isEqualTo(expected);
     }
 
+    @DisplayName("находить ожидаемый жанр по его имени")
+    @Test
+    void shouldFindExpectedGenreByName() {
+        String name = "testGenre2";
+        Genre expected = new Genre(2, name);
+        Genre actual = service.findByName(name);
+        assertThat(actual).isEqualTo(expected);
+    }
+
     @DisplayName("находить все жанры")
     @Test
     void shouldFindAllGenres() {
@@ -37,41 +46,40 @@ class GenreServiceTest {
                 .extracting("name").containsOnlyOnce("testGenre1", "testGenre2", "testGenre3", "testGenre4");
     }
 
-    @DisplayName("добавлять жанр в базу данных")
+    @DisplayName("добавлять жанр")
     @Test
     void shouldAddGenre() {
-        Genre expected = new Genre(5, "testGenre5");
-        int result = service.save(expected);
-        assertThat(result).isEqualTo(1);
+        Genre expected = new Genre();
+        String name = "testGenreNew";
+        expected.setName(name);
+        service.save(expected);
 
-        Genre actual = service.findById(5);
+        Genre actual = service.findByName(name);
         assertThat(actual).isEqualTo(expected);
     }
 
-    @DisplayName("обновлять жанр в базе данных")
+    @DisplayName("обновлять жанр")
     @Test
     void shouldUpdateGenre() {
         Genre genre = service.findById(3);
         String updatedName = "testGenre3Updated";
         genre.setName(updatedName);
-        int result = service.update(genre);
-        assertThat(result).isEqualTo(1);
+        service.update(genre);
 
         Genre actual = service.findById(3);
         assertThat(actual).hasFieldOrPropertyWithValue("name", updatedName);
     }
 
-    @DisplayName("удалять жанр по заданному id из базы данных")
+    @DisplayName("удалять жанр по заданному id")
     @Test
     void shouldDeleteGenreById() {
-        int result = service.deleteById(1);
-        assertThat(result).isEqualTo(1);
+        service.deleteById(1);
 
         List<Genre> genres = service.findAll();
         assertThat(genres).extracting("id").doesNotContain(1);
     }
 
-    @DisplayName("возвращать ожидаемое количество жанров в базе данных")
+    @DisplayName("возвращать ожидаемое количество жанров")
     @Test
     void shouldReturnExpectedGenresCount() {
         long actual = service.count();

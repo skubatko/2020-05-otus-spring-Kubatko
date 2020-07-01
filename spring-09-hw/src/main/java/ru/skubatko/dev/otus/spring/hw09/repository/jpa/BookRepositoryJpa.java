@@ -24,6 +24,13 @@ public class BookRepositoryJpa implements BookRepository {
     }
 
     @Override
+    public Optional<Book> findByName(String name) {
+        TypedQuery<Book> query = em.createQuery("select b from Book b where b.name = :name", Book.class);
+        query.setParameter("name", name);
+        return Optional.ofNullable(query.getSingleResult());
+    }
+
+    @Override
     public List<Book> findAll() {
         TypedQuery<Book> query = em.createQuery("select b from Book b", Book.class);
         return query.getResultList();

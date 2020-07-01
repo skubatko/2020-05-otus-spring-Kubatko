@@ -24,6 +24,13 @@ public class AuthorRepositoryJpa implements AuthorRepository {
     }
 
     @Override
+    public Optional<Author> findByName(String name) {
+        TypedQuery<Author> query = em.createQuery("select a from Author a where a.name = :name", Author.class);
+        query.setParameter("name", name);
+        return Optional.ofNullable(query.getSingleResult());
+    }
+
+    @Override
     public List<Author> findAll() {
         TypedQuery<Author> query = em.createQuery("select a from Author a", Author.class);
         return query.getResultList();

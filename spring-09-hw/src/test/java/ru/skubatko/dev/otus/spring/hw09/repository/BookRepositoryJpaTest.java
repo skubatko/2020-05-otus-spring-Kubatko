@@ -1,8 +1,10 @@
-package ru.skubatko.dev.otus.spring.hw09.jdbc;
+package ru.skubatko.dev.otus.spring.hw09.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import ru.skubatko.dev.otus.spring.hw09.domain.Author;
 import ru.skubatko.dev.otus.spring.hw09.domain.Book;
+import ru.skubatko.dev.otus.spring.hw09.domain.Genre;
 import ru.skubatko.dev.otus.spring.hw09.repository.jpa.BookRepositoryJpa;
 
 import org.junit.jupiter.api.DisplayName;
@@ -14,22 +16,25 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 
-@DisplayName("Jdbc dao для работы с книгами должно")
+@DisplayName("Репозиторий для работы с книгами должен")
 @JdbcTest
 @Import(BookRepositoryJpa.class)
 @Transactional(propagation = Propagation.NOT_SUPPORTED)
-class BookDaoJdbcTest {
+class BookRepositoryJpaTest {
 
     @Autowired
-    private BookRepositoryJpa dao;
+    private BookRepositoryJpa repository;
 
     @DisplayName("находить ожидаемую книгу по её id")
     @Test
     void shouldFindExpectedBookById() {
-        Book expected = new Book(2, "testBook2", 2, 3);
-        Book actual = dao.findById(2);
+        Author author = new Author(2, "testAuthor2");
+        Genre genre = new Genre(3, "testGenre3");
+        Book expected = new Book(2, "testBook2", author, genre, Collections.emptyList());
+        Book actual = repository.findById(2).orElse(null);
         assertThat(actual).isEqualTo(expected);
     }
 
@@ -37,7 +42,7 @@ class BookDaoJdbcTest {
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     @Test
     void shouldFindAllBooks() {
-        List<Book> books = dao.findAll();
+        List<Book> books = repository.findAll();
         assertThat(books)
                 .hasSize(6)
                 .extracting("name")
@@ -47,34 +52,33 @@ class BookDaoJdbcTest {
     @DisplayName("добавлять книгу в базу данных")
     @Test
     void shouldAddBook() {
-        Book expected = new Book(7, "testBook7", 2, 3);
-        int result = dao.save(expected);
-        assertThat(result).isEqualTo(1);
+        Author author = new Author(2, "testAuthor2");
+        Genre genre = new Genre(3, "testGenre3");
+        Book expected = new Book(7, "testBook7", author, genre, Collections.emptyList());
+        repository.save(expected);
 
-        Book actual = dao.findById(7);
+        Book actual = repository.findById(7).orElse(null);
         assertThat(actual).isEqualTo(expected);
     }
 
     @DisplayName("обновлять книгу в базе данных")
     @Test
     void shouldUpdateBook() {
-        Book book = dao.findById(3);
+        Book book = repository.findById(3).orElse(null);
         String updatedName = "testBook3Updated";
         book.setName(updatedName);
-        int result = dao.update(book);
-        assertThat(result).isEqualTo(1);
+        repository.update(book);
 
-        Book actual = dao.findById(3);
+        Book actual = repository.findById(3).orElse(null);
         assertThat(actual).hasFieldOrPropertyWithValue("name", updatedName);
     }
 
     @DisplayName("удалять книгу по заданному id из базы данных")
     @Test
     void shouldDeleteBookById() {
-        int result = dao.deleteById(1);
-        assertThat(result).isEqualTo(1);
+        repository.deleteById(1);
 
-        List<Book> books = dao.findAll();
+        List<Book> books = repository.findAll();
         assertThat(books).extracting("id").doesNotContain(1);
     }
 
@@ -82,7 +86,7 @@ class BookDaoJdbcTest {
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     @Test
     void shouldReturnExpectedBooksCount() {
-        long actual = dao.count();
+        long actual = repository.count();
         assertThat(actual).isEqualTo(6L);
     }
 }

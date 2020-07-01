@@ -5,7 +5,7 @@
 
     <changeSet id="2020-07-01--0004-book-comments" author="skubatko">
         <createTable tableName="book_comments">
-            <column name="id" type="bigint" autoIncrement="false">
+            <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="content" type="varchar(1023)"/>
