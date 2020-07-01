@@ -11,15 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @DisplayName("Репозиторий для работы с жанрами должен")
 @DataJpaTest
 @Import(GenreRepositoryJpa.class)
-@Transactional(propagation = Propagation.NOT_SUPPORTED)
 class GenreRepositoryJpaTest {
 
     @Autowired
@@ -30,6 +27,15 @@ class GenreRepositoryJpaTest {
     void shouldFindExpectedGenreById() {
         Genre expected = new Genre(2, "testGenre2");
         Genre actual = repository.findById(2).orElse(null);
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @DisplayName("находить ожидаемый жанр по его имени")
+    @Test
+    void shouldFindExpectedGenreByName() {
+        String name = "testGenre2";
+        Genre expected = new Genre(2, name);
+        Genre actual = repository.findByName(name).orElse(null);
         assertThat(actual).isEqualTo(expected);
     }
 
@@ -46,10 +52,12 @@ class GenreRepositoryJpaTest {
     @DisplayName("добавлять жанр в базу данных")
     @Test
     void shouldAddGenre() {
-        Genre expected = new Genre(5, "testGenre5");
+        Genre expected = new Genre();
+        String name = "testGenre5";
+        expected.setName(name);
         repository.save(expected);
 
-        Genre actual = repository.findById(5).orElse(null);
+        Genre actual = repository.findByName(name).orElse(null);
         assertThat(actual).isEqualTo(expected);
     }
 
