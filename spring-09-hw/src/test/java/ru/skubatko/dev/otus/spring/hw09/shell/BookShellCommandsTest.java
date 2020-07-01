@@ -43,6 +43,7 @@ class BookShellCommandsTest {
 
     private static final String LOGIN_COMMAND = "l";
     private static final String FIND_BOOK_COMMAND = "fb";
+    private static final String FIND_BOOK_BY_NAME_COMMAND = "fbn";
     private static final String FIND_ALL_BOOKS_COMMAND = "fab";
     private static final String ADD_BOOK_COMMAND = "ab";
     private static final String UPDATE_BOOK_COMMAND = "ub";
@@ -69,10 +70,33 @@ class BookShellCommandsTest {
         given(authorService.findById(1L)).willReturn(author);
         given(genreService.findById(1L)).willReturn(genre);
 
-        String expected = String.format("Book: %s \"%s\" by %s", genre.getName(), book.getName(), author.getName());
+        String expected = String.format("Book: %s \"%s\" by %s has comment(s): ",
+                genre.getName(), book.getName(), author.getName());
 
         shell.evaluate(() -> LOGIN_COMMAND);
         String actual = (String) shell.evaluate(() -> FIND_BOOK_COMMAND + " 1");
+
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @DisplayName("возвращать ожидаемую книгу по её имени при выполнении команды fbn после логина пользователя")
+    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
+    public void shouldReturnBookByNameWhenUserAlreadyLoggedInAfterFindBookCommandEvaluated() {
+        Author author = new Author(1, "testAuthor");
+        Genre genre = new Genre(1, "testGenre");
+        String name = "testBook";
+        Book book = new Book(1, name, author, genre, Collections.emptyList());
+
+        given(bookService.findByName(name)).willReturn(book);
+        given(authorService.findById(1L)).willReturn(author);
+        given(genreService.findById(1L)).willReturn(genre);
+
+        String expected = String.format("Book: %s \"%s\" by %s has comment(s): ",
+                genre.getName(), book.getName(), author.getName());
+
+        shell.evaluate(() -> LOGIN_COMMAND);
+        String actual = (String) shell.evaluate(() -> FIND_BOOK_BY_NAME_COMMAND + StringUtils.SPACE + name);
 
         assertThat(actual).isEqualTo(expected);
     }
@@ -98,7 +122,8 @@ class BookShellCommandsTest {
                                 book.getGenre().getName(),
                                 "\"" + book.getName() + "\"",
                                 "by",
-                                book.getAuthor().getName()
+                                book.getAuthor().getName(),
+                                "has comment(s): "
                         ))
                         .collect(Collectors.joining("\n")));
 
@@ -152,7 +177,7 @@ class BookShellCommandsTest {
 
         given(bookService.findById(1)).willReturn(book);
 
-        String expected = String.format("Book %s deleted successfully", bookName);
+        String expected = "Book with id = 1 deleted successfully";
 
         shell.evaluate(() -> LOGIN_COMMAND);
         String actual = (String) shell.evaluate(() -> DELETE_BOOK_COMMAND + " 1 ");

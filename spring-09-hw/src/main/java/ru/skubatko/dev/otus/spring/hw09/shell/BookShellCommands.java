@@ -45,6 +45,21 @@ public class BookShellCommands {
                 book.getGenre().getName(), book.getName(), book.getAuthor().getName(), comments);
     }
 
+    @ShellMethod(value = "Find book by name", key = {"fbn", "findBookByName"})
+    @ShellMethodAvailability(value = "loggedIn")
+    public String findBookByName(@ShellOption(defaultValue = "unnamed") String name) {
+        Book book = bookService.findByName(name);
+        if (book == null) {
+            return String.format("Book with name = %s not found", name);
+        }
+
+        String comments = book.getBookComments().stream()
+                                  .map(BookComment::getContent)
+                                  .collect(Collectors.joining(", "));
+        return String.format("Book: %s \"%s\" by %s has comment(s): %s",
+                book.getGenre().getName(), book.getName(), book.getAuthor().getName(), comments);
+    }
+
     @ShellMethod(value = "Find all books in the library", key = {"fab", "findAllBooks"})
     @ShellMethodAvailability(value = "loggedIn")
     public String findAllBooks() {
@@ -102,7 +117,7 @@ public class BookShellCommands {
     public String deleteBookById(@ShellOption(defaultValue = "0") String idString) {
         long id = Long.parseLong(idString);
         bookService.deleteById(id);
-        return String.format("Book with id =%s deleted successfully", idString);
+        return String.format("Book with id = %s deleted successfully", idString);
     }
 
     @ShellMethod(value = "Get number of books in the library", key = {"cb", "countBooks"})
