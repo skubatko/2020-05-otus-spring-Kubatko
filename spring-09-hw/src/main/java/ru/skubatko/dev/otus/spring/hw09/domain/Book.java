@@ -9,6 +9,7 @@ import org.hibernate.annotations.FetchMode;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -40,7 +41,7 @@ public class Book {
     @JoinColumn(name = "genre_id")
     private Genre genre;
 
-    @OneToMany(targetEntity = BookComment.class, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(targetEntity = BookComment.class, cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "book_id")
     @Fetch(FetchMode.SUBSELECT)
     private List<BookComment> bookComments;
