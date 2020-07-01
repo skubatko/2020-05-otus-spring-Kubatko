@@ -2,8 +2,8 @@ package ru.skubatko.dev.otus.spring.hw09.jdbc;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import ru.skubatko.dev.otus.spring.hw09.dao.jdbc.GenreDaoJdbc;
 import ru.skubatko.dev.otus.spring.hw09.domain.Genre;
+import ru.skubatko.dev.otus.spring.hw09.repository.jpa.GenreRepositoryJpa;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,12 +18,12 @@ import java.util.List;
 
 @DisplayName("Jdbc dao для работы с жанрами должно")
 @JdbcTest
-@Import(GenreDaoJdbc.class)
+@Import(GenreRepositoryJpa.class)
 @Transactional(propagation = Propagation.NOT_SUPPORTED)
 class GenreDaoJdbcTest {
 
     @Autowired
-    private GenreDaoJdbc dao;
+    private GenreRepositoryJpa dao;
 
     @DisplayName("находить ожидаемый жанр по его id")
     @Test
@@ -47,7 +47,7 @@ class GenreDaoJdbcTest {
     @Test
     void shouldAddGenre() {
         Genre expected = new Genre(5, "testGenre5");
-        int result = dao.insert(expected);
+        int result = dao.save(expected);
         assertThat(result).isEqualTo(1);
 
         Genre actual = dao.findById(5);

@@ -1,12 +1,12 @@
 package ru.skubatko.dev.otus.spring.hw09.service;
 
-import ru.skubatko.dev.otus.spring.hw09.dao.AuthorDao;
 import ru.skubatko.dev.otus.spring.hw09.domain.Author;
+import ru.skubatko.dev.otus.spring.hw09.repository.AuthorRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -15,55 +15,41 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AuthorService implements CrudService<Author> {
 
-    private final AuthorDao dao;
+    private final AuthorRepository repository;
 
     @Override
+    @Transactional(readOnly = true)
     public Author findById(long id) {
-        try {
-            return dao.findById(id);
-        } catch (DataAccessException e) {
-            log.debug("findById() - verdict: db operation failed", e);
-            return null;
-        }
+        return repository.findById(id).orElse(null);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Author> findAll() {
-        return dao.findAll();
+        return repository.findAll();
     }
 
     @Override
-    public int insert(Author author) {
-        try {
-            return dao.insert(author);
-        } catch (DataAccessException e) {
-            log.debug("insert() - verdict: db operation failed", e);
-            return 0;
-        }
+    @Transactional
+    public void save(Author author) {
+        repository.save(author);
     }
 
     @Override
-    public int update(Author author) {
-        try {
-            return dao.update(author);
-        } catch (DataAccessException e) {
-            log.debug("update() - verdict: db operation failed", e);
-            return 0;
-        }
+    @Transactional
+    public void update(Author author) {
+        repository.update(author);
     }
 
     @Override
-    public int deleteById(long id) {
-        try {
-            return dao.deleteById(id);
-        } catch (DataAccessException e) {
-            log.debug("deleteById() - verdict: db operation failed", e);
-            return 0;
-        }
+    @Transactional
+    public void deleteById(long id) {
+        repository.deleteById(id);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public long count() {
-        return dao.count();
+        return repository.count();
     }
 }

@@ -41,7 +41,7 @@ class GenreServiceTest {
     @Test
     void shouldAddGenre() {
         Genre expected = new Genre(5, "testGenre5");
-        int result = service.insert(expected);
+        int result = service.save(expected);
         assertThat(result).isEqualTo(1);
 
         Genre actual = service.findById(5);

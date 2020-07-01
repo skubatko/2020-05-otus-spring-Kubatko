@@ -1,7 +1,7 @@
 package ru.skubatko.dev.otus.spring.hw09.service;
 
-import ru.skubatko.dev.otus.spring.hw09.domain.Book;
-import ru.skubatko.dev.otus.spring.hw09.repository.BookRepository;
+import ru.skubatko.dev.otus.spring.hw09.domain.BookComment;
+import ru.skubatko.dev.otus.spring.hw09.repository.BookCommentRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,32 +13,32 @@ import java.util.List;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class BookService implements CrudService<Book> {
+public class BookCommentService implements CrudService<BookComment> {
 
-    private final BookRepository repository;
+    private final BookCommentRepository repository;
 
     @Override
     @Transactional(readOnly = true)
-    public Book findById(long id) {
+    public BookComment findById(long id) {
         return repository.findById(id).orElse(null);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<Book> findAll() {
+    public List<BookComment> findAll() {
         return repository.findAll();
     }
 
     @Override
     @Transactional
-    public void save(Book book) {
-        repository.save(book);
+    public void save(BookComment bookComment) {
+        repository.save(bookComment);
     }
 
     @Override
     @Transactional
-    public void update(Book book) {
-        repository.update(book);
+    public void update(BookComment bookComment) {
+        repository.update(bookComment);
     }
 
     @Override

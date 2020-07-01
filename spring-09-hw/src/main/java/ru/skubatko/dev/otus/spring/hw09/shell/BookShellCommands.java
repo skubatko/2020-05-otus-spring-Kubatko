@@ -15,6 +15,7 @@ import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellMethodAvailability;
 import org.springframework.shell.standard.ShellOption;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -68,11 +69,12 @@ public class BookShellCommands {
                           @ShellOption(defaultValue = "unnamed") String name,
                           @ShellOption(defaultValue = "0") String authorId,
                           @ShellOption(defaultValue = "0") String genreId) {
-        int response = bookService.insert(
-                new Book(Long.parseLong(id), name, Long.parseLong(authorId), Long.parseLong(genreId)));
-        if (response != 1) {
-            return "Book cannot be added";
-        }
+        bookService.save(new Book(
+                Long.parseLong(id),
+                name,
+                Long.parseLong(authorId),
+                Long.parseLong(genreId),
+                Collections.emptyList()));
 
         return String.format("Book %s added successfully", name);
     }
@@ -84,11 +86,7 @@ public class BookShellCommands {
         long id = Long.parseLong(idString);
         Book book = bookService.findById(id);
         book.setName(name);
-        int response = bookService.update(book);
-        if (response != 1) {
-            return "Book cannot be updated";
-        }
-
+        bookService.update(book);
         return String.format("Book %s updated successfully", name);
     }
 
@@ -96,13 +94,8 @@ public class BookShellCommands {
     @ShellMethodAvailability(value = "loggedIn")
     public String deleteBookById(@ShellOption(defaultValue = "0") String idString) {
         long id = Long.parseLong(idString);
-        String name = bookService.findById(id).getName();
-        int response = bookService.deleteById(id);
-        if (response != 1) {
-            return "Book cannot be deleted";
-        }
-
-        return String.format("Book %s deleted successfully", name);
+        bookService.deleteById(id);
+        return String.format("Book with id =%s deleted successfully", idString);
     }
 
     @ShellMethod(value = "Get number of books in the library", key = {"cb", "countBooks"})

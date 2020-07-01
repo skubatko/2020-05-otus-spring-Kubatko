@@ -118,7 +118,7 @@ class BookShellCommandsTest {
     public void shouldAddBookWhenUserAlreadyLoggedInAfterAddBookCommandEvaluated() {
         String bookName = "testBook";
 
-        given(bookService.insert(any(Book.class))).willReturn(1);
+        given(bookService.save(any(Book.class))).willReturn(1);
 
         String expected = String.format("Book %s added successfully", bookName);
 

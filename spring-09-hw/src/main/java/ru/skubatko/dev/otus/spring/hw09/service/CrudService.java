@@ -8,11 +8,11 @@ public interface CrudService<T> {
 
     List<T> findAll();
 
-    int insert(T entity);
+    void save(T entity);
 
-    int update(T entity);
+    void update(T entity);
 
-    int deleteById(long id);
+    void deleteById(long id);
 
     long count();
 }

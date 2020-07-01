@@ -41,7 +41,7 @@ class AuthorServiceTest {
     @Test
     void shouldAddAuthor() {
         Author expected = new Author(4, "testAuthor4");
-        int result = service.insert(expected);
+        int result = service.save(expected);
         assertThat(result).isEqualTo(1);
 
         Author actual = service.findById(4);

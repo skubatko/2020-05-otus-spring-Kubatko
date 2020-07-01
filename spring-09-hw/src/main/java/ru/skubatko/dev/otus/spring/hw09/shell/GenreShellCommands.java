@@ -41,11 +41,7 @@ public class GenreShellCommands {
     @ShellMethodAvailability(value = "loggedIn")
     public String addGenre(@ShellOption(defaultValue = "0") String id,
                            @ShellOption(defaultValue = "unnamed") String name) {
-        int response = genreService.insert(new Genre(Long.parseLong(id), name));
-        if (response != 1) {
-            return "Genre cannot be added";
-        }
-
+        genreService.save(new Genre(Long.parseLong(id), name));
         return String.format("Genre %s added successfully", name);
     }
 
@@ -53,11 +49,7 @@ public class GenreShellCommands {
     @ShellMethodAvailability(value = "loggedIn")
     public String updateGenre(@ShellOption(defaultValue = "0") String id,
                               @ShellOption(defaultValue = "unnamed") String name) {
-        int response = genreService.update(new Genre(Long.parseLong(id), name));
-        if (response != 1) {
-            return "Genre cannot be updated";
-        }
-
+        genreService.update(new Genre(Long.parseLong(id), name));
         return String.format("Genre %s updated successfully", name);
     }
 
@@ -65,13 +57,9 @@ public class GenreShellCommands {
     @ShellMethodAvailability(value = "loggedIn")
     public String deleteGenreById(@ShellOption(defaultValue = "0") String idString) {
         long id = Long.parseLong(idString);
-        String name = genreService.findById(id).getName();
-        int response = genreService.deleteById(id);
-        if (response != 1) {
-            return "Genre cannot be deleted";
-        }
+        genreService.deleteById(id);
 
-        return String.format("Genre %s deleted successfully", name);
+        return String.format("Genre with id = %s deleted successfully", idString);
     }
 
     @ShellMethod(value = "Get number of genres in the library", key = {"cg", "countGenres"})

@@ -42,7 +42,7 @@ class BookServiceTest {
     @Test
     void shouldAddBook() {
         Book expected = new Book(7, "testBook7", 2, 3);
-        int result = service.insert(expected);
+        int result = service.save(expected);
         assertThat(result).isEqualTo(1);
 
         Book actual = service.findById(7);

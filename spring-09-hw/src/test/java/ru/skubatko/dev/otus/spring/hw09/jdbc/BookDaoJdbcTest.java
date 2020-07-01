@@ -2,8 +2,8 @@ package ru.skubatko.dev.otus.spring.hw09.jdbc;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import ru.skubatko.dev.otus.spring.hw09.dao.jdbc.BookDaoJdbc;
 import ru.skubatko.dev.otus.spring.hw09.domain.Book;
+import ru.skubatko.dev.otus.spring.hw09.repository.jpa.BookRepositoryJpa;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,12 +18,12 @@ import java.util.List;
 
 @DisplayName("Jdbc dao для работы с книгами должно")
 @JdbcTest
-@Import(BookDaoJdbc.class)
+@Import(BookRepositoryJpa.class)
 @Transactional(propagation = Propagation.NOT_SUPPORTED)
 class BookDaoJdbcTest {
 
     @Autowired
-    private BookDaoJdbc dao;
+    private BookRepositoryJpa dao;
 
     @DisplayName("находить ожидаемую книгу по её id")
     @Test
@@ -48,7 +48,7 @@ class BookDaoJdbcTest {
     @Test
     void shouldAddBook() {
         Book expected = new Book(7, "testBook7", 2, 3);
-        int result = dao.insert(expected);
+        int result = dao.save(expected);
         assertThat(result).isEqualTo(1);
 
         Book actual = dao.findById(7);

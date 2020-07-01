@@ -41,11 +41,7 @@ public class AuthorShellCommands {
     @ShellMethodAvailability(value = "loggedIn")
     public String addAuthor(@ShellOption(defaultValue = "0") String id,
                             @ShellOption(defaultValue = "unnamed") String name) {
-        int response = authorService.insert(new Author(Long.parseLong(id), name));
-        if (response != 1) {
-            return "Author cannot be added";
-        }
-
+        authorService.save(new Author(Long.parseLong(id), name));
         return String.format("Author %s added successfully", name);
     }
 
@@ -53,11 +49,7 @@ public class AuthorShellCommands {
     @ShellMethodAvailability(value = "loggedIn")
     public String updateAuthor(@ShellOption(defaultValue = "0") String id,
                                @ShellOption(defaultValue = "unnamed") String name) {
-        int response = authorService.update(new Author(Long.parseLong(id), name));
-        if (response != 1) {
-            return "Author cannot be updated";
-        }
-
+        authorService.update(new Author(Long.parseLong(id), name));
         return String.format("Author %s updated successfully", name);
     }
 
@@ -65,13 +57,8 @@ public class AuthorShellCommands {
     @ShellMethodAvailability(value = "loggedIn")
     public String deleteAuthorById(@ShellOption(defaultValue = "0") String idString) {
         long id = Long.parseLong(idString);
-        String name = authorService.findById(id).getName();
-        int response = authorService.deleteById(id);
-        if (response != 1) {
-            return "Author cannot be deleted";
-        }
-
-        return String.format("Author %s deleted successfully", name);
+          authorService.deleteById(id);
+        return String.format("Author with id = %s deleted successfully", idString);
     }
 
     @ShellMethod(value = "Get number of authors in the library", key = {"ca", "countAuthors"})

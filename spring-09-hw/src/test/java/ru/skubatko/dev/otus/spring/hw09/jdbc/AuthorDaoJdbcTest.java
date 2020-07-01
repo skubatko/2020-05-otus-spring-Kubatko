@@ -2,8 +2,8 @@ package ru.skubatko.dev.otus.spring.hw09.jdbc;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import ru.skubatko.dev.otus.spring.hw09.dao.jdbc.AuthorDaoJdbc;
 import ru.skubatko.dev.otus.spring.hw09.domain.Author;
+import ru.skubatko.dev.otus.spring.hw09.repository.jpa.AuthorRepositoryJpa;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,12 +18,12 @@ import java.util.List;
 
 @DisplayName("Jdbc dao для работы с авторами должно")
 @JdbcTest
-@Import(AuthorDaoJdbc.class)
+@Import(AuthorRepositoryJpa.class)
 @Transactional(propagation = Propagation.NOT_SUPPORTED)
 class AuthorDaoJdbcTest {
 
     @Autowired
-    private AuthorDaoJdbc dao;
+    private AuthorRepositoryJpa dao;
 
     @DisplayName("находить ожидаемого автора по его id")
     @Test
@@ -47,7 +47,7 @@ class AuthorDaoJdbcTest {
     @Test
     void shouldAddAuthor() {
         Author expected = new Author(4, "testAuthor4");
-        int result = dao.insert(expected);
+        int result = dao.save(expected);
         assertThat(result).isEqualTo(1);
 
         Author actual = dao.findById(4);
