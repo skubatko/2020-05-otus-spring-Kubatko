@@ -2,6 +2,7 @@ package ru.skubatko.dev.otus.spring.hw09.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import ru.skubatko.dev.otus.spring.hw09.domain.Book;
 import ru.skubatko.dev.otus.spring.hw09.domain.BookComment;
 import ru.skubatko.dev.otus.spring.hw09.repository.jpa.BookCommentRepositoryJpa;
 
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
 
@@ -22,20 +24,29 @@ class BookCommentRepositoryJpaTest {
     @Autowired
     private BookCommentRepositoryJpa repository;
 
+    @Autowired
+    private TestEntityManager em;
+
     @DisplayName("находить ожидаемый комментарий по его id")
     @Test
     void shouldFindExpectedBookCommentById() {
-        BookComment expected = new BookComment(2, "testBookComment2", 2);
+        Book book = em.find(Book.class, 2L);
+        BookComment expected = new BookComment(2, "testBookComment2", book);
+
         BookComment actual = repository.findById(2).orElse(null);
+
         assertThat(actual).isEqualTo(expected);
     }
 
     @DisplayName("находить ожидаемый комментарий по его имени")
     @Test
     void shouldFindExpectedBookCommentByName() {
+        Book book = em.find(Book.class, 2L);
         String content = "testBookComment2";
-        BookComment expected = new BookComment(2, content, 2);
+        BookComment expected = new BookComment(2, content, book);
+
         BookComment actual = repository.findByContent(content).orElse(null);
+
         assertThat(actual).isEqualTo(expected);
     }
 
@@ -58,7 +69,10 @@ class BookCommentRepositoryJpaTest {
     @DisplayName("добавлять комментарий в базу данных")
     @Test
     void shouldAddBookComment() {
-        BookComment expected = new BookComment(4, "testBookComment4", 4);
+        Book book = em.find(Book.class, 4L);
+        BookComment expected = new BookComment();
+        expected.setContent("testBookComment4");
+        expected.setBook(book);
         repository.save(expected);
 
         BookComment actual = repository.findById(4).orElse(null);

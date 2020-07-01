@@ -36,9 +36,12 @@ class BookRepositoryJpaTest {
         Author author = new Author(2, "testAuthor2");
         Genre genre = new Genre(3, "testGenre3");
         Book expected = new Book(2, "testBook2", author, genre, Collections.emptyList());
+
         Book actual = repository.findById(2).orElse(null);
+
         assertThat(actual).isEqualToIgnoringGivenFields(expected, "bookComments");
-        assertThat(actual.getBookComments()).hasSize(1).containsOnly(new BookComment(2, "testBookComment2", 2));
+        assertThat(actual.getBookComments()).hasSize(1);
+        assertThat(actual.getBookComments().get(0)).hasFieldOrPropertyWithValue("content", "testBookComment2");
     }
 
     @DisplayName("находить ожидаемую книгу по её имени")
@@ -50,7 +53,8 @@ class BookRepositoryJpaTest {
         Book expected = new Book(2, name, author, genre, Collections.emptyList());
         Book actual = repository.findByName(name).orElse(null);
         assertThat(actual).isEqualToIgnoringGivenFields(expected, "bookComments");
-        assertThat(actual.getBookComments()).hasSize(1).containsOnly(new BookComment(2, "testBookComment2", 2));
+        assertThat(actual.getBookComments()).hasSize(1);
+        assertThat(actual.getBookComments().get(0)).hasFieldOrPropertyWithValue("content", "testBookComment2");
     }
 
     @DisplayName("находить все книги")
@@ -67,16 +71,22 @@ class BookRepositoryJpaTest {
     @DisplayName("добавлять книгу в базу данных")
     @Test
     void shouldAddBook() {
-        Book expected = new Book();
-        String name = "testBook7";
-        expected.setName(name);
-        expected.setAuthor(em.find(Author.class, 2L));
-        expected.setGenre(em.find(Genre.class, 3L));
+        Book book = new Book();
 
-        repository.save(expected);
+        String name = "testBook7";
+        book.setName(name);
+
+        book.setAuthor(em.find(Author.class, 2L));
+        book.setGenre(em.find(Genre.class, 3L));
+
+        BookComment bookComment = new BookComment();
+        bookComment.setContent("testBookComment7");
+        book.setBookComments(Collections.singletonList(bookComment));
+
+        repository.save(book);
 
         Book actual = repository.findByName(name).orElse(null);
-        assertThat(actual).isEqualToIgnoringGivenFields(expected, "bookComments");
+        assertThat(actual).isEqualTo(book);
     }
 
     @DisplayName("обновлять книгу в базе данных")

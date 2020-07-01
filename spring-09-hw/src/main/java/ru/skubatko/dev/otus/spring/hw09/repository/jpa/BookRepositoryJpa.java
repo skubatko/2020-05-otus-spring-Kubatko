@@ -1,11 +1,13 @@
 package ru.skubatko.dev.otus.spring.hw09.repository.jpa;
 
 import ru.skubatko.dev.otus.spring.hw09.domain.Book;
+import ru.skubatko.dev.otus.spring.hw09.domain.BookComment;
 import ru.skubatko.dev.otus.spring.hw09.repository.BookRepository;
 
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
@@ -27,7 +29,11 @@ public class BookRepositoryJpa implements BookRepository {
     public Optional<Book> findByName(String name) {
         TypedQuery<Book> query = em.createQuery("select b from Book b where b.name = :name", Book.class);
         query.setParameter("name", name);
-        return Optional.ofNullable(query.getSingleResult());
+        try {
+            return Optional.of(query.getSingleResult());
+        } catch (NoResultException e) {
+            return Optional.empty();
+        }
     }
 
     @Override
@@ -38,19 +44,40 @@ public class BookRepositoryJpa implements BookRepository {
 
     @Override
     public Book save(Book book) {
-        if (book.getId() <= 0L) {
-            em.persist(book);
+        Optional<Book> dbBook = findByName(book.getName());
+        if (dbBook.isPresent()) {
+            update(book);
             return book;
         }
-        return em.merge(book);
+
+        book.getBookComments().forEach(comment -> comment.setBook(book));
+        em.persist(book);
+        return book;
     }
 
     @Override
     public void update(Book book) {
-        Optional<Book> dbBook = findById(book.getId());
-        if (dbBook.isPresent()) {
-            em.merge(book);
+        Optional<Book> dbBookOptional = findById(book.getId());
+        if (dbBookOptional.isEmpty()) {
+            return;
         }
+
+        Book dbBook = dbBookOptional.get();
+
+        dbBook.setAuthor(book.getAuthor());
+        dbBook.setGenre(book.getGenre());
+
+        List<BookComment> dbBookComments = dbBook.getBookComments();
+        dbBookComments.forEach(comment -> em.remove(comment));
+        dbBookComments.clear();
+
+        book.getBookComments().forEach(comment -> {
+            comment.setBook(dbBook);
+            dbBookComments.add(comment);
+            em.persist(comment);
+        });
+
+        em.merge(dbBook);
     }
 
     @Override

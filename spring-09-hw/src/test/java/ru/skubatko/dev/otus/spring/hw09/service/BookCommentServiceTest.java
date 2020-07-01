@@ -2,6 +2,7 @@ package ru.skubatko.dev.otus.spring.hw09.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import ru.skubatko.dev.otus.spring.hw09.domain.Book;
 import ru.skubatko.dev.otus.spring.hw09.domain.BookComment;
 
 import org.junit.jupiter.api.DisplayName;
@@ -18,29 +19,30 @@ import java.util.List;
 class BookCommentServiceTest {
 
     @Autowired
-    private BookCommentService service;
+    private BookCommentService bookCommentService;
+
+    @Autowired
+    private BookService bookService;
 
     @DisplayName("находить ожидаемый комментарий по его id")
     @Test
     void shouldFindExpectedBookCommentById() {
-        BookComment expected = new BookComment(2, "testBookComment2", 2);
-        BookComment actual = service.findById(2);
-        assertThat(actual).isEqualTo(expected);
+        BookComment actual = bookCommentService.findById(2);
+        assertThat(actual).hasFieldOrPropertyWithValue("content", "testBookComment2");
     }
 
     @DisplayName("находить ожидаемый комментарий по его содержанию")
     @Test
-    void shouldFindExpectedBookCommentByName() {
-        String name = "testBookComment2";
-        BookComment expected = new BookComment(2, name, 2);
-        BookComment actual = service.findByName(name);
-        assertThat(actual).isEqualTo(expected);
+    void shouldFindExpectedBookCommentByContent() {
+        String content = "testBookComment2";
+        BookComment actual = bookCommentService.findByName(content);
+        assertThat(actual).hasFieldOrPropertyWithValue("content", content);
     }
 
     @DisplayName("находить все комментарии")
     @Test
     void shouldFindAllBookComments() {
-        List<BookComment> bookComments = service.findAll();
+        List<BookComment> bookComments = bookCommentService.findAll();
         assertThat(bookComments)
                 .hasSize(6)
                 .extracting("content")
@@ -56,41 +58,43 @@ class BookCommentServiceTest {
     @DisplayName("добавлять комментарий")
     @Test
     void shouldAddBookComment() {
-        BookComment expected = new BookComment();
+        String bookName = "testBook2";
+        Book book = bookService.findByName(bookName);
+        BookComment bookComment = new BookComment();
         String content = "testBookCommentNew";
-        expected.setContent(content);
-        expected.setBookId(2L);
-        service.save(expected);
+        bookComment.setContent(content);
+        bookComment.setBook(book);
+        bookCommentService.save(bookComment);
 
-        BookComment actual = service.findByName(content);
-        assertThat(actual).isEqualTo(expected);
+        BookComment actual = bookCommentService.findByName(content);
+        assertThat(actual).isEqualTo(bookComment);
     }
 
     @DisplayName("обновлять комментарий")
     @Test
     void shouldUpdateBookComment() {
-        BookComment bookComment = service.findById(3);
+        BookComment bookComment = bookCommentService.findById(3);
         String updatedContent = "testBookComment3Updated";
         bookComment.setContent(updatedContent);
-        service.update(bookComment);
+        bookCommentService.update(bookComment);
 
-        BookComment actual = service.findById(3);
+        BookComment actual = bookCommentService.findById(3);
         assertThat(actual).hasFieldOrPropertyWithValue("content", updatedContent);
     }
 
     @DisplayName("удалять комментарий по заданному id")
     @Test
     void shouldDeleteBookCommentById() {
-        service.deleteById(1);
+        bookCommentService.deleteById(1);
 
-        List<BookComment> bookComments = service.findAll();
+        List<BookComment> bookComments = bookCommentService.findAll();
         assertThat(bookComments).extracting("id").doesNotContain(1);
     }
 
     @DisplayName("возвращать ожидаемое количество комментариев")
     @Test
     void shouldReturnExpectedBookCommentsCount() {
-        long actual = service.count();
+        long actual = bookCommentService.count();
         assertThat(actual).isEqualTo(6L);
     }
 }

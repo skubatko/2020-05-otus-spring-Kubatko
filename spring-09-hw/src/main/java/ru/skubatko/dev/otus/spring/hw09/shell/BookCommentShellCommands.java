@@ -45,15 +45,11 @@ public class BookCommentShellCommands {
     public String addBookComment(@ShellOption(defaultValue = "0") String id,
                                  @ShellOption(defaultValue = "default comment") String content,
                                  @ShellOption(defaultValue = "0") String bookId) {
-
         BookComment bookComment = new BookComment();
-        bookComment.setContent(content);
-        bookCommentService.save(bookComment);
-
         Book book = bookService.findById(Long.parseLong(bookId));
-        book.getBookComments().add(bookComment);
-        bookService.update(book);
-
+        bookComment.setContent(content);
+        bookComment.setBook(book);
+        bookCommentService.save(bookComment);
         return String.format("Book comment %s added successfully", content);
     }
 

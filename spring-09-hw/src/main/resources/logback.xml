@@ -37,11 +37,6 @@
         <appender-ref ref="FILE-ROLLING" />
     </logger>
 
-    <logger name="org.springframework.jdbc.core" level="INFO" additivity="false">
-        <appender-ref ref="CONSOLE" />
-        <appender-ref ref="FILE-ROLLING" />
-    </logger>
-
     <root level="INFO">
         <appender-ref ref="CONSOLE" />
     </root>
