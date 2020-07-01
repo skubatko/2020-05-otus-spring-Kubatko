@@ -23,7 +23,7 @@ class BookCommentServiceTest {
     @DisplayName("находить ожидаемый комментарий по его id")
     @Test
     void shouldFindExpectedBookCommentById() {
-        BookComment expected = new BookComment(2, "testBookComment2");
+        BookComment expected = new BookComment(2, "testBookComment2", 2);
         BookComment actual = service.findById(2);
         assertThat(actual).isEqualTo(expected);
     }
@@ -32,7 +32,7 @@ class BookCommentServiceTest {
     @Test
     void shouldFindExpectedBookCommentByName() {
         String name = "testBookComment2";
-        BookComment expected = new BookComment(2, name);
+        BookComment expected = new BookComment(2, name, 2);
         BookComment actual = service.findByName(name);
         assertThat(actual).isEqualTo(expected);
     }
@@ -59,6 +59,7 @@ class BookCommentServiceTest {
         BookComment expected = new BookComment();
         String content = "testBookCommentNew";
         expected.setContent(content);
+        expected.setBookId(2L);
         service.save(expected);
 
         BookComment actual = service.findByName(content);

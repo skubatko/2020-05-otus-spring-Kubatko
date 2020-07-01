@@ -24,4 +24,7 @@ public class BookComment {
 
     @Column(name = "content")
     private String content;
+
+    @Column(name = "book_id")
+    private long bookId;
 }
