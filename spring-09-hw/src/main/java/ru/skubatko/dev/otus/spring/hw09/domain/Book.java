@@ -17,6 +17,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -44,5 +45,5 @@ public class Book {
     @OneToMany(targetEntity = BookComment.class, cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "book_id")
     @Fetch(FetchMode.SUBSELECT)
-    private List<BookComment> bookComments;
+    private List<BookComment> bookComments = new ArrayList<>();
 }
