@@ -43,23 +43,34 @@ public class AuthorShellCommands {
         Author author = new Author();
         author.setName(name);
         authorService.save(author);
-        return String.format("Author %s added successfully", name);
+        return String.format("Author %s added", name);
     }
 
     @ShellMethod(value = "Update author to the library", key = {"ua", "updateAuthor"})
     @ShellMethodAvailability(value = "loggedIn")
-    public String updateAuthor(@ShellOption(defaultValue = "0") String id,
+    public String updateAuthor(@ShellOption(defaultValue = "0") String idString,
                                @ShellOption(defaultValue = "unnamed") String name) {
-        authorService.update(new Author(Long.parseLong(id), name));
-        return String.format("Author %s updated successfully", name);
+        long id = Long.parseLong(idString);
+        Author author = authorService.findById(id);
+        if (author == null) {
+            return String.format("Author with id = %s cannot be found", idString);
+        }
+
+        author.setName(name);
+        authorService.update(author);
+        return String.format("Author %s updated", name);
     }
 
     @ShellMethod(value = "Delete author by id", key = {"da", "deleteAuthor"})
     @ShellMethodAvailability(value = "loggedIn")
     public String deleteAuthorById(@ShellOption(defaultValue = "0") String idString) {
         long id = Long.parseLong(idString);
+        if (authorService.findById(id) == null) {
+            return String.format("Author with id = %s cannot be found", idString);
+        }
+
         authorService.deleteById(id);
-        return String.format("Author with id = %s deleted successfully", idString);
+        return String.format("Author with id = %s deleted", idString);
     }
 
     @ShellMethod(value = "Get number of authors in the library", key = {"ca", "countAuthors"})

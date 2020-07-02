@@ -42,33 +42,45 @@ public class BookCommentShellCommands {
 
     @ShellMethod(value = "Add book comment", key = {"abc", "addBookComment"})
     @ShellMethodAvailability(value = "loggedIn")
-    public String addBookComment(@ShellOption(defaultValue = "0") String id,
-                                 @ShellOption(defaultValue = "default comment") String content,
+    public String addBookComment(@ShellOption(defaultValue = "default comment") String content,
                                  @ShellOption(defaultValue = "0") String bookId) {
-        BookComment bookComment = new BookComment();
         Book book = bookService.findById(Long.parseLong(bookId));
+        if (book == null) {
+            return String.format("Book with id = %s not found", bookId);
+        }
+
+        BookComment bookComment = new BookComment();
         bookComment.setContent(content);
         bookComment.setBook(book);
         bookCommentService.save(bookComment);
-        return String.format("Book comment %s added successfully", content);
+        return String.format("Book comment %s added", content);
     }
 
     @ShellMethod(value = "Update bookComment to the library", key = {"ubc", "updateBookComment"})
     @ShellMethodAvailability(value = "loggedIn")
-    public String updateBookComment(@ShellOption(defaultValue = "0") String id,
+    public String updateBookComment(@ShellOption(defaultValue = "0") String idString,
                                     @ShellOption(defaultValue = "default comment") String content) {
-        BookComment bookComment = bookCommentService.findById(Long.parseLong(id));
+        long id = Long.parseLong(idString);
+        BookComment bookComment = bookCommentService.findById(id);
+        if (bookComment == null) {
+            return String.format("Book comment with id = %s cannot be found", idString);
+        }
+
         bookComment.setContent(content);
         bookCommentService.update(bookComment);
-        return String.format("Book comment with id = %s updated successfully", id);
+        return String.format("Book comment with id = %s updated", id);
     }
 
     @ShellMethod(value = "Delete bookComment by id", key = {"dbc", "deleteBookComment"})
     @ShellMethodAvailability(value = "loggedIn")
     public String deleteBookCommentById(@ShellOption(defaultValue = "0") String idString) {
         long id = Long.parseLong(idString);
+        if (bookCommentService.findById(id) == null) {
+            return String.format("Book comment with id = %s cannot be found", id);
+        }
+
         bookCommentService.deleteById(id);
-        return String.format("Book comment with id = %s deleted successfully", idString);
+        return String.format("Book comment with id = %s deleted", idString);
     }
 
     @ShellMethod(value = "Get number of bookComments in the library", key = {"cbc", "countBookComments"})

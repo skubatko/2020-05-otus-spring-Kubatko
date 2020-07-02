@@ -16,7 +16,6 @@ import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellMethodAvailability;
 import org.springframework.shell.standard.ShellOption;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -83,22 +82,23 @@ public class BookShellCommands {
 
     @ShellMethod(value = "Add book to the library", key = {"ab", "addBook"})
     @ShellMethodAvailability(value = "loggedIn")
-    public String addBook(@ShellOption(defaultValue = "0") String id,
-                          @ShellOption(defaultValue = "unnamed") String name,
-                          @ShellOption(defaultValue = "0") String authorId,
-                          @ShellOption(defaultValue = "0") String genreId) {
+    public String addBook(@ShellOption(defaultValue = "unnamed") String bookName,
+                          @ShellOption(defaultValue = "people") String authorName,
+                          @ShellOption(defaultValue = "general") String genreName) {
+        Author author = new Author();
+        author.setName(authorName);
 
-        Author author = authorService.findById(Long.parseLong(authorId));
-        Genre genre = genreService.findById(Long.parseLong(genreId));
+        Genre genre = new Genre();
+        genre.setName(genreName);
 
-        bookService.save(new Book(
-                Long.parseLong(id),
-                name,
-                author,
-                genre,
-                Collections.emptyList()));
+        Book book = new Book();
+        book.setName(bookName);
+        book.setAuthor(author);
+        book.setGenre(genre);
 
-        return String.format("Book %s added successfully", name);
+        bookService.save(book);
+
+        return String.format("Book %s added", bookName);
     }
 
     @ShellMethod(value = "Update book to the library", key = {"ub", "updateBook"})
@@ -107,15 +107,23 @@ public class BookShellCommands {
                              @ShellOption(defaultValue = "unnamed") String name) {
         long id = Long.parseLong(idString);
         Book book = bookService.findById(id);
+        if (book == null) {
+            return String.format("Book with id = %s cannot be found", idString);
+        }
+
         book.setName(name);
         bookService.update(book);
-        return String.format("Book %s updated successfully", name);
+        return String.format("Book %s updated", name);
     }
 
     @ShellMethod(value = "Delete book by id", key = {"db", "deleteBook"})
     @ShellMethodAvailability(value = "loggedIn")
     public String deleteBookById(@ShellOption(defaultValue = "0") String idString) {
         long id = Long.parseLong(idString);
+        if (bookService.findById(id) == null) {
+            return String.format("Book with id = %s cannot be found", idString);
+        }
+
         bookService.deleteById(id);
         return String.format("Book with id = %s deleted successfully", idString);
     }

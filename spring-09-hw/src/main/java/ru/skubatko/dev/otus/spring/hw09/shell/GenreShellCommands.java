@@ -39,27 +39,38 @@ public class GenreShellCommands {
 
     @ShellMethod(value = "Add genre to the library", key = {"ag", "addGenre"})
     @ShellMethodAvailability(value = "loggedIn")
-    public String addGenre(@ShellOption(defaultValue = "0") String id,
-                           @ShellOption(defaultValue = "unnamed") String name) {
-        genreService.save(new Genre(Long.parseLong(id), name));
-        return String.format("Genre %s added successfully", name);
+    public String addGenre(@ShellOption(defaultValue = "unnamed") String name) {
+        Genre genre = new Genre();
+        genre.setName(name);
+        genreService.save(genre);
+        return String.format("Genre %s added", name);
     }
 
     @ShellMethod(value = "Update genre to the library", key = {"ug", "updateGenre"})
     @ShellMethodAvailability(value = "loggedIn")
-    public String updateGenre(@ShellOption(defaultValue = "0") String id,
+    public String updateGenre(@ShellOption(defaultValue = "0") String idString,
                               @ShellOption(defaultValue = "unnamed") String name) {
-        genreService.update(new Genre(Long.parseLong(id), name));
-        return String.format("Genre %s updated successfully", name);
+        long id = Long.parseLong(idString);
+        Genre genre = genreService.findById(id);
+        if (genre == null) {
+            return String.format("Genre with id = %s cannot be found", idString);
+        }
+
+        genre.setName(name);
+        genreService.update(genre);
+        return String.format("Genre %s updated", name);
     }
 
     @ShellMethod(value = "Delete genre by id", key = {"dg", "deleteGenre"})
     @ShellMethodAvailability(value = "loggedIn")
     public String deleteGenreById(@ShellOption(defaultValue = "0") String idString) {
         long id = Long.parseLong(idString);
-        genreService.deleteById(id);
+        if (genreService.findById(id) == null) {
+            return String.format("Genre with id = %s cannot be found", idString);
+        }
 
-        return String.format("Genre with id = %s deleted successfully", idString);
+        genreService.deleteById(id);
+        return String.format("Genre with id = %s deleted", idString);
     }
 
     @ShellMethod(value = "Get number of genres in the library", key = {"cg", "countGenres"})
