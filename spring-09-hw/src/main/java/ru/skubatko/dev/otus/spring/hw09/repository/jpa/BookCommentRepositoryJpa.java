@@ -39,19 +39,28 @@ public class BookCommentRepositoryJpa implements BookCommentRepository {
 
     @Override
     public BookComment save(BookComment bookComment) {
-        if (bookComment.getId() <= 0L) {
+        Optional<BookComment> dbBookComment = findByContent(bookComment.getContent());
+        if (dbBookComment.isPresent()) {
+            update(bookComment);
+        } else if (bookComment.getBook() != null) {
             em.persist(bookComment);
-            return bookComment;
         }
-        return em.merge(bookComment);
+
+        return bookComment;
     }
 
     @Override
     public void update(BookComment bookComment) {
-        Optional<BookComment> dbBookComment = findById(bookComment.getId());
-        if (dbBookComment.isPresent()) {
-            em.merge(bookComment);
+        Optional<BookComment> dbBookCommentOptional = findById(bookComment.getId());
+        if (dbBookCommentOptional.isEmpty()) {
+            return;
         }
+
+        BookComment dbBookComment = dbBookCommentOptional.get();
+
+        dbBookComment.setContent(bookComment.getContent());
+
+        em.merge(dbBookComment);
     }
 
     @Override

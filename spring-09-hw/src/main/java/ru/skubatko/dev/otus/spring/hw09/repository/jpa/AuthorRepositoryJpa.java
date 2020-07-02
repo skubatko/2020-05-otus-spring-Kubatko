@@ -38,19 +38,28 @@ public class AuthorRepositoryJpa implements AuthorRepository {
 
     @Override
     public Author save(Author author) {
-        if (author.getId() <= 0L) {
+        Optional<Author> dbAuthor = findByName(author.getName());
+        if (dbAuthor.isPresent()) {
+            update(author);
+        } else {
             em.persist(author);
-            return author;
         }
-        return em.merge(author);
+
+        return author;
     }
 
     @Override
     public void update(Author author) {
-        Optional<Author> dbAuthor = findById(author.getId());
-        if (dbAuthor.isPresent()) {
-            em.merge(author);
+        Optional<Author> dbAuthorOptional = findById(author.getId());
+        if (dbAuthorOptional.isEmpty()) {
+            return;
         }
+
+        Author dbAuthor = dbAuthorOptional.get();
+
+        dbAuthor.setName(author.getName());
+
+        em.merge(dbAuthor);
     }
 
     @Override

@@ -38,19 +38,28 @@ public class GenreRepositoryJpa implements GenreRepository {
 
     @Override
     public Genre save(Genre genre) {
-        if (genre.getId() <= 0L) {
+        Optional<Genre> dbGenre = findByName(genre.getName());
+        if (dbGenre.isPresent()) {
+            update(genre);
+        } else {
             em.persist(genre);
-            return genre;
         }
-        return em.merge(genre);
+
+        return genre;
     }
 
     @Override
     public void update(Genre genre) {
-        Optional<Genre> dbGenre = findById(genre.getId());
-        if (dbGenre.isPresent()) {
-            em.merge(genre);
+        Optional<Genre> dbGenreOptional = findById(genre.getId());
+        if (dbGenreOptional.isEmpty()) {
+            return;
         }
+
+        Genre dbGenre = dbGenreOptional.get();
+
+        dbGenre.setName(genre.getName());
+
+        em.merge(dbGenre);
     }
 
     @Override
