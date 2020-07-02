@@ -59,13 +59,23 @@ class BookServiceTest {
     @DisplayName("добавлять книгу")
     @Test
     void shouldAddBook() {
-        Author author = new Author(2, "testAuthor2");
-        Genre genre = new Genre(3, "testGenre3");
-        Book expected = new Book(7, "testBook7", author, genre, Collections.emptyList());
-        service.save(expected);
+        Author author = new Author();
+        author.setName("newAuthor");
 
-        Book actual = service.findById(7);
-        assertThat(actual).isEqualTo(expected);
+        Genre genre = new Genre();
+        genre.setName("newGenre");
+
+        Book book = new Book();
+        String bookName = "testBook7";
+        book.setName(bookName);
+        book.setAuthor(author);
+        book.setGenre(genre);
+
+        service.save(book);
+
+        Book actual = service.findByName(bookName);
+
+        assertThat(actual).isEqualTo(book);
     }
 
     @DisplayName("обновлять книгу")

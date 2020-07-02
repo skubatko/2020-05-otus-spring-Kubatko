@@ -138,12 +138,16 @@ class BookShellCommandsTest {
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     public void shouldAddBookWhenUserAlreadyLoggedInAfterAddBookCommandEvaluated() {
         String bookName = "testBook";
+        String authorName = "testAuthor";
+        String genreName = "testGenre";
 
-        String expected = String.format("Book %s added successfully", bookName);
+        String expected = String.format("Book %s added", bookName);
 
         shell.evaluate(() -> LOGIN_COMMAND);
-        String actual = (String) shell.evaluate(() -> ADD_BOOK_COMMAND + " 1 " + bookName + " 1 1");
-
+        String actual = (String) shell.evaluate(() -> ADD_BOOK_COMMAND + StringUtils.SPACE
+                                                              + bookName + StringUtils.SPACE
+                                                              + authorName + StringUtils.SPACE
+                                                              + genreName);
         assertThat(actual).isEqualTo(expected);
     }
 
@@ -158,7 +162,7 @@ class BookShellCommandsTest {
 
         given(bookService.findById(1)).willReturn(book);
 
-        String expected = String.format("Book %s updated successfully", updatedBookName);
+        String expected = String.format("Book with id = %s updated", 1);
 
         shell.evaluate(() -> LOGIN_COMMAND);
         String actual = (String) shell.evaluate(() -> UPDATE_BOOK_COMMAND + " 1 " + updatedBookName);

@@ -71,12 +71,15 @@ class BookCommentRepositoryJpaTest {
     void shouldAddBookComment() {
         Book book = em.find(Book.class, 4L);
         BookComment expected = new BookComment();
-        expected.setContent("testBookComment4");
+        String content = "testBookComment4";
+        expected.setContent(content);
         expected.setBook(book);
         repository.save(expected);
 
         BookComment actual = repository.findById(4).orElse(null);
-        assertThat(actual).isEqualTo(expected);
+        assertThat(actual).isNotNull();
+        assertThat(actual.getContent()).isEqualTo(content);
+        assertThat(actual.getBook()).isEqualTo(book);
     }
 
     @DisplayName("обновлять комментарий в базе данных")

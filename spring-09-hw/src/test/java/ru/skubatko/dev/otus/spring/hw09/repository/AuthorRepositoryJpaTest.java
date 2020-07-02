@@ -52,11 +52,12 @@ class AuthorRepositoryJpaTest {
     @DisplayName("добавлять автора в базу данных")
     @Test
     void shouldAddAuthor() {
-        Author expected = new Author(4, "testAuthor4");
-        repository.save(expected);
+        Author author = new Author();
+        author.setName("testAuthor4");
+        repository.save(author);
 
         Author actual = repository.findById(4).orElse(null);
-        assertThat(actual).isEqualTo(expected);
+        assertThat(actual).isEqualTo(author);
     }
 
     @DisplayName("обновлять автора в базе данных")

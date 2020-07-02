@@ -49,11 +49,15 @@ class AuthorServiceTest {
     @DisplayName("добавлять автора")
     @Test
     void shouldAddAuthor() {
-        Author expected = new Author(4, "testAuthor4");
-        service.save(expected);
+        Author author = new Author();
+        String name = "testAuthor4";
+        author.setName(name);
 
-        Author actual = service.findById(4);
-        assertThat(actual).isEqualTo(expected);
+        service.save(author);
+
+        Author actual = service.findByName(name);
+
+        assertThat(actual).isEqualTo(author);
     }
 
     @DisplayName("обновлять автора")
