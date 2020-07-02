@@ -47,11 +47,11 @@ public class BookRepositoryJpa implements BookRepository {
         Optional<Book> dbBook = findByName(book.getName());
         if (dbBook.isPresent()) {
             update(book);
-            return book;
+        } else {
+            book.getBookComments().forEach(comment -> comment.setBook(book));
+            em.persist(book);
         }
 
-        book.getBookComments().forEach(comment -> comment.setBook(book));
-        em.persist(book);
         return book;
     }
 
