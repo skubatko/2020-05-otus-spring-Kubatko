@@ -58,7 +58,7 @@ public class AuthorShellCommands {
 
         author.setName(name);
         authorService.update(author);
-        return String.format("Author %s updated", name);
+        return String.format("Author with id = %s updated", idString);
     }
 
     @ShellMethod(value = "Delete author by id", key = {"da", "deleteAuthor"})

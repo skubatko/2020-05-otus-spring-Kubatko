@@ -58,7 +58,7 @@ public class GenreShellCommands {
 
         genre.setName(name);
         genreService.update(genre);
-        return String.format("Genre %s updated", name);
+        return String.format("Genre wih id = %s updated", idString);
     }
 
     @ShellMethod(value = "Delete genre by id", key = {"dg", "deleteGenre"})

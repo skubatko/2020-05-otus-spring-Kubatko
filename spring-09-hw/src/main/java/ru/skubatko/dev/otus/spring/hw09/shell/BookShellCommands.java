@@ -113,7 +113,7 @@ public class BookShellCommands {
 
         book.setName(name);
         bookService.update(book);
-        return String.format("Book %s updated", name);
+        return String.format("Book with id = %s updated", idString);
     }
 
     @ShellMethod(value = "Delete book by id", key = {"db", "deleteBook"})

@@ -68,7 +68,7 @@ public class BookCommentShellCommands {
 
         bookComment.setContent(content);
         bookCommentService.update(bookComment);
-        return String.format("Book comment with id = %s updated", id);
+        return String.format("Book comment with id = %s updated", idString);
     }
 
     @ShellMethod(value = "Delete bookComment by id", key = {"dbc", "deleteBookComment"})
