@@ -6,6 +6,7 @@ import ru.skubatko.dev.otus.spring.hw09.repository.BookCommentRepository;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
@@ -28,7 +29,11 @@ public class BookCommentRepositoryJpa implements BookCommentRepository {
         TypedQuery<BookComment> query =
                 em.createQuery("select bc from BookComment bc where bc.content = :content", BookComment.class);
         query.setParameter("content", content);
-        return Optional.ofNullable(query.getSingleResult());
+        try {
+            return Optional.of(query.getSingleResult());
+        } catch (NoResultException e) {
+            return Optional.empty();
+        }
     }
 
     @Override

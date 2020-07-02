@@ -6,6 +6,7 @@ import ru.skubatko.dev.otus.spring.hw09.repository.AuthorRepository;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
@@ -27,7 +28,11 @@ public class AuthorRepositoryJpa implements AuthorRepository {
     public Optional<Author> findByName(String name) {
         TypedQuery<Author> query = em.createQuery("select a from Author a where a.name = :name", Author.class);
         query.setParameter("name", name);
-        return Optional.ofNullable(query.getSingleResult());
+        try {
+            return Optional.of(query.getSingleResult());
+        } catch (NoResultException e) {
+            return Optional.empty();
+        }
     }
 
     @Override

@@ -39,9 +39,10 @@ public class AuthorShellCommands {
 
     @ShellMethod(value = "Add author to the library", key = {"aa", "addAuthor"})
     @ShellMethodAvailability(value = "loggedIn")
-    public String addAuthor(@ShellOption(defaultValue = "0") String id,
-                            @ShellOption(defaultValue = "unnamed") String name) {
-        authorService.save(new Author(Long.parseLong(id), name));
+    public String addAuthor(@ShellOption(defaultValue = "unnamed") String name) {
+        Author author = new Author();
+        author.setName(name);
+        authorService.save(author);
         return String.format("Author %s added successfully", name);
     }
 
@@ -57,7 +58,7 @@ public class AuthorShellCommands {
     @ShellMethodAvailability(value = "loggedIn")
     public String deleteAuthorById(@ShellOption(defaultValue = "0") String idString) {
         long id = Long.parseLong(idString);
-          authorService.deleteById(id);
+        authorService.deleteById(id);
         return String.format("Author with id = %s deleted successfully", idString);
     }
 

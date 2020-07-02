@@ -6,6 +6,7 @@ import ru.skubatko.dev.otus.spring.hw09.repository.GenreRepository;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
@@ -27,7 +28,11 @@ public class GenreRepositoryJpa implements GenreRepository {
     public Optional<Genre> findByName(String name) {
         TypedQuery<Genre> query = em.createQuery("select g from Genre g where g.name = :name", Genre.class);
         query.setParameter("name", name);
-        return Optional.ofNullable(query.getSingleResult());
+        try {
+            return Optional.of(query.getSingleResult());
+        } catch (NoResultException e) {
+            return Optional.empty();
+        }
     }
 
     @Override
