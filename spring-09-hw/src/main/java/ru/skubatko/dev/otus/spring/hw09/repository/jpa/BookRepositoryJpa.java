@@ -24,7 +24,7 @@ public class BookRepositoryJpa implements BookRepository {
 
     @Override
     public Book findByIdWithComments(long id) {
-        return em.createQuery("SELECT b FROM Book b JOIN FETCH b.bookComments WHERE b.id = :id", Book.class)
+        return em.createQuery("SELECT b FROM Book b LEFT JOIN FETCH b.bookComments WHERE b.id = :id", Book.class)
                        .setParameter("id", id)
                        .getSingleResult();
     }
@@ -38,7 +38,7 @@ public class BookRepositoryJpa implements BookRepository {
 
     @Override
     public Book findByNameWithComments(String name) {
-        return em.createQuery("SELECT b FROM Book b JOIN FETCH b.bookComments WHERE b.name = :name", Book.class)
+        return em.createQuery("SELECT b FROM Book b LEFT JOIN FETCH b.bookComments WHERE b.name = :name", Book.class)
                        .setParameter("name", name)
                        .getSingleResult();
     }
@@ -50,7 +50,7 @@ public class BookRepositoryJpa implements BookRepository {
 
     @Override
     public List<Book> findAllWithComments() {
-        return em.createQuery("SELECT b FROM Book b JOIN FETCH b.bookComments", Book.class).getResultList();
+        return em.createQuery("SELECT b FROM Book b LEFT JOIN FETCH b.bookComments", Book.class).getResultList();
     }
 
     @Override
