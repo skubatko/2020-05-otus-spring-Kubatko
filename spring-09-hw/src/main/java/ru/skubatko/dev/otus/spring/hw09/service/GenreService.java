@@ -25,7 +25,7 @@ public class GenreService implements CrudService<Genre> {
 
     @Transactional(readOnly = true)
     public Genre findByName(String name) {
-        return repository.findByName(name).orElse(null);
+        return repository.findByName(name);
     }
 
     @Override
@@ -43,7 +43,7 @@ public class GenreService implements CrudService<Genre> {
     @Override
     @Transactional
     public void update(Genre genre) {
-        repository.update(genre);
+        repository.save(genre);
     }
 
     @Override

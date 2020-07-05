@@ -1,15 +1,13 @@
 package ru.skubatko.dev.otus.spring.hw09.repository.jpa;
 
 import ru.skubatko.dev.otus.spring.hw09.domain.Author;
+import ru.skubatko.dev.otus.spring.hw09.exceptions.DataNotFoundRepositoryException;
 import ru.skubatko.dev.otus.spring.hw09.repository.AuthorRepository;
 
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,53 +23,30 @@ public class AuthorRepositoryJpa implements AuthorRepository {
     }
 
     @Override
-    public Optional<Author> findByName(String name) {
-        TypedQuery<Author> query = em.createQuery("select a from Author a where a.name = :name", Author.class);
-        query.setParameter("name", name);
-        try {
-            return Optional.of(query.getSingleResult());
-        } catch (NoResultException e) {
-            return Optional.empty();
-        }
+    public Author findByName(String name) {
+        return em.createQuery("select a from Author a where a.name = :name", Author.class)
+                       .setParameter("name", name)
+                       .getSingleResult();
     }
 
     @Override
     public List<Author> findAll() {
-        TypedQuery<Author> query = em.createQuery("select a from Author a", Author.class);
-        return query.getResultList();
+        return em.createQuery("select a from Author a", Author.class).getResultList();
     }
 
     @Override
     public Author save(Author author) {
-        Optional<Author> dbAuthor = findByName(author.getName());
-        if (dbAuthor.isPresent()) {
-            update(author);
-        } else {
+        if (author.getId() <= 0L) {
             em.persist(author);
+            return author;
+        } else {
+            return em.merge(author);
         }
-
-        return author;
-    }
-
-    @Override
-    public void update(Author author) {
-        Optional<Author> dbAuthorOptional = findById(author.getId());
-        if (dbAuthorOptional.isEmpty()) {
-            return;
-        }
-
-        Author dbAuthor = dbAuthorOptional.get();
-
-        dbAuthor.setName(author.getName());
-
-        em.merge(dbAuthor);
     }
 
     @Override
     public void deleteById(long id) {
-        Query query = em.createQuery("delete from Author a where a.id = :id");
-        query.setParameter("id", id);
-        query.executeUpdate();
+        em.remove(findById(id).orElseThrow(DataNotFoundRepositoryException::new));
     }
 
     @Override

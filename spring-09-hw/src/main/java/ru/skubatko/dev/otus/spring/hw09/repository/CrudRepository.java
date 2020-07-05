@@ -11,8 +11,6 @@ public interface CrudRepository<T> {
 
     T save(T entity);
 
-    void update(T entity);
-
     void deleteById(long id);
 
     long count();

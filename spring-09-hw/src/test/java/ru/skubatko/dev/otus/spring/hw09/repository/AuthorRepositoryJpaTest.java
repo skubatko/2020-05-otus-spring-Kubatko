@@ -35,7 +35,7 @@ class AuthorRepositoryJpaTest {
     void shouldFindExpectedAuthorByName() {
         String name = "testAuthor2";
         Author expected = new Author(2, name);
-        Author actual = repository.findByName(name).orElse(null);
+        Author actual = repository.findByName(name);
         assertThat(actual).isEqualTo(expected);
     }
 
@@ -63,10 +63,10 @@ class AuthorRepositoryJpaTest {
     @DisplayName("обновлять автора в базе данных")
     @Test
     void shouldUpdateAuthor() {
-        Author author = repository.findById(3).orElse(null);
+        Author author = repository.findByName("testAuthor3");
         String updatedName = "testAuthor3Updated";
         author.setName(updatedName);
-        repository.update(author);
+        repository.save(author);
 
         Author actual = repository.findById(3).orElse(null);
         assertThat(actual).hasFieldOrPropertyWithValue("name", updatedName);

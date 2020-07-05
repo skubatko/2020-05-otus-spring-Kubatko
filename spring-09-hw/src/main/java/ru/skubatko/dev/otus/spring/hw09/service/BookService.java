@@ -25,7 +25,7 @@ public class BookService implements CrudService<Book> {
 
     @Transactional(readOnly = true)
     public Book findByName(String name) {
-        return repository.findByName(name).orElse(null);
+        return repository.findByName(name);
     }
 
     @Override
@@ -43,7 +43,7 @@ public class BookService implements CrudService<Book> {
     @Override
     @Transactional
     public void update(Book book) {
-        repository.update(book);
+        repository.save(book);
     }
 
     @Override

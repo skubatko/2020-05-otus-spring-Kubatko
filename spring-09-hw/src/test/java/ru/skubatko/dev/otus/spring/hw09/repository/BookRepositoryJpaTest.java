@@ -51,7 +51,7 @@ class BookRepositoryJpaTest {
         Genre genre = new Genre(3, "testGenre3");
         String name = "testBook2";
         Book expected = new Book(2, name, author, genre, Collections.emptyList());
-        Book actual = repository.findByName(name).orElse(null);
+        Book actual = repository.findByName(name);
         assertThat(actual).isEqualToIgnoringGivenFields(expected, "bookComments");
         assertThat(actual.getBookComments()).hasSize(1);
         assertThat(actual.getBookComments().get(0)).hasFieldOrPropertyWithValue("content", "testBookComment2");
@@ -79,23 +79,19 @@ class BookRepositoryJpaTest {
         book.setAuthor(em.find(Author.class, 2L));
         book.setGenre(em.find(Genre.class, 3L));
 
-        BookComment bookComment = new BookComment();
-        bookComment.setContent("testBookComment7");
-        book.setBookComments(Collections.singletonList(bookComment));
-
         repository.save(book);
 
-        Book actual = repository.findByName(name).orElse(null);
+        Book actual = repository.findByName(name);
         assertThat(actual).isEqualTo(book);
     }
 
     @DisplayName("обновлять книгу в базе данных")
     @Test
     void shouldUpdateBook() {
-        Book book = repository.findById(3).orElse(null);
+        Book book = repository.findByName("testBook3");
         String updatedName = "testBook3Updated";
         book.setName(updatedName);
-        repository.update(book);
+        repository.save(book);
 
         Book actual = repository.findById(3).orElse(null);
         assertThat(actual).hasFieldOrPropertyWithValue("name", updatedName);
@@ -104,10 +100,13 @@ class BookRepositoryJpaTest {
     @DisplayName("удалять книгу по заданному id из базы данных")
     @Test
     void shouldDeleteBookById() {
-        repository.deleteById(1);
+        repository.deleteById(1L);
 
         List<Book> books = repository.findAll();
-        assertThat(books).extracting("id").doesNotContain(1);
+        assertThat(books).extracting("id").doesNotContain(1L);
+        assertThat(em.find(BookComment.class, 1L)).isNull();
+        assertThat(em.find(BookComment.class, 2L)).isNull();
+        assertThat(em.find(BookComment.class, 3L)).isNull();
     }
 
     @DisplayName("возвращать ожидаемое количество книг в базе данных")

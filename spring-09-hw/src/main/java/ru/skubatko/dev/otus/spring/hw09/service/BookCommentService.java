@@ -25,7 +25,7 @@ public class BookCommentService implements CrudService<BookComment> {
 
     @Transactional(readOnly = true)
     public BookComment findByName(String content) {
-        return repository.findByContent(content).orElse(null);
+        return repository.findByContent(content);
     }
 
     @Override
@@ -43,7 +43,7 @@ public class BookCommentService implements CrudService<BookComment> {
     @Override
     @Transactional
     public void update(BookComment bookComment) {
-        repository.update(bookComment);
+        repository.save(bookComment);
     }
 
     @Override

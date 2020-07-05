@@ -10,7 +10,7 @@
             </column>
             <column name="content" type="varchar(1023)"/>
             <column name="book_id" type="bigint">
-                <constraints nullable="false"
+                <constraints nullable="true"
                              foreignKeyName="fk_book_comments_books"
                              references="books(id)"
                              deleteCascade="true"/>

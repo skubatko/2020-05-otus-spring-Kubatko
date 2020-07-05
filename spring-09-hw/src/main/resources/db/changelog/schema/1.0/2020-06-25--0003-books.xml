@@ -10,13 +10,13 @@
             </column>
             <column name="name" type="varchar(255)"/>
             <column name="author_id" type="bigint">
-                <constraints nullable="false"
+                <constraints nullable="true"
                              foreignKeyName="fk_books_authors"
                              references="authors(id)"
                              deleteCascade="true"/>
             </column>
             <column name="genre_id" type="bigint">
-                <constraints nullable="false"
+                <constraints nullable="true"
                              foreignKeyName="fk_books_genres"
                              references="genres(id)"
                              deleteCascade="true"/>

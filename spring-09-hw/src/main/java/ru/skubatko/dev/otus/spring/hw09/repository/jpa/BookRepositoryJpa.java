@@ -1,16 +1,13 @@
 package ru.skubatko.dev.otus.spring.hw09.repository.jpa;
 
 import ru.skubatko.dev.otus.spring.hw09.domain.Book;
-import ru.skubatko.dev.otus.spring.hw09.domain.BookComment;
+import ru.skubatko.dev.otus.spring.hw09.exceptions.DataNotFoundRepositoryException;
 import ru.skubatko.dev.otus.spring.hw09.repository.BookRepository;
 
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,65 +23,30 @@ public class BookRepositoryJpa implements BookRepository {
     }
 
     @Override
-    public Optional<Book> findByName(String name) {
-        TypedQuery<Book> query = em.createQuery("select b from Book b where b.name = :name", Book.class);
-        query.setParameter("name", name);
-        try {
-            return Optional.of(query.getSingleResult());
-        } catch (NoResultException e) {
-            return Optional.empty();
-        }
+    public Book findByName(String name) {
+        return em.createQuery("select b from Book b where b.name = :name", Book.class)
+                       .setParameter("name", name)
+                       .getSingleResult();
     }
 
     @Override
     public List<Book> findAll() {
-        TypedQuery<Book> query = em.createQuery("select b from Book b", Book.class);
-        return query.getResultList();
+        return em.createQuery("select b from Book b", Book.class).getResultList();
     }
 
     @Override
     public Book save(Book book) {
-        Optional<Book> dbBook = findByName(book.getName());
-        if (dbBook.isPresent()) {
-            update(book);
-        } else {
-            book.getBookComments().forEach(comment -> comment.setBook(book));
+        if (book.getId() <= 0L) {
             em.persist(book);
+            return book;
+        } else {
+            return em.merge(book);
         }
-
-        return book;
-    }
-
-    @Override
-    public void update(Book book) {
-        Optional<Book> dbBookOptional = findById(book.getId());
-        if (dbBookOptional.isEmpty()) {
-            return;
-        }
-
-        Book dbBook = dbBookOptional.get();
-
-        dbBook.setAuthor(book.getAuthor());
-        dbBook.setGenre(book.getGenre());
-
-        List<BookComment> dbBookComments = dbBook.getBookComments();
-        dbBookComments.forEach(comment -> em.remove(comment));
-        dbBookComments.clear();
-
-        book.getBookComments().forEach(comment -> {
-            comment.setBook(dbBook);
-            dbBookComments.add(comment);
-            em.persist(comment);
-        });
-
-        em.merge(dbBook);
     }
 
     @Override
     public void deleteById(long id) {
-        Query query = em.createQuery("delete from Book b where b.id = :id");
-        query.setParameter("id", id);
-        query.executeUpdate();
+        em.remove(findById(id).orElseThrow(DataNotFoundRepositoryException::new));
     }
 
     @Override

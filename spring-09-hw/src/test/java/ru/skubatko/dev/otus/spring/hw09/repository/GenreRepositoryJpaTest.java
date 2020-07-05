@@ -35,7 +35,7 @@ class GenreRepositoryJpaTest {
     void shouldFindExpectedGenreByName() {
         String name = "testGenre2";
         Genre expected = new Genre(2, name);
-        Genre actual = repository.findByName(name).orElse(null);
+        Genre actual = repository.findByName(name);
         assertThat(actual).isEqualTo(expected);
     }
 
@@ -57,17 +57,17 @@ class GenreRepositoryJpaTest {
         expected.setName(name);
         repository.save(expected);
 
-        Genre actual = repository.findByName(name).orElse(null);
+        Genre actual = repository.findByName(name);
         assertThat(actual).isEqualTo(expected);
     }
 
     @DisplayName("обновлять жанр в базе данных")
     @Test
     void shouldUpdateGenre() {
-        Genre initialGenre = repository.findById(3).orElse(null);
+        Genre initialGenre = repository.findByName("testGenre3");
         String updatedName = "testGenre3Updated";
         initialGenre.setName(updatedName);
-        repository.update(initialGenre);
+        repository.save(initialGenre);
 
         Genre updatedGenre = repository.findById(3).orElse(null);
         assertThat(updatedGenre).hasFieldOrPropertyWithValue("name", updatedName);

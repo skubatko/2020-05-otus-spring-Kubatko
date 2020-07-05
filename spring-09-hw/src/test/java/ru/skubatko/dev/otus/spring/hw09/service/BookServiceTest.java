@@ -93,10 +93,10 @@ class BookServiceTest {
     @DisplayName("удалять книгу по заданному id")
     @Test
     void shouldDeleteBookById() {
-        service.deleteById(1);
+        service.deleteById(1L);
 
         List<Book> books = service.findAll();
-        assertThat(books).extracting("id").doesNotContain(1);
+        assertThat(books).extracting("id").doesNotContain(1L);
     }
 
     @DisplayName("возвращать ожидаемое количество книг")

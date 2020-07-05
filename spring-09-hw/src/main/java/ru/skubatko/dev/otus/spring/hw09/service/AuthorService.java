@@ -25,7 +25,7 @@ public class AuthorService implements CrudService<Author> {
 
     @Transactional(readOnly = true)
     public Author findByName(String name) {
-        return repository.findByName(name).orElse(null);
+        return repository.findByName(name);
     }
 
     @Override
@@ -43,7 +43,7 @@ public class AuthorService implements CrudService<Author> {
     @Override
     @Transactional
     public void update(Author author) {
-        repository.update(author);
+        repository.save(author);
     }
 
     @Override

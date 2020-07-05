@@ -1,15 +1,13 @@
 package ru.skubatko.dev.otus.spring.hw09.repository.jpa;
 
 import ru.skubatko.dev.otus.spring.hw09.domain.BookComment;
+import ru.skubatko.dev.otus.spring.hw09.exceptions.DataNotFoundRepositoryException;
 import ru.skubatko.dev.otus.spring.hw09.repository.BookCommentRepository;
 
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,54 +23,30 @@ public class BookCommentRepositoryJpa implements BookCommentRepository {
     }
 
     @Override
-    public Optional<BookComment> findByContent(String content) {
-        TypedQuery<BookComment> query =
-                em.createQuery("select bc from BookComment bc where bc.content = :content", BookComment.class);
-        query.setParameter("content", content);
-        try {
-            return Optional.of(query.getSingleResult());
-        } catch (NoResultException e) {
-            return Optional.empty();
-        }
+    public BookComment findByContent(String content) {
+        return em.createQuery("select bc from BookComment bc where bc.content = :content", BookComment.class)
+                       .setParameter("content", content)
+                       .getSingleResult();
     }
 
     @Override
     public List<BookComment> findAll() {
-        TypedQuery<BookComment> query = em.createQuery("select bc from BookComment bc", BookComment.class);
-        return query.getResultList();
+        return em.createQuery("select bc from BookComment bc", BookComment.class).getResultList();
     }
 
     @Override
     public BookComment save(BookComment bookComment) {
-        Optional<BookComment> dbBookComment = findByContent(bookComment.getContent());
-        if (dbBookComment.isPresent()) {
-            update(bookComment);
-        } else if (bookComment.getBook() != null) {
+        if (bookComment.getId() <= 0L) {
             em.persist(bookComment);
+            return bookComment;
+        } else {
+            return em.merge(bookComment);
         }
-
-        return bookComment;
-    }
-
-    @Override
-    public void update(BookComment bookComment) {
-        Optional<BookComment> dbBookCommentOptional = findById(bookComment.getId());
-        if (dbBookCommentOptional.isEmpty()) {
-            return;
-        }
-
-        BookComment dbBookComment = dbBookCommentOptional.get();
-
-        dbBookComment.setContent(bookComment.getContent());
-
-        em.merge(dbBookComment);
     }
 
     @Override
     public void deleteById(long id) {
-        Query query = em.createQuery("delete from BookComment bc where bc.id = :id");
-        query.setParameter("id", id);
-        query.executeUpdate();
+        em.remove(findById(id).orElseThrow(DataNotFoundRepositoryException::new));
     }
 
     @Override

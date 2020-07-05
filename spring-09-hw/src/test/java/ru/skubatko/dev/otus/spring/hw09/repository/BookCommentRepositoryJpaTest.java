@@ -45,7 +45,7 @@ class BookCommentRepositoryJpaTest {
         String content = "testBookComment2";
         BookComment expected = new BookComment(2, content, book);
 
-        BookComment actual = repository.findByContent(content).orElse(null);
+        BookComment actual = repository.findByContent(content);
 
         assertThat(actual).isEqualTo(expected);
     }
@@ -85,10 +85,10 @@ class BookCommentRepositoryJpaTest {
     @DisplayName("обновлять комментарий в базе данных")
     @Test
     void shouldUpdateBookComment() {
-        BookComment bookComment = repository.findById(3).orElse(null);
+        BookComment bookComment = repository.findByContent("testBookComment3");
         String updatedContent = "testBookComment3Updated";
         bookComment.setContent(updatedContent);
-        repository.update(bookComment);
+        repository.save(bookComment);
 
         BookComment actual = repository.findById(3).orElse(null);
         assertThat(actual).hasFieldOrPropertyWithValue("content", updatedContent);
