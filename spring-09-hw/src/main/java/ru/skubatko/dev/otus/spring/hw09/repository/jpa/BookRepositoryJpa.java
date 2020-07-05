@@ -23,15 +23,34 @@ public class BookRepositoryJpa implements BookRepository {
     }
 
     @Override
+    public Book findByIdWithComments(long id) {
+        return em.createQuery("SELECT b FROM Book b JOIN FETCH b.bookComments WHERE b.id = :id", Book.class)
+                       .setParameter("id", id)
+                       .getSingleResult();
+    }
+
+    @Override
     public Book findByName(String name) {
-        return em.createQuery("select b from Book b where b.name = :name", Book.class)
+        return em.createQuery("SELECT b FROM Book b WHERE b.name = :name", Book.class)
+                       .setParameter("name", name)
+                       .getSingleResult();
+    }
+
+    @Override
+    public Book findByNameWithComments(String name) {
+        return em.createQuery("SELECT b FROM Book b JOIN FETCH b.bookComments WHERE b.name = :name", Book.class)
                        .setParameter("name", name)
                        .getSingleResult();
     }
 
     @Override
     public List<Book> findAll() {
-        return em.createQuery("select b from Book b", Book.class).getResultList();
+        return em.createQuery("SELECT b FROM Book b", Book.class).getResultList();
+    }
+
+    @Override
+    public List<Book> findAllWithComments() {
+        return em.createQuery("SELECT b FROM Book b JOIN FETCH b.bookComments", Book.class).getResultList();
     }
 
     @Override
@@ -51,6 +70,6 @@ public class BookRepositoryJpa implements BookRepository {
 
     @Override
     public long count() {
-        return em.createQuery("select count(b) from Book b", Long.class).getSingleResult();
+        return em.createQuery("SELECT COUNT(b) FROM Book b", Long.class).getSingleResult();
     }
 }

@@ -24,14 +24,29 @@ public class BookService implements CrudService<Book> {
     }
 
     @Transactional(readOnly = true)
+    public Book findByIdWithComments(long id) {
+        return repository.findByIdWithComments(id);
+    }
+
+    @Transactional(readOnly = true)
     public Book findByName(String name) {
         return repository.findByName(name);
+    }
+
+    @Transactional(readOnly = true)
+    public Book findByNameWithComments(String name) {
+        return repository.findByNameWithComments(name);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<Book> findAll() {
         return repository.findAll();
+    }
+
+    @Transactional(readOnly = true)
+    public List<Book> findAllWithComments() {
+        return repository.findAllWithComments();
     }
 
     @Override

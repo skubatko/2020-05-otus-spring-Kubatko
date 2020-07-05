@@ -24,14 +24,14 @@ public class GenreRepositoryJpa implements GenreRepository {
 
     @Override
     public Genre findByName(String name) {
-        return em.createQuery("select g from Genre g where g.name = :name", Genre.class)
+        return em.createQuery("SELECT g FROM Genre g WHERE g.name = :name", Genre.class)
                        .setParameter("name", name)
                        .getSingleResult();
     }
 
     @Override
     public List<Genre> findAll() {
-        return em.createQuery("select g from Genre g", Genre.class).getResultList();
+        return em.createQuery("SELECT g FROM Genre g", Genre.class).getResultList();
     }
 
     @Override
@@ -51,6 +51,6 @@ public class GenreRepositoryJpa implements GenreRepository {
 
     @Override
     public long count() {
-        return em.createQuery("select count(g) from Genre g", Long.class).getSingleResult();
+        return em.createQuery("SELECT COUNT(g) FROM Genre g", Long.class).getSingleResult();
     }
 }

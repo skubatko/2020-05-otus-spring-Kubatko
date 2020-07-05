@@ -15,12 +15,15 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @DisplayName("Репозиторий для работы с книгами должен")
 @DataJpaTest
+@Transactional(propagation = Propagation.NOT_SUPPORTED)
 @Import(BookRepositoryJpa.class)
 class BookRepositoryJpaTest {
 
@@ -33,28 +36,62 @@ class BookRepositoryJpaTest {
     @DisplayName("находить ожидаемую книгу по её id")
     @Test
     void shouldFindExpectedBookById() {
+        String name = "testBook2";
         Author author = new Author(2, "testAuthor2");
         Genre genre = new Genre(3, "testGenre3");
-        Book expected = new Book(2, "testBook2", author, genre, Collections.emptyList());
 
         Book actual = repository.findById(2).orElse(null);
 
-        assertThat(actual).isEqualToIgnoringGivenFields(expected, "bookComments");
+        assertThat(actual).isNotNull()
+                .hasFieldOrPropertyWithValue("name", name)
+                .hasFieldOrPropertyWithValue("author", author)
+                .hasFieldOrPropertyWithValue("genre", genre);
+    }
+
+    @DisplayName("находить ожидаемую книгу с комментариями по её id")
+    @Test
+    void shouldFindExpectedBookByIdWithComments() {
+        Author author = new Author(2, "testAuthor2");
+        Genre genre = new Genre(3, "testGenre3");
+        String bookCommentContent = "testBookComment2";
+        Book book = new Book(2, "testBook2", author, genre, null);
+
+        Book actual = repository.findByIdWithComments(2);
+
+        assertThat(actual).isNotNull().isEqualToIgnoringGivenFields(book, "bookComments");
         assertThat(actual.getBookComments()).hasSize(1);
-        assertThat(actual.getBookComments().get(0)).hasFieldOrPropertyWithValue("content", "testBookComment2");
+        assertThat(actual.getBookComments().get(0).getContent()).isEqualTo(bookCommentContent);
     }
 
     @DisplayName("находить ожидаемую книгу по её имени")
     @Test
     void shouldFindExpectedBookByName() {
+        String name = "testBook2";
         Author author = new Author(2, "testAuthor2");
         Genre genre = new Genre(3, "testGenre3");
-        String name = "testBook2";
-        Book expected = new Book(2, name, author, genre, Collections.emptyList());
+
         Book actual = repository.findByName(name);
-        assertThat(actual).isEqualToIgnoringGivenFields(expected, "bookComments");
+
+        assertThat(actual).isNotNull()
+                .hasFieldOrPropertyWithValue("name", name)
+                .hasFieldOrPropertyWithValue("author", author)
+                .hasFieldOrPropertyWithValue("genre", genre);
+    }
+
+    @DisplayName("находить ожидаемую книгу с комментариями по её имени")
+    @Test
+    void shouldFindExpectedBookByNameWithComments() {
+        Author author = new Author(2, "testAuthor2");
+        Genre genre = new Genre(3, "testGenre3");
+        String bookCommentContent = "testBookComment2";
+        String name = "testBook2";
+        Book book = new Book(2, name, author, genre, null);
+
+        Book actual = repository.findByNameWithComments(name);
+
+        assertThat(actual).isNotNull().isEqualToIgnoringGivenFields(book, "bookComments");
         assertThat(actual.getBookComments()).hasSize(1);
-        assertThat(actual.getBookComments().get(0)).hasFieldOrPropertyWithValue("content", "testBookComment2");
+        assertThat(actual.getBookComments().get(0).getContent()).isEqualTo(bookCommentContent);
     }
 
     @DisplayName("находить все книги")
@@ -68,7 +105,27 @@ class BookRepositoryJpaTest {
                 .containsOnlyOnce("testBook1", "testBook2", "testBook3", "testBook4", "testBook5", "testBook6");
     }
 
+    @DisplayName("находить все книги с комментариями")
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
+    @Test
+    void shouldFindAllBooksWithComments() {
+        List<Book> books = repository.findAllWithComments();
+        assertThat(books)
+                .hasSize(6)
+                .extracting("name")
+                .containsOnlyOnce("testBook1", "testBook2", "testBook3", "testBook4", "testBook5", "testBook6");
+
+        List<BookComment> comments =
+                books.stream().flatMap(book -> book.getBookComments().stream()).collect(Collectors.toList());
+        assertThat(comments)
+                .hasSize(6)
+                .extracting("content")
+                .containsOnlyOnce("testBookComment1", "testBookComment2", "testBookComment3",
+                        "testBookComment4", "testBookComment5", "testBookComment6");
+    }
+
     @DisplayName("добавлять книгу в базу данных")
+    @Transactional
     @Test
     void shouldAddBook() {
         Book book = new Book();
@@ -86,6 +143,7 @@ class BookRepositoryJpaTest {
     }
 
     @DisplayName("обновлять книгу в базе данных")
+    @Transactional
     @Test
     void shouldUpdateBook() {
         Book book = repository.findByName("testBook3");
@@ -98,6 +156,7 @@ class BookRepositoryJpaTest {
     }
 
     @DisplayName("удалять книгу по заданному id из базы данных")
+    @Transactional
     @Test
     void shouldDeleteBookById() {
         repository.deleteById(1L);

@@ -24,14 +24,14 @@ public class AuthorRepositoryJpa implements AuthorRepository {
 
     @Override
     public Author findByName(String name) {
-        return em.createQuery("select a from Author a where a.name = :name", Author.class)
+        return em.createQuery("SELECT a FROM Author a WHERE a.name = :name", Author.class)
                        .setParameter("name", name)
                        .getSingleResult();
     }
 
     @Override
     public List<Author> findAll() {
-        return em.createQuery("select a from Author a", Author.class).getResultList();
+        return em.createQuery("SELECT a FROM Author a", Author.class).getResultList();
     }
 
     @Override
@@ -51,6 +51,6 @@ public class AuthorRepositoryJpa implements AuthorRepository {
 
     @Override
     public long count() {
-        return em.createQuery("select count(a) from Author a", Long.class).getSingleResult();
+        return em.createQuery("SELECT COUNT(a) FROM Author a", Long.class).getSingleResult();
     }
 }

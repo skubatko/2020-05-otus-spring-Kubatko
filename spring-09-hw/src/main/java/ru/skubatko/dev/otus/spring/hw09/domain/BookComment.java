@@ -3,6 +3,7 @@ package ru.skubatko.dev.otus.spring.hw09.domain;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,6 +18,7 @@ import javax.persistence.Table;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(exclude = "book")
 @Table(name = "book_comments")
 public class BookComment {
 
