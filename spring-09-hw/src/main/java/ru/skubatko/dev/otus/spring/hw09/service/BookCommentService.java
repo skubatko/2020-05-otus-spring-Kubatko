@@ -34,6 +34,11 @@ public class BookCommentService implements CrudService<BookComment> {
         return repository.findAll();
     }
 
+    @Transactional(readOnly = true)
+    public List<BookComment> findAllByBookId(long bookId) {
+        return repository.findAllByBookId(bookId);
+    }
+
     @Override
     @Transactional
     public void save(BookComment bookComment) {

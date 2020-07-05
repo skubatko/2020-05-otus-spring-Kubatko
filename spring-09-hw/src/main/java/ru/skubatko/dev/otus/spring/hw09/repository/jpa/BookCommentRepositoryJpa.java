@@ -35,6 +35,13 @@ public class BookCommentRepositoryJpa implements BookCommentRepository {
     }
 
     @Override
+    public List<BookComment> findAllByBookId(long bookId) {
+        return em.createQuery("select bc from BookComment bc where bc.book.id = :bookId", BookComment.class)
+                       .setParameter("bookId", bookId)
+                       .getResultList();
+    }
+
+    @Override
     public BookComment save(BookComment bookComment) {
         if (bookComment.getId() <= 0L) {
             em.persist(bookComment);

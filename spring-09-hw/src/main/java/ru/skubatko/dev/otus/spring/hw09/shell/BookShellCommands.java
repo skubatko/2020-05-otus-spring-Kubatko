@@ -5,6 +5,7 @@ import ru.skubatko.dev.otus.spring.hw09.domain.Book;
 import ru.skubatko.dev.otus.spring.hw09.domain.BookComment;
 import ru.skubatko.dev.otus.spring.hw09.domain.Genre;
 import ru.skubatko.dev.otus.spring.hw09.service.AuthorService;
+import ru.skubatko.dev.otus.spring.hw09.service.BookCommentService;
 import ru.skubatko.dev.otus.spring.hw09.service.BookService;
 import ru.skubatko.dev.otus.spring.hw09.service.GenreService;
 
@@ -27,17 +28,20 @@ public class BookShellCommands {
     private final BookService bookService;
     private final AuthorService authorService;
     private final GenreService genreService;
+    private final BookCommentService bookCommentService;
     private final LoginShellCommands loginShellCommands;
 
     @ShellMethod(value = "Find book by id", key = {"fb", "findBook"})
     @ShellMethodAvailability(value = "loggedIn")
-    public String findBookById(@ShellOption(defaultValue = "0") String id) {
-        Book book = bookService.findById(Long.parseLong(id));
+    public String findBookById(@ShellOption(defaultValue = "0") String stringId) {
+        long id = Long.parseLong(stringId);
+
+        Book book = bookService.findById(id);
         if (book == null) {
-            return String.format("Book with id = %s not found", id);
+            return String.format("Book with id = %s not found", stringId);
         }
 
-        String comments = book.getBookComments().stream()
+        String comments = bookCommentService.findAllByBookId(id).stream()
                                   .map(BookComment::getContent)
                                   .collect(Collectors.joining(", "));
         return String.format("Book: %s \"%s\" by %s has comment(s): %s",
@@ -52,7 +56,7 @@ public class BookShellCommands {
             return String.format("Book with name = %s not found", name);
         }
 
-        String comments = book.getBookComments().stream()
+        String comments = bookCommentService.findAllByBookId(book.getId()).stream()
                                   .map(BookComment::getContent)
                                   .collect(Collectors.joining(", "));
         return String.format("Book: %s \"%s\" by %s has comment(s): %s",
@@ -73,7 +77,7 @@ public class BookShellCommands {
                                 "by",
                                 book.getAuthor().getName(),
                                 "has comment(s):",
-                                book.getBookComments().stream()
+                                bookCommentService.findAllByBookId(book.getId()).stream()
                                         .map(BookComment::getContent)
                                         .collect(Collectors.joining(", "))
                         ))

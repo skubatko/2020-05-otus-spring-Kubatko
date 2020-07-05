@@ -66,6 +66,15 @@ class BookCommentRepositoryJpaTest {
                 "testBookComment6");
     }
 
+    @DisplayName("находить все комментарии по заданному id книги")
+    @Test
+    void shouldFindAllBookCommentsByBookId() {
+        List<BookComment> bookComments = repository.findAllByBookId(1L);
+        assertThat(bookComments)
+                .hasSize(1)
+                .extracting("content").containsOnly("testBookComment1");
+    }
+
     @DisplayName("добавлять комментарий в базу данных")
     @Test
     void shouldAddBookComment() {

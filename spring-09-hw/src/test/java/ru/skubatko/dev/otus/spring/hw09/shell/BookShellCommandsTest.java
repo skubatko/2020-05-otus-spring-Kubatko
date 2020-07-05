@@ -5,8 +5,10 @@ import static org.mockito.BDDMockito.given;
 
 import ru.skubatko.dev.otus.spring.hw09.domain.Author;
 import ru.skubatko.dev.otus.spring.hw09.domain.Book;
+import ru.skubatko.dev.otus.spring.hw09.domain.BookComment;
 import ru.skubatko.dev.otus.spring.hw09.domain.Genre;
 import ru.skubatko.dev.otus.spring.hw09.service.AuthorService;
+import ru.skubatko.dev.otus.spring.hw09.service.BookCommentService;
 import ru.skubatko.dev.otus.spring.hw09.service.BookService;
 import ru.skubatko.dev.otus.spring.hw09.service.GenreService;
 
@@ -37,6 +39,8 @@ class BookShellCommandsTest {
     private AuthorService authorService;
     @MockBean
     private GenreService genreService;
+    @MockBean
+    private BookCommentService bookCommentService;
 
     @Autowired
     private Shell shell;
@@ -65,13 +69,15 @@ class BookShellCommandsTest {
         Author author = new Author(1, "testAuthor");
         Genre genre = new Genre(1, "testGenre");
         Book book = new Book(1, "testBook", author, genre, Collections.emptyList());
+        BookComment bookComment = new BookComment(1L, "testBookComment1", book);
 
         given(bookService.findById(1L)).willReturn(book);
         given(authorService.findById(1L)).willReturn(author);
         given(genreService.findById(1L)).willReturn(genre);
+        given(bookCommentService.findAllByBookId(1L)).willReturn(Collections.singletonList(bookComment));
 
-        String expected = String.format("Book: %s \"%s\" by %s has comment(s): ",
-                genre.getName(), book.getName(), author.getName());
+        String expected = String.format("Book: %s \"%s\" by %s has comment(s): %s",
+                genre.getName(), book.getName(), author.getName(), bookComment.getContent());
 
         shell.evaluate(() -> LOGIN_COMMAND);
         String actual = (String) shell.evaluate(() -> FIND_BOOK_COMMAND + " 1");
@@ -87,13 +93,15 @@ class BookShellCommandsTest {
         Genre genre = new Genre(1, "testGenre");
         String name = "testBook";
         Book book = new Book(1, name, author, genre, Collections.emptyList());
+        BookComment bookComment = new BookComment(1L, "testBookComment1", book);
 
         given(bookService.findByName(name)).willReturn(book);
         given(authorService.findById(1L)).willReturn(author);
         given(genreService.findById(1L)).willReturn(genre);
+        given(bookCommentService.findAllByBookId(1L)).willReturn(Collections.singletonList(bookComment));
 
-        String expected = String.format("Book: %s \"%s\" by %s has comment(s): ",
-                genre.getName(), book.getName(), author.getName());
+        String expected = String.format("Book: %s \"%s\" by %s has comment(s): %s",
+                genre.getName(), book.getName(), author.getName(), bookComment.getContent());
 
         shell.evaluate(() -> LOGIN_COMMAND);
         String actual = (String) shell.evaluate(() -> FIND_BOOK_BY_NAME_COMMAND + StringUtils.SPACE + name);
