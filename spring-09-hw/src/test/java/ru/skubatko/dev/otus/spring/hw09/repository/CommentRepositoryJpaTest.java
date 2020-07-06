@@ -102,12 +102,4 @@ class CommentRepositoryJpaTest {
         List<Comment> comments = repository.findAll();
         assertThat(comments).extracting("id").doesNotContain(1);
     }
-
-    @DisplayName("возвращать ожидаемое количество комментариев в базе данных")
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
-    @Test
-    void shouldReturnExpectedBookCommentsCount() {
-        long actual = repository.count();
-        assertThat(actual).isEqualTo(6L);
-    }
 }

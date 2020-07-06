@@ -90,11 +90,4 @@ class CommentServiceTest {
         List<Comment> comments = commentService.findAll();
         assertThat(comments).extracting("id").doesNotContain(1);
     }
-
-    @DisplayName("возвращать ожидаемое количество комментариев")
-    @Test
-    void shouldReturnExpectedBookCommentsCount() {
-        long actual = commentService.count();
-        assertThat(actual).isEqualTo(6L);
-    }
 }

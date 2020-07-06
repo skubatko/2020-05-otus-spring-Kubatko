@@ -81,12 +81,4 @@ class GenreRepositoryJpaTest {
         List<Genre> genres = repository.findAll();
         assertThat(genres).extracting("id").doesNotContain(1);
     }
-
-    @DisplayName("возвращать ожидаемое количество жанров в базе данных")
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
-    @Test
-    void shouldReturnExpectedGenresCount() {
-        long actual = repository.count();
-        assertThat(actual).isEqualTo(4L);
-    }
 }

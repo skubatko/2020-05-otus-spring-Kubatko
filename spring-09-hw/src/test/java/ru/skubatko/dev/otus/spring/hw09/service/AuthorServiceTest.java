@@ -80,11 +80,4 @@ class AuthorServiceTest {
         List<Author> authors = service.findAll();
         assertThat(authors).extracting("id").doesNotContain(1);
     }
-
-    @DisplayName("возвращать ожидаемое количество авторов")
-    @Test
-    void shouldReturnExpectedAuthorsCount() {
-        long actual = service.count();
-        assertThat(actual).isEqualTo(3L);
-    }
 }

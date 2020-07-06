@@ -78,11 +78,4 @@ class GenreServiceTest {
         List<Genre> genres = service.findAll();
         assertThat(genres).extracting("id").doesNotContain(1);
     }
-
-    @DisplayName("возвращать ожидаемое количество жанров")
-    @Test
-    void shouldReturnExpectedGenresCount() {
-        long actual = service.count();
-        assertThat(actual).isEqualTo(4L);
-    }
 }

@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,7 +24,7 @@ class BookServiceTest {
     @Autowired
     private BookService service;
 
-    @DisplayName("находить ожидаемую книгу по её id")
+    @DisplayName("находить ожидаемую книгу с комментариями по её id")
     @Test
     void shouldFindExpectedBookById() {
         Author author = new Author(2, "testAuthor2");
@@ -34,34 +33,9 @@ class BookServiceTest {
 
         Book actual = service.findById(2);
 
-        assertThat(actual).isEqualToComparingOnlyGivenFields(expected, "id", "name", "author", "genre");
-    }
-
-    @DisplayName("находить ожидаемую книгу с комментариями по её id")
-    @Test
-    void shouldFindExpectedBookByIdWithComments() {
-        Author author = new Author(2, "testAuthor2");
-        Genre genre = new Genre(3, "testGenre3");
-        Book expected = new Book(2, "testBook2", author, genre, null);
-
-        Book actual = service.findByIdWithComments(2);
-
-        assertThat(actual).isEqualToIgnoringGivenFields(expected, "bookComments");
+        assertThat(actual).isEqualToIgnoringGivenFields(expected, "comments");
         assertThat(actual.getComments()).hasSize(1);
         assertThat(actual.getComments().get(0).getContent()).isEqualTo("testBookComment2");
-    }
-
-    @DisplayName("находить ожидаемую книгу по её имени")
-    @Test
-    void shouldFindExpectedBookByName() {
-        Author author = new Author(2, "testAuthor2");
-        Genre genre = new Genre(3, "testGenre3");
-        String name = "testBook2";
-        Book expected = new Book(2, name, author, genre, Collections.emptyList());
-
-        Book actual = service.findByName(name);
-
-        assertThat(actual).isEqualToComparingOnlyGivenFields(expected, "id", "name", "author", "genre");
     }
 
     @DisplayName("находить ожидаемую книгу с комментариями по её имени")
@@ -72,28 +46,17 @@ class BookServiceTest {
         String name = "testBook2";
         Book expected = new Book(2, name, author, genre, null);
 
-        Book actual = service.findByNameWithComments(name);
+        Book actual = service.findByName(name);
 
-        assertThat(actual).isEqualToIgnoringGivenFields(expected, "bookComments");
+        assertThat(actual).isEqualToIgnoringGivenFields(expected, "comments");
         assertThat(actual.getComments()).hasSize(1);
         assertThat(actual.getComments().get(0).getContent()).isEqualTo("testBookComment2");
-    }
-
-    @DisplayName("находить все книги")
-    @Test
-    void shouldFindAllBooks() {
-        List<Book> books = service.findAll();
-
-        assertThat(books)
-                .hasSize(6)
-                .extracting("name")
-                .containsOnlyOnce("testBook1", "testBook2", "testBook3", "testBook4", "testBook5", "testBook6");
     }
 
     @DisplayName("находить все книги с комментариями")
     @Test
     void shouldFindAllBooksWithComments() {
-        List<Book> books = service.findAllWithComments();
+        List<Book> books = service.findAll();
 
         assertThat(books)
                 .hasSize(6)
@@ -150,12 +113,5 @@ class BookServiceTest {
 
         List<Book> books = service.findAll();
         assertThat(books).extracting("id").doesNotContain(1L);
-    }
-
-    @DisplayName("возвращать ожидаемое количество книг")
-    @Test
-    void shouldReturnExpectedBooksCount() {
-        long actual = service.count();
-        assertThat(actual).isEqualTo(6L);
     }
 }

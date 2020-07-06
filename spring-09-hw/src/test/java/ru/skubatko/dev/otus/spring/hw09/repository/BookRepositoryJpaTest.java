@@ -15,15 +15,12 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @DisplayName("Репозиторий для работы с книгами должен")
 @DataJpaTest
-@Transactional(propagation = Propagation.NOT_SUPPORTED)
 @Import(BookRepositoryJpa.class)
 class BookRepositoryJpaTest {
 
@@ -48,21 +45,6 @@ class BookRepositoryJpaTest {
                 .hasFieldOrPropertyWithValue("genre", genre);
     }
 
-    @DisplayName("находить ожидаемую книгу с комментариями по её id")
-    @Test
-    void shouldFindExpectedBookByIdWithComments() {
-        Author author = new Author(2, "testAuthor2");
-        Genre genre = new Genre(3, "testGenre3");
-        String bookCommentContent = "testBookComment2";
-        Book book = new Book(2, "testBook2", author, genre, null);
-
-        Book actual = repository.findByIdWithComments(2);
-
-        assertThat(actual).isNotNull().isEqualToIgnoringGivenFields(book, "bookComments");
-        assertThat(actual.getComments()).hasSize(1);
-        assertThat(actual.getComments().get(0).getContent()).isEqualTo(bookCommentContent);
-    }
-
     @DisplayName("находить ожидаемую книгу по её имени")
     @Test
     void shouldFindExpectedBookByName() {
@@ -78,22 +60,6 @@ class BookRepositoryJpaTest {
                 .hasFieldOrPropertyWithValue("genre", genre);
     }
 
-    @DisplayName("находить ожидаемую книгу с комментариями по её имени")
-    @Test
-    void shouldFindExpectedBookByNameWithComments() {
-        Author author = new Author(2, "testAuthor2");
-        Genre genre = new Genre(3, "testGenre3");
-        String bookCommentContent = "testBookComment2";
-        String name = "testBook2";
-        Book book = new Book(2, name, author, genre, null);
-
-        Book actual = repository.findByNameWithComments(name);
-
-        assertThat(actual).isNotNull().isEqualToIgnoringGivenFields(book, "bookComments");
-        assertThat(actual.getComments()).hasSize(1);
-        assertThat(actual.getComments().get(0).getContent()).isEqualTo(bookCommentContent);
-    }
-
     @DisplayName("находить все книги")
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     @Test
@@ -103,25 +69,6 @@ class BookRepositoryJpaTest {
                 .hasSize(6)
                 .extracting("name")
                 .containsOnlyOnce("testBook1", "testBook2", "testBook3", "testBook4", "testBook5", "testBook6");
-    }
-
-    @DisplayName("находить все книги с комментариями")
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
-    @Test
-    void shouldFindAllBooksWithComments() {
-        List<Book> books = repository.findAllWithComments();
-        assertThat(books)
-                .hasSize(6)
-                .extracting("name")
-                .containsOnlyOnce("testBook1", "testBook2", "testBook3", "testBook4", "testBook5", "testBook6");
-
-        List<Comment> comments =
-                books.stream().flatMap(book -> book.getComments().stream()).collect(Collectors.toList());
-        assertThat(comments)
-                .hasSize(6)
-                .extracting("content")
-                .containsOnlyOnce("testBookComment1", "testBookComment2", "testBookComment3",
-                        "testBookComment4", "testBookComment5", "testBookComment6");
     }
 
     @DisplayName("добавлять книгу в базу данных")
@@ -166,13 +113,5 @@ class BookRepositoryJpaTest {
         assertThat(em.find(Comment.class, 1L)).isNull();
         assertThat(em.find(Comment.class, 2L)).isNull();
         assertThat(em.find(Comment.class, 3L)).isNull();
-    }
-
-    @DisplayName("возвращать ожидаемое количество книг в базе данных")
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
-    @Test
-    void shouldReturnExpectedBooksCount() {
-        long actual = repository.count();
-        assertThat(actual).isEqualTo(6L);
     }
 }

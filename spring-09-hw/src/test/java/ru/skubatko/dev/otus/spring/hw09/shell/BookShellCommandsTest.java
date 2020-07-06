@@ -69,7 +69,7 @@ class BookShellCommandsTest {
         Book book = new Book(1, "testBook", author, genre, Collections.singletonList(comment));
         comment.setBook(book);
 
-        given(bookService.findByIdWithComments(1L)).willReturn(book);
+        given(bookService.findById(1L)).willReturn(book);
         given(authorService.findById(1L)).willReturn(author);
         given(genreService.findById(1L)).willReturn(genre);
 
@@ -93,7 +93,7 @@ class BookShellCommandsTest {
         Book book = new Book(1, "testBook", author, genre, Collections.singletonList(comment));
         comment.setBook(book);
 
-        given(bookService.findByNameWithComments(name)).willReturn(book);
+        given(bookService.findByName(name)).willReturn(book);
         given(authorService.findById(1L)).willReturn(author);
         given(genreService.findById(1L)).willReturn(genre);
 
@@ -120,7 +120,7 @@ class BookShellCommandsTest {
         comment2.setBook(book2);
         List<Book> books = Arrays.asList(book1, book2);
 
-        given(bookService.findAllWithComments()).willReturn(books);
+        given(bookService.findAll()).willReturn(books);
 
         String expected = String.format("Available books: %n%s",
                 books.stream()
@@ -195,20 +195,6 @@ class BookShellCommandsTest {
 
         shell.evaluate(() -> LOGIN_COMMAND);
         String actual = (String) shell.evaluate(() -> DELETE_BOOK_COMMAND + " 1 ");
-
-        assertThat(actual).isEqualTo(expected);
-    }
-
-    @DisplayName("возвращать ожидаемое количество книг в библиотеке при выполнении команды cb после логина пользователя")
-    @Test
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
-    public void shouldCountBooksWhenUserAlreadyLoggedInAfterCountBooksCommandEvaluated() {
-        given(bookService.count()).willReturn(5L);
-
-        String expected = String.format("In the library now %d book(s)", bookService.count());
-
-        shell.evaluate(() -> LOGIN_COMMAND);
-        String actual = (String) shell.evaluate(() -> COUNT_BOOKS_COMMAND);
 
         assertThat(actual).isEqualTo(expected);
     }

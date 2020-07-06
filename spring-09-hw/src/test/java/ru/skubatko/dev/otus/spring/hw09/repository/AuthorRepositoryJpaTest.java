@@ -80,12 +80,4 @@ class AuthorRepositoryJpaTest {
         List<Author> authors = repository.findAll();
         assertThat(authors).extracting("id").doesNotContain(1);
     }
-
-    @DisplayName("возвращать ожидаемое количество авторов в базе данных")
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
-    @Test
-    void shouldReturnExpectedAuthorsCount() {
-        long actual = repository.count();
-        assertThat(actual).isEqualTo(3L);
-    }
 }
