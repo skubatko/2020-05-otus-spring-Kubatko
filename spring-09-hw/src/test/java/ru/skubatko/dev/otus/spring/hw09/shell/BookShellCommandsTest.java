@@ -5,7 +5,7 @@ import static org.mockito.BDDMockito.given;
 
 import ru.skubatko.dev.otus.spring.hw09.domain.Author;
 import ru.skubatko.dev.otus.spring.hw09.domain.Book;
-import ru.skubatko.dev.otus.spring.hw09.domain.BookComment;
+import ru.skubatko.dev.otus.spring.hw09.domain.Comment;
 import ru.skubatko.dev.otus.spring.hw09.domain.Genre;
 import ru.skubatko.dev.otus.spring.hw09.service.AuthorService;
 import ru.skubatko.dev.otus.spring.hw09.service.BookService;
@@ -65,16 +65,16 @@ class BookShellCommandsTest {
     public void shouldReturnBookWhenUserAlreadyLoggedInAfterFindBookCommandEvaluated() {
         Author author = new Author(1, "testAuthor");
         Genre genre = new Genre(1, "testGenre");
-        BookComment bookComment = new BookComment(1L, "testBookComment1", null);
-        Book book = new Book(1, "testBook", author, genre, Collections.singletonList(bookComment));
-        bookComment.setBook(book);
+        Comment comment = new Comment(1L, "testBookComment1", null);
+        Book book = new Book(1, "testBook", author, genre, Collections.singletonList(comment));
+        comment.setBook(book);
 
         given(bookService.findByIdWithComments(1L)).willReturn(book);
         given(authorService.findById(1L)).willReturn(author);
         given(genreService.findById(1L)).willReturn(genre);
 
         String expected = String.format("Book: %s \"%s\" by %s has comment(s): %s",
-                genre.getName(), book.getName(), author.getName(), bookComment.getContent());
+                genre.getName(), book.getName(), author.getName(), comment.getContent());
 
         shell.evaluate(() -> LOGIN_COMMAND);
         String actual = (String) shell.evaluate(() -> FIND_BOOK_COMMAND + " 1");
@@ -89,16 +89,16 @@ class BookShellCommandsTest {
         Author author = new Author(1, "testAuthor");
         Genre genre = new Genre(1, "testGenre");
         String name = "testBook";
-        BookComment bookComment = new BookComment(1L, "testBookComment1", null);
-        Book book = new Book(1, "testBook", author, genre, Collections.singletonList(bookComment));
-        bookComment.setBook(book);
+        Comment comment = new Comment(1L, "testBookComment1", null);
+        Book book = new Book(1, "testBook", author, genre, Collections.singletonList(comment));
+        comment.setBook(book);
 
         given(bookService.findByNameWithComments(name)).willReturn(book);
         given(authorService.findById(1L)).willReturn(author);
         given(genreService.findById(1L)).willReturn(genre);
 
         String expected = String.format("Book: %s \"%s\" by %s has comment(s): %s",
-                genre.getName(), book.getName(), author.getName(), bookComment.getContent());
+                genre.getName(), book.getName(), author.getName(), comment.getContent());
 
         shell.evaluate(() -> LOGIN_COMMAND);
         String actual = (String) shell.evaluate(() -> FIND_BOOK_BY_NAME_COMMAND + StringUtils.SPACE + name);
@@ -112,12 +112,12 @@ class BookShellCommandsTest {
     public void shouldReturnAllBooksWhenUserAlreadyLoggedInAfterFindAllBooksCommandEvaluated() {
         Author author = new Author(1, "testAuthor");
         Genre genre = new Genre(1, "testGenre");
-        BookComment bookComment1 = new BookComment(1L, "testBookComment1", null);
-        BookComment bookComment2 = new BookComment(2L, "testBookComment2", null);
-        Book book1 = new Book(1, "testBook1", author, genre, Collections.singletonList(bookComment1));
-        Book book2 = new Book(2, "testBook2", author, genre, Collections.singletonList(bookComment2));
-        bookComment1.setBook(book1);
-        bookComment2.setBook(book2);
+        Comment comment1 = new Comment(1L, "testBookComment1", null);
+        Comment comment2 = new Comment(2L, "testBookComment2", null);
+        Book book1 = new Book(1, "testBook1", author, genre, Collections.singletonList(comment1));
+        Book book2 = new Book(2, "testBook2", author, genre, Collections.singletonList(comment2));
+        comment1.setBook(book1);
+        comment2.setBook(book2);
         List<Book> books = Arrays.asList(book1, book2);
 
         given(bookService.findAllWithComments()).willReturn(books);
@@ -131,8 +131,8 @@ class BookShellCommandsTest {
                                 "by",
                                 book.getAuthor().getName(),
                                 "has comment(s):",
-                                book.getBookComments().stream()
-                                        .map(BookComment::getContent)
+                                book.getComments().stream()
+                                        .map(Comment::getContent)
                                         .collect(Collectors.joining(", "))
                         ))
                         .collect(Collectors.joining("\n")));

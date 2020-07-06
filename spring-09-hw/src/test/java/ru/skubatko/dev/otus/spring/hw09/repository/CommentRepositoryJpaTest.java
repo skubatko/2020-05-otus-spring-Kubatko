@@ -3,8 +3,8 @@ package ru.skubatko.dev.otus.spring.hw09.repository;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import ru.skubatko.dev.otus.spring.hw09.domain.Book;
-import ru.skubatko.dev.otus.spring.hw09.domain.BookComment;
-import ru.skubatko.dev.otus.spring.hw09.repository.jpa.BookCommentRepositoryJpa;
+import ru.skubatko.dev.otus.spring.hw09.domain.Comment;
+import ru.skubatko.dev.otus.spring.hw09.repository.jpa.CommentRepositoryJpa;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,11 +18,11 @@ import java.util.List;
 
 @DisplayName("Репозиторий для работы с комментариями книг должен")
 @DataJpaTest
-@Import(BookCommentRepositoryJpa.class)
-class BookCommentRepositoryJpaTest {
+@Import(CommentRepositoryJpa.class)
+class CommentRepositoryJpaTest {
 
     @Autowired
-    private BookCommentRepositoryJpa repository;
+    private CommentRepositoryJpa repository;
 
     @Autowired
     private TestEntityManager em;
@@ -31,9 +31,9 @@ class BookCommentRepositoryJpaTest {
     @Test
     void shouldFindExpectedBookCommentById() {
         Book book = em.find(Book.class, 2L);
-        BookComment expected = new BookComment(2, "testBookComment2", book);
+        Comment expected = new Comment(2, "testBookComment2", book);
 
-        BookComment actual = repository.findById(2).orElse(null);
+        Comment actual = repository.findById(2).orElse(null);
 
         assertThat(actual).isEqualTo(expected);
     }
@@ -43,9 +43,9 @@ class BookCommentRepositoryJpaTest {
     void shouldFindExpectedBookCommentByName() {
         Book book = em.find(Book.class, 2L);
         String content = "testBookComment2";
-        BookComment expected = new BookComment(2, content, book);
+        Comment expected = new Comment(2, content, book);
 
-        BookComment actual = repository.findByContent(content);
+        Comment actual = repository.findByContent(content);
 
         assertThat(actual).isEqualTo(expected);
     }
@@ -54,8 +54,8 @@ class BookCommentRepositoryJpaTest {
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     @Test
     void shouldFindAllBookComments() {
-        List<BookComment> bookComments = repository.findAll();
-        assertThat(bookComments)
+        List<Comment> comments = repository.findAll();
+        assertThat(comments)
                 .hasSize(6)
                 .extracting("content").containsOnlyOnce(
                 "testBookComment1",
@@ -70,13 +70,13 @@ class BookCommentRepositoryJpaTest {
     @Test
     void shouldAddBookComment() {
         Book book = em.find(Book.class, 4L);
-        BookComment expected = new BookComment();
+        Comment expected = new Comment();
         String content = "testBookComment4";
         expected.setContent(content);
         expected.setBook(book);
         repository.save(expected);
 
-        BookComment actual = repository.findById(4).orElse(null);
+        Comment actual = repository.findById(4).orElse(null);
         assertThat(actual).isNotNull();
         assertThat(actual.getContent()).isEqualTo(content);
         assertThat(actual.getBook()).isEqualTo(book);
@@ -85,12 +85,12 @@ class BookCommentRepositoryJpaTest {
     @DisplayName("обновлять комментарий в базе данных")
     @Test
     void shouldUpdateBookComment() {
-        BookComment bookComment = repository.findByContent("testBookComment3");
+        Comment comment = repository.findByContent("testBookComment3");
         String updatedContent = "testBookComment3Updated";
-        bookComment.setContent(updatedContent);
-        repository.save(bookComment);
+        comment.setContent(updatedContent);
+        repository.save(comment);
 
-        BookComment actual = repository.findById(3).orElse(null);
+        Comment actual = repository.findById(3).orElse(null);
         assertThat(actual).hasFieldOrPropertyWithValue("content", updatedContent);
     }
 
@@ -99,8 +99,8 @@ class BookCommentRepositoryJpaTest {
     void shouldDeleteBookCommentById() {
         repository.deleteById(1);
 
-        List<BookComment> bookComments = repository.findAll();
-        assertThat(bookComments).extracting("id").doesNotContain(1);
+        List<Comment> comments = repository.findAll();
+        assertThat(comments).extracting("id").doesNotContain(1);
     }
 
     @DisplayName("возвращать ожидаемое количество комментариев в базе данных")

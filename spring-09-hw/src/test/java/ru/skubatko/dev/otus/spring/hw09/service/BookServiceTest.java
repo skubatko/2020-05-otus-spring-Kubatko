@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import ru.skubatko.dev.otus.spring.hw09.domain.Author;
 import ru.skubatko.dev.otus.spring.hw09.domain.Book;
-import ru.skubatko.dev.otus.spring.hw09.domain.BookComment;
+import ru.skubatko.dev.otus.spring.hw09.domain.Comment;
 import ru.skubatko.dev.otus.spring.hw09.domain.Genre;
 
 import org.junit.jupiter.api.DisplayName;
@@ -47,8 +47,8 @@ class BookServiceTest {
         Book actual = service.findByIdWithComments(2);
 
         assertThat(actual).isEqualToIgnoringGivenFields(expected, "bookComments");
-        assertThat(actual.getBookComments()).hasSize(1);
-        assertThat(actual.getBookComments().get(0).getContent()).isEqualTo("testBookComment2");
+        assertThat(actual.getComments()).hasSize(1);
+        assertThat(actual.getComments().get(0).getContent()).isEqualTo("testBookComment2");
     }
 
     @DisplayName("находить ожидаемую книгу по её имени")
@@ -75,8 +75,8 @@ class BookServiceTest {
         Book actual = service.findByNameWithComments(name);
 
         assertThat(actual).isEqualToIgnoringGivenFields(expected, "bookComments");
-        assertThat(actual.getBookComments()).hasSize(1);
-        assertThat(actual.getBookComments().get(0).getContent()).isEqualTo("testBookComment2");
+        assertThat(actual.getComments()).hasSize(1);
+        assertThat(actual.getComments().get(0).getContent()).isEqualTo("testBookComment2");
     }
 
     @DisplayName("находить все книги")
@@ -100,8 +100,8 @@ class BookServiceTest {
                 .extracting("name")
                 .containsOnlyOnce("testBook1", "testBook2", "testBook3", "testBook4", "testBook5", "testBook6");
 
-        List<BookComment> comments =
-                books.stream().flatMap(book -> book.getBookComments().stream()).collect(Collectors.toList());
+        List<Comment> comments =
+                books.stream().flatMap(book -> book.getComments().stream()).collect(Collectors.toList());
         assertThat(comments)
                 .hasSize(6)
                 .extracting("content")

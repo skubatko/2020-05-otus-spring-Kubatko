@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import ru.skubatko.dev.otus.spring.hw09.domain.Author;
 import ru.skubatko.dev.otus.spring.hw09.domain.Book;
-import ru.skubatko.dev.otus.spring.hw09.domain.BookComment;
+import ru.skubatko.dev.otus.spring.hw09.domain.Comment;
 import ru.skubatko.dev.otus.spring.hw09.domain.Genre;
 import ru.skubatko.dev.otus.spring.hw09.repository.jpa.BookRepositoryJpa;
 
@@ -59,8 +59,8 @@ class BookRepositoryJpaTest {
         Book actual = repository.findByIdWithComments(2);
 
         assertThat(actual).isNotNull().isEqualToIgnoringGivenFields(book, "bookComments");
-        assertThat(actual.getBookComments()).hasSize(1);
-        assertThat(actual.getBookComments().get(0).getContent()).isEqualTo(bookCommentContent);
+        assertThat(actual.getComments()).hasSize(1);
+        assertThat(actual.getComments().get(0).getContent()).isEqualTo(bookCommentContent);
     }
 
     @DisplayName("находить ожидаемую книгу по её имени")
@@ -90,8 +90,8 @@ class BookRepositoryJpaTest {
         Book actual = repository.findByNameWithComments(name);
 
         assertThat(actual).isNotNull().isEqualToIgnoringGivenFields(book, "bookComments");
-        assertThat(actual.getBookComments()).hasSize(1);
-        assertThat(actual.getBookComments().get(0).getContent()).isEqualTo(bookCommentContent);
+        assertThat(actual.getComments()).hasSize(1);
+        assertThat(actual.getComments().get(0).getContent()).isEqualTo(bookCommentContent);
     }
 
     @DisplayName("находить все книги")
@@ -115,8 +115,8 @@ class BookRepositoryJpaTest {
                 .extracting("name")
                 .containsOnlyOnce("testBook1", "testBook2", "testBook3", "testBook4", "testBook5", "testBook6");
 
-        List<BookComment> comments =
-                books.stream().flatMap(book -> book.getBookComments().stream()).collect(Collectors.toList());
+        List<Comment> comments =
+                books.stream().flatMap(book -> book.getComments().stream()).collect(Collectors.toList());
         assertThat(comments)
                 .hasSize(6)
                 .extracting("content")
@@ -163,9 +163,9 @@ class BookRepositoryJpaTest {
 
         List<Book> books = repository.findAll();
         assertThat(books).extracting("id").doesNotContain(1L);
-        assertThat(em.find(BookComment.class, 1L)).isNull();
-        assertThat(em.find(BookComment.class, 2L)).isNull();
-        assertThat(em.find(BookComment.class, 3L)).isNull();
+        assertThat(em.find(Comment.class, 1L)).isNull();
+        assertThat(em.find(Comment.class, 2L)).isNull();
+        assertThat(em.find(Comment.class, 3L)).isNull();
     }
 
     @DisplayName("возвращать ожидаемое количество книг в базе данных")

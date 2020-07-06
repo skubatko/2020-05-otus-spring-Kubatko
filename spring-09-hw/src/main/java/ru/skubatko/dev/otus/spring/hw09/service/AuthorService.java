@@ -18,18 +18,15 @@ public class AuthorService implements CrudService<Author> {
     private final AuthorRepository repository;
 
     @Override
-    @Transactional(readOnly = true)
     public Author findById(long id) {
         return repository.findById(id).orElse(null);
     }
 
-    @Transactional(readOnly = true)
     public Author findByName(String name) {
         return repository.findByName(name);
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<Author> findAll() {
         return repository.findAll();
     }
@@ -50,11 +47,5 @@ public class AuthorService implements CrudService<Author> {
     @Transactional
     public void deleteById(long id) {
         repository.deleteById(id);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public long count() {
-        return repository.count();
     }
 }

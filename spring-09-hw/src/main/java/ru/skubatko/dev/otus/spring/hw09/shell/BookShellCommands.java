@@ -2,7 +2,7 @@ package ru.skubatko.dev.otus.spring.hw09.shell;
 
 import ru.skubatko.dev.otus.spring.hw09.domain.Author;
 import ru.skubatko.dev.otus.spring.hw09.domain.Book;
-import ru.skubatko.dev.otus.spring.hw09.domain.BookComment;
+import ru.skubatko.dev.otus.spring.hw09.domain.Comment;
 import ru.skubatko.dev.otus.spring.hw09.domain.Genre;
 import ru.skubatko.dev.otus.spring.hw09.service.AuthorService;
 import ru.skubatko.dev.otus.spring.hw09.service.BookService;
@@ -34,13 +34,13 @@ public class BookShellCommands {
     public String findBookById(@ShellOption(defaultValue = "0") String stringId) {
         long id = Long.parseLong(stringId);
 
-        Book book = bookService.findByIdWithComments(id);
+        Book book = bookService.findById(id);
         if (book == null) {
             return String.format("Book with id = %s not found", stringId);
         }
 
-        String comments = book.getBookComments().stream()
-                                  .map(BookComment::getContent)
+        String comments = book.getComments().stream()
+                                  .map(Comment::getContent)
                                   .collect(Collectors.joining(", "));
         return String.format("Book: %s \"%s\" by %s has comment(s): %s",
                 book.getGenre().getName(), book.getName(), book.getAuthor().getName(), comments);
@@ -49,13 +49,13 @@ public class BookShellCommands {
     @ShellMethod(value = "Find book by name", key = {"fbn", "findBookByName"})
     @ShellMethodAvailability(value = "loggedIn")
     public String findBookByName(@ShellOption(defaultValue = "unnamed") String name) {
-        Book book = bookService.findByNameWithComments(name);
+        Book book = bookService.findByName(name);
         if (book == null) {
             return String.format("Book with name = %s not found", name);
         }
 
-        String comments = book.getBookComments().stream()
-                                  .map(BookComment::getContent)
+        String comments = book.getComments().stream()
+                                  .map(Comment::getContent)
                                   .collect(Collectors.joining(", "));
         return String.format("Book: %s \"%s\" by %s has comment(s): %s",
                 book.getGenre().getName(), book.getName(), book.getAuthor().getName(), comments);
@@ -64,7 +64,7 @@ public class BookShellCommands {
     @ShellMethod(value = "Find all books in the library", key = {"fab", "findAllBooks"})
     @ShellMethodAvailability(value = "loggedIn")
     public String findAllBooks() {
-        List<Book> books = bookService.findAllWithComments();
+        List<Book> books = bookService.findAll();
 
         return String.format("Available books: %n%s",
                 books.stream()
@@ -75,8 +75,8 @@ public class BookShellCommands {
                                 "by",
                                 book.getAuthor().getName(),
                                 "has comment(s):",
-                                book.getBookComments().stream()
-                                        .map(BookComment::getContent)
+                                book.getComments().stream()
+                                        .map(Comment::getContent)
                                         .collect(Collectors.joining(", "))
                         ))
                         .collect(Collectors.joining("\n")));
@@ -128,12 +128,6 @@ public class BookShellCommands {
 
         bookService.deleteById(id);
         return String.format("Book with id = %s deleted successfully", idString);
-    }
-
-    @ShellMethod(value = "Get number of books in the library", key = {"cb", "countBooks"})
-    @ShellMethodAvailability(value = "loggedIn")
-    public String countBooks() {
-        return String.format("In the library now %d book(s)", bookService.count());
     }
 
     private Availability loggedIn() {

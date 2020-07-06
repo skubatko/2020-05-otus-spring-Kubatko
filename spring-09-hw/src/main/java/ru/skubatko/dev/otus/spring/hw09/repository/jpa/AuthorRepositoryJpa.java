@@ -48,9 +48,4 @@ public class AuthorRepositoryJpa implements AuthorRepository {
     public void deleteById(long id) {
         em.remove(findById(id).orElseThrow(DataNotFoundRepositoryException::new));
     }
-
-    @Override
-    public long count() {
-        return em.createQuery("SELECT COUNT(a) FROM Author a", Long.class).getSingleResult();
-    }
 }

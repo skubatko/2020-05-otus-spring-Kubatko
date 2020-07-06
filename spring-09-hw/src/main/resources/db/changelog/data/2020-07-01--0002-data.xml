@@ -3,10 +3,10 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
-    <changeSet id="2020-07-01--0002-data-book-comments" author="skubatko" runOnChange="true">
-        <loadUpdateData tableName="book_comments"
+    <changeSet id="2020-07-01--0002-data-comments" author="skubatko" runOnChange="true">
+        <loadUpdateData tableName="comments"
                         primaryKey="id"
-                        file="csv/2020-07-01--0002-data-book-comments.csv"
+                        file="csv/2020-07-01--0002-data-comments.csv"
                         relativeToChangelogFile="true"
                         quotchar="*"
                         separator=";"

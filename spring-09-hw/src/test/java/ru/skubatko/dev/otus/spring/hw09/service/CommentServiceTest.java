@@ -3,7 +3,7 @@ package ru.skubatko.dev.otus.spring.hw09.service;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import ru.skubatko.dev.otus.spring.hw09.domain.Book;
-import ru.skubatko.dev.otus.spring.hw09.domain.BookComment;
+import ru.skubatko.dev.otus.spring.hw09.domain.Comment;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,10 +16,10 @@ import java.util.List;
 @DisplayName("Сервис для работы с комментариями книг должен")
 @Transactional
 @SpringBootTest
-class BookCommentServiceTest {
+class CommentServiceTest {
 
     @Autowired
-    private BookCommentService bookCommentService;
+    private CommentService commentService;
 
     @Autowired
     private BookService bookService;
@@ -27,7 +27,7 @@ class BookCommentServiceTest {
     @DisplayName("находить ожидаемый комментарий по его id")
     @Test
     void shouldFindExpectedBookCommentById() {
-        BookComment actual = bookCommentService.findById(2);
+        Comment actual = commentService.findById(2);
         assertThat(actual).hasFieldOrPropertyWithValue("content", "testBookComment2");
     }
 
@@ -35,15 +35,15 @@ class BookCommentServiceTest {
     @Test
     void shouldFindExpectedBookCommentByContent() {
         String content = "testBookComment2";
-        BookComment actual = bookCommentService.findByName(content);
+        Comment actual = commentService.findByName(content);
         assertThat(actual).hasFieldOrPropertyWithValue("content", content);
     }
 
     @DisplayName("находить все комментарии")
     @Test
     void shouldFindAllBookComments() {
-        List<BookComment> bookComments = bookCommentService.findAll();
-        assertThat(bookComments)
+        List<Comment> comments = commentService.findAll();
+        assertThat(comments)
                 .hasSize(6)
                 .extracting("content")
                 .containsOnlyOnce(
@@ -60,41 +60,41 @@ class BookCommentServiceTest {
     void shouldAddBookComment() {
         String bookName = "testBook2";
         Book book = bookService.findByName(bookName);
-        BookComment bookComment = new BookComment();
+        Comment comment = new Comment();
         String content = "testBookCommentNew";
-        bookComment.setContent(content);
-        bookComment.setBook(book);
-        bookCommentService.save(bookComment);
+        comment.setContent(content);
+        comment.setBook(book);
+        commentService.save(comment);
 
-        BookComment actual = bookCommentService.findByName(content);
-        assertThat(actual).isEqualTo(bookComment);
+        Comment actual = commentService.findByName(content);
+        assertThat(actual).isEqualTo(comment);
     }
 
     @DisplayName("обновлять комментарий")
     @Test
     void shouldUpdateBookComment() {
-        BookComment bookComment = bookCommentService.findById(3);
+        Comment comment = commentService.findById(3);
         String updatedContent = "testBookComment3Updated";
-        bookComment.setContent(updatedContent);
-        bookCommentService.update(bookComment);
+        comment.setContent(updatedContent);
+        commentService.update(comment);
 
-        BookComment actual = bookCommentService.findById(3);
+        Comment actual = commentService.findById(3);
         assertThat(actual).hasFieldOrPropertyWithValue("content", updatedContent);
     }
 
     @DisplayName("удалять комментарий по заданному id")
     @Test
     void shouldDeleteBookCommentById() {
-        bookCommentService.deleteById(1);
+        commentService.deleteById(1);
 
-        List<BookComment> bookComments = bookCommentService.findAll();
-        assertThat(bookComments).extracting("id").doesNotContain(1);
+        List<Comment> comments = commentService.findAll();
+        assertThat(comments).extracting("id").doesNotContain(1);
     }
 
     @DisplayName("возвращать ожидаемое количество комментариев")
     @Test
     void shouldReturnExpectedBookCommentsCount() {
-        long actual = bookCommentService.count();
+        long actual = commentService.count();
         assertThat(actual).isEqualTo(6L);
     }
 }

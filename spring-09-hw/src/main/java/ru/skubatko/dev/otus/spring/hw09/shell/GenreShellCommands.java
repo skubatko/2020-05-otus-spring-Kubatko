@@ -73,12 +73,6 @@ public class GenreShellCommands {
         return String.format("Genre with id = %s deleted", idString);
     }
 
-    @ShellMethod(value = "Get number of genres in the library", key = {"cg", "countGenres"})
-    @ShellMethodAvailability(value = "loggedIn")
-    public String countGenres() {
-        return String.format("In the library now %d genre(s)", genreService.count());
-    }
-
     private Availability loggedIn() {
         return loginShellCommands.loggedIn();
     }

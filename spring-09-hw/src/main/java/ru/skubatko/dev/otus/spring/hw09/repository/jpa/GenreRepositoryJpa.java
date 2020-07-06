@@ -48,9 +48,4 @@ public class GenreRepositoryJpa implements GenreRepository {
     public void deleteById(long id) {
         em.remove(findById(id).orElseThrow(DataNotFoundRepositoryException::new));
     }
-
-    @Override
-    public long count() {
-        return em.createQuery("SELECT COUNT(g) FROM Genre g", Long.class).getSingleResult();
-    }
 }

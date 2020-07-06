@@ -1,7 +1,7 @@
 package ru.skubatko.dev.otus.spring.hw09.service;
 
-import ru.skubatko.dev.otus.spring.hw09.domain.Genre;
-import ru.skubatko.dev.otus.spring.hw09.repository.GenreRepository;
+import ru.skubatko.dev.otus.spring.hw09.domain.Comment;
+import ru.skubatko.dev.otus.spring.hw09.repository.CommentRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,34 +13,34 @@ import java.util.List;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class GenreService implements CrudService<Genre> {
+public class CommentService implements CrudService<Comment> {
 
-    private final GenreRepository repository;
+    private final CommentRepository repository;
 
     @Override
-    public Genre findById(long id) {
+    public Comment findById(long id) {
         return repository.findById(id).orElse(null);
     }
 
-    public Genre findByName(String name) {
-        return repository.findByName(name);
+    public Comment findByName(String content) {
+        return repository.findByContent(content);
     }
 
     @Override
-    public List<Genre> findAll() {
+    public List<Comment> findAll() {
         return repository.findAll();
     }
 
     @Override
     @Transactional
-    public void save(Genre genre) {
-        repository.save(genre);
+    public void save(Comment comment) {
+        repository.save(comment);
     }
 
     @Override
     @Transactional
-    public void update(Genre genre) {
-        repository.save(genre);
+    public void update(Comment comment) {
+        repository.save(comment);
     }
 
     @Override
