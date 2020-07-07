@@ -1,11 +1,11 @@
 package ru.skubatko.dev.otus.spring.hw11.service;
 
 import ru.skubatko.dev.otus.spring.hw11.domain.Book;
+import ru.skubatko.dev.otus.spring.hw11.domain.Comment;
 import ru.skubatko.dev.otus.spring.hw11.repository.BookRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,14 +28,14 @@ public class BookService implements CrudService<Book> {
         }
 
         Book book = optional.get();
-        book.getComments().forEach(comment -> Hibernate.initialize(comment.getContent()));
+        book.getComments().forEach(Comment::getContent);
         return book;
     }
 
     @Transactional(readOnly = true)
     public Book findByName(String name) {
         Book book = repository.findByName(name);
-        book.getComments().forEach(comment -> Hibernate.initialize(comment.getContent()));
+        book.getComments().forEach(Comment::getContent);
         return book;
     }
 
@@ -43,7 +43,7 @@ public class BookService implements CrudService<Book> {
     @Transactional(readOnly = true)
     public List<Book> findAll() {
         List<Book> books = repository.findAll();
-        books.forEach(book -> book.getComments().forEach(comment -> Hibernate.initialize(comment.getContent())));
+        books.forEach(book -> book.getComments().forEach(Comment::getContent));
         return books;
     }
 
