@@ -53,6 +53,7 @@ public class CommentShellCommands {
         comment.setContent(content);
         comment.setBook(book);
         commentService.save(comment);
+
         return String.format("Book comment %s added", content);
     }
 

@@ -5,6 +5,7 @@ import ru.skubatko.dev.otus.spring.hw11.repository.CommentRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,6 +35,7 @@ public class CommentService implements CrudService<Comment> {
     @Override
     @Transactional
     public void save(Comment comment) {
+        Hibernate.initialize(comment.getBook().getComments());
         repository.save(comment);
     }
 
