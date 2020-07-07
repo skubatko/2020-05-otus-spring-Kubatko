@@ -1,0 +1,44 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'org.springframework.boot' version '2.3.1.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+    id "io.freefair.lombok" version "5.1.0"
+}
+
+repositories {
+    jcenter()
+    mavenLocal()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.shell:spring-shell-starter:2.0.1.RELEASE'
+
+    implementation 'com.h2database:h2'
+    implementation 'org.liquibase:liquibase-core'
+
+    implementation 'org.apache.commons:commons-lang3'
+    implementation 'com.google.guava:guava:28.2-jre'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+    testImplementation 'org.mockito:mockito-junit-jupiter'
+}
+
+application {
+    mainClassName = 'ru.skubatko.dev.otus.spring.hw09.App'
+}
+
+group = 'ru.skubatko.dev'
+description = 'spring-09-hw'
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
+
+test {
+    useJUnitPlatform()
+}
