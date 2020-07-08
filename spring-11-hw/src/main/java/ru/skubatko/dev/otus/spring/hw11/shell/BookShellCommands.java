@@ -89,15 +89,16 @@ public class BookShellCommands {
                           @ShellOption(defaultValue = "general") String genreName) {
         Author author = new Author();
         author.setName(authorName);
+        authorService.save(author);
 
         Genre genre = new Genre();
         genre.setName(genreName);
+        genreService.save(genre);
 
         Book book = new Book();
         book.setName(bookName);
         book.setAuthor(author);
         book.setGenre(genre);
-
         bookService.save(book);
 
         return String.format("Book %s added", bookName);
