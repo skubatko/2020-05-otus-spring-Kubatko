@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 @DisplayName("Команды shell работы с книгами библиотеки должны")
 @Transactional
 @SpringBootTest
-class BookShellCommandsTest {
+class LibraryShellCommandsTest {
 
     @MockBean
     private BookService bookService;

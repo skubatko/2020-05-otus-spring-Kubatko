@@ -44,4 +44,10 @@ public class Book {
 
     @OneToMany(mappedBy = "book", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
+
+    public Book(String bookName, Author author, Genre genre) {
+        this.name = bookName;
+        this.author = author;
+        this.genre = genre;
+    }
 }

@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @DisplayName("Сервис для работы с книгами должен")
 @Transactional
 @SpringBootTest
-class BookServiceTest {
+class LibraryServiceTest {
 
     @Autowired
     private BookService service;
