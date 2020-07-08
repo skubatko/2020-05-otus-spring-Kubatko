@@ -1,15 +1,12 @@
 package ru.skubatko.dev.otus.spring.hw11.shell;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.given;
 
 import ru.skubatko.dev.otus.spring.hw11.domain.Author;
 import ru.skubatko.dev.otus.spring.hw11.domain.Book;
 import ru.skubatko.dev.otus.spring.hw11.domain.Comment;
 import ru.skubatko.dev.otus.spring.hw11.domain.Genre;
-import ru.skubatko.dev.otus.spring.hw11.service.AuthorService;
-import ru.skubatko.dev.otus.spring.hw11.service.BookService;
-import ru.skubatko.dev.otus.spring.hw11.service.GenreService;
+import ru.skubatko.dev.otus.spring.hw11.service.LibraryService;
 
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.DisplayName;
@@ -33,11 +30,7 @@ import java.util.stream.Collectors;
 class LibraryShellCommandsTest {
 
     @MockBean
-    private BookService bookService;
-    @MockBean
-    private AuthorService authorService;
-    @MockBean
-    private GenreService genreService;
+    private LibraryService service;
 
     @Autowired
     private Shell shell;
@@ -68,10 +61,10 @@ class LibraryShellCommandsTest {
         Book book = new Book(1, "testBook", author, genre, Collections.singletonList(comment));
         comment.setBook(book);
 
-        given(bookService.findById(1L)).willReturn(book);
-        given(authorService.findById(1L)).willReturn(author);
-        given(genreService.findById(1L)).willReturn(genre);
-
+//        given(bookService.findById(1L)).willReturn(book);
+//        given(authorService.findById(1L)).willReturn(author);
+//        given(genreService.findById(1L)).willReturn(genre);
+//
         String expected = String.format("Book: %s \"%s\" by %s has comment(s): %s",
                 genre.getName(), book.getName(), author.getName(), comment.getContent());
 
@@ -92,9 +85,9 @@ class LibraryShellCommandsTest {
         Book book = new Book(1, "testBook", author, genre, Collections.singletonList(comment));
         comment.setBook(book);
 
-        given(bookService.findByName(name)).willReturn(book);
-        given(authorService.findById(1L)).willReturn(author);
-        given(genreService.findById(1L)).willReturn(genre);
+//        given(bookService.findByName(name)).willReturn(book);
+//        given(authorService.findById(1L)).willReturn(author);
+//        given(genreService.findById(1L)).willReturn(genre);
 
         String expected = String.format("Book: %s \"%s\" by %s has comment(s): %s",
                 genre.getName(), book.getName(), author.getName(), comment.getContent());
@@ -119,7 +112,7 @@ class LibraryShellCommandsTest {
         comment2.setBook(book2);
         List<Book> books = Arrays.asList(book1, book2);
 
-        given(bookService.findAll()).willReturn(books);
+//        given(bookService.findAll()).willReturn(books);
 
         String expected = String.format("Available books: %n%s",
                 books.stream()
@@ -169,7 +162,7 @@ class LibraryShellCommandsTest {
         Book book = new Book(1, "testBook", author, genre, Collections.emptyList());
         String updatedBookName = "testBookUpdated";
 
-        given(bookService.findById(1)).willReturn(book);
+//        given(bookService.findById(1)).willReturn(book);
 
         String expected = String.format("Book with id = %s updated", 1);
 
@@ -188,7 +181,7 @@ class LibraryShellCommandsTest {
         String bookName = "testBook";
         Book book = new Book(1, bookName, author, genre, Collections.emptyList());
 
-        given(bookService.findById(1)).willReturn(book);
+//        given(bookService.findById(1)).willReturn(book);
 
         String expected = "Book with id = 1 deleted successfully";
 

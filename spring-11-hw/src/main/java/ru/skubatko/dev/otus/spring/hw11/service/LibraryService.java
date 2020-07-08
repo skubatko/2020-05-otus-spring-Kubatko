@@ -32,8 +32,8 @@ public class LibraryService {
     private final CommentRepository commentRepository;
 
     @Transactional(readOnly = true)
-    public BookDto findBookByName(String name) {
-        return BookDto.toDto(bookRepository.findByName(name));
+    public BookDto findBookByName(String bookName) {
+        return BookDto.toDto(bookRepository.findByName(bookName));
     }
 
     @Transactional(readOnly = true)
@@ -132,8 +132,9 @@ public class LibraryService {
     @Transactional
     public void deleteBookComment(String bookName, String commentContent) {
         Comment comment = getBookComment(bookName, commentContent);
-
-        commentRepository.delete(comment);
+        Book book = comment.getBook();
+        book.getComments().remove(comment);
+        bookRepository.save(book);
     }
 
     private Comment getBookComment(String bookName, String commentContent) {
@@ -142,6 +143,7 @@ public class LibraryService {
         if (comment == null) {
             throw new CommentNotFoundException();
         }
+
         return comment;
     }
 
@@ -150,6 +152,7 @@ public class LibraryService {
         if (book == null) {
             throw new BookNotFoundException();
         }
+
         return book;
     }
 }

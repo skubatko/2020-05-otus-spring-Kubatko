@@ -1,11 +1,10 @@
 package ru.skubatko.dev.otus.spring.hw11.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
-import ru.skubatko.dev.otus.spring.hw11.domain.Author;
-import ru.skubatko.dev.otus.spring.hw11.domain.Book;
-import ru.skubatko.dev.otus.spring.hw11.domain.Comment;
-import ru.skubatko.dev.otus.spring.hw11.domain.Genre;
+import ru.skubatko.dev.otus.spring.hw11.dto.BookDto;
+import ru.skubatko.dev.otus.spring.hw11.dto.CommentDto;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,105 +12,203 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
-@DisplayName("Сервис для работы с книгами должен")
+@DisplayName("Сервис для работы с библиотекой")
 @Transactional
 @SpringBootTest
 class LibraryServiceTest {
 
     @Autowired
-    private BookService service;
+    private LibraryService service;
 
-    @DisplayName("находить ожидаемую книгу с комментариями по её id")
+    @DisplayName("должен находить ожидаемую книгу по её имени")
     @Test
-    void shouldFindExpectedBookById() {
-        Author author = new Author(2, "testAuthor2");
-        Genre genre = new Genre(3, "testGenre3");
-        Book expected = new Book(2, "testBook2", author, genre, null);
+    public void shouldFindExpectedBookByName() {
+        String name = "testBook1";
 
-        Book actual = service.findById(2);
+        BookDto actual = service.findBookByName(name);
 
-        assertThat(actual).isEqualToIgnoringGivenFields(expected, "comments");
-        assertThat(actual.getComments()).hasSize(1);
-        assertThat(actual.getComments().get(0).getContent()).isEqualTo("testBookComment2");
+        assertAll(
+                () -> assertThat(actual).isNotNull().hasFieldOrPropertyWithValue("name", name),
+                () -> assertThat(actual.getAuthor()).isEqualTo("testAuthor1"),
+                () -> assertThat(actual.getGenre()).isEqualTo("testGenre1"),
+                () -> assertThat(actual.getComments())
+                              .hasSize(1)
+                              .element(0).hasFieldOrPropertyWithValue("content", "testBookComment1")
+        );
     }
 
-    @DisplayName("находить ожидаемую книгу с комментариями по её имени")
+    @DisplayName("должен находить все ожидаемые книги библиотеки")
     @Test
-    void shouldFindExpectedBookByNameWithComments() {
-        Author author = new Author(2, "testAuthor2");
-        Genre genre = new Genre(3, "testGenre3");
-        String name = "testBook2";
-        Book expected = new Book(2, name, author, genre, null);
+    public void shouldFindAllExpectedBooks() {
+        List<BookDto> expected = Arrays.asList(
+                new BookDto("testBook1", "testAuthor1", "testGenre1",
+                        Collections.singletonList(new CommentDto("testBookComment1"))),
+                new BookDto("testBook2", "testAuthor2", "testGenre3",
+                        Collections.singletonList(new CommentDto("testBookComment2"))),
+                new BookDto("testBook3", "testAuthor2", "testGenre4",
+                        Collections.singletonList(new CommentDto("testBookComment3"))),
+                new BookDto("testBook4", "testAuthor3", "testGenre3",
+                        Collections.singletonList(new CommentDto("testBookComment4"))),
+                new BookDto("testBook5", "testAuthor3", "testGenre4",
+                        Collections.singletonList(new CommentDto("testBookComment5"))),
+                new BookDto("testBook6", "testAuthor3", "testGenre2",
+                        Collections.singletonList(new CommentDto("testBookComment6")))
+        );
 
-        Book actual = service.findByName(name);
+        List<BookDto> actual = service.findAllBooks();
 
-        assertThat(actual).isEqualToIgnoringGivenFields(expected, "comments");
-        assertThat(actual.getComments()).hasSize(1);
-        assertThat(actual.getComments().get(0).getContent()).isEqualTo("testBookComment2");
+        assertThat(actual).hasSize(expected.size()).containsExactlyInAnyOrderElementsOf(expected);
     }
 
-    @DisplayName("находить все книги с комментариями")
+    @DisplayName("должен находить ожидаемые книги указанного автора")
     @Test
-    void shouldFindAllBooksWithComments() {
-        List<Book> books = service.findAll();
+    public void shouldFindExpectedBooksByAuthor() {
+        String author = "testAuthor2";
+        List<BookDto> expected = Arrays.asList(
+                new BookDto("testBook2", "testAuthor2", "testGenre3",
+                        Collections.singletonList(new CommentDto("testBookComment2"))),
+                new BookDto("testBook3", "testAuthor2", "testGenre4",
+                        Collections.singletonList(new CommentDto("testBookComment3")))
+        );
 
-        assertThat(books)
-                .hasSize(6)
-                .extracting("name")
-                .containsOnlyOnce("testBook1", "testBook2", "testBook3", "testBook4", "testBook5", "testBook6");
+        List<BookDto> actual = service.findBooksByAuthor(author);
 
-        List<Comment> comments =
-                books.stream().flatMap(book -> book.getComments().stream()).collect(Collectors.toList());
-        assertThat(comments)
-                .hasSize(6)
-                .extracting("content")
-                .containsOnlyOnce("testBookComment1", "testBookComment2", "testBookComment3",
-                        "testBookComment4", "testBookComment5", "testBookComment6");
+        assertThat(actual).hasSize(expected.size()).containsExactlyInAnyOrderElementsOf(expected);
     }
 
-    @DisplayName("добавлять книгу")
+    @DisplayName("должен находить ожидаемые книги указанного жанра")
     @Test
-    void shouldAddBook() {
-        Author author = new Author();
-        author.setName("newAuthor");
+    public void shouldFindExpectedBooksByGenre() {
+        String genre = "testGenre4";
+        List<BookDto> expected = Arrays.asList(
+                new BookDto("testBook3", "testAuthor2", "testGenre4",
+                        Collections.singletonList(new CommentDto("testBookComment3"))),
+                new BookDto("testBook5", "testAuthor3", "testGenre4",
+                        Collections.singletonList(new CommentDto("testBookComment5")))
+        );
 
-        Genre genre = new Genre();
-        genre.setName("newGenre");
+        List<BookDto> actual = service.findBooksByGenre(genre);
 
-        Book book = new Book();
-        String bookName = "testBook7";
-        book.setName(bookName);
-        book.setAuthor(author);
-        book.setGenre(genre);
-
-        service.save(book);
-
-        Book actual = service.findByName(bookName);
-
-        assertThat(actual).isEqualTo(book);
+        assertThat(actual).hasSize(expected.size()).containsExactlyInAnyOrderElementsOf(expected);
     }
 
-    @DisplayName("обновлять книгу")
+    @DisplayName("должен добавлять книгу в библиотеку")
     @Test
-    void shouldUpdateBook() {
-        Book book = service.findById(3);
-        String updatedName = "testBook3Updated";
-        book.setName(updatedName);
-        service.update(book);
+    public void shouldAddBookToLibrary() {
+        String bookName = "testBookName";
+        String authorName = "testAuthorName";
+        String genreName = "testGenreName";
 
-        Book actual = service.findById(3);
-        assertThat(actual).hasFieldOrPropertyWithValue("name", updatedName);
+        service.addBook(bookName, authorName, genreName);
+
+        BookDto actual = service.findBookByName(bookName);
+
+        assertAll(
+                () -> assertThat(actual)
+                              .hasFieldOrPropertyWithValue("name", bookName)
+                              .hasFieldOrPropertyWithValue("author", authorName)
+                              .hasFieldOrPropertyWithValue("genre", genreName),
+                () -> assertThat(actual.getComments()).hasSize(0)
+        );
     }
 
-    @DisplayName("удалять книгу по заданному id")
+    @DisplayName("должен добавлять комментарий к заданной книге")
     @Test
-    void shouldDeleteBookById() {
-        service.deleteById(1L);
+    public void shouldAddCommentToGivenBook() {
+        String bookName = "testBook6";
+        String comment = "testComment";
+        BookDto expected = new BookDto(bookName, "testAuthor3", "testGenre2",
+                Arrays.asList(new CommentDto("testBookComment6"), new CommentDto(comment)));
 
-        List<Book> books = service.findAll();
-        assertThat(books).extracting("id").doesNotContain(1L);
+        service.addBookComment(bookName, comment);
+
+        BookDto actual = service.findBookByName(bookName);
+
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @DisplayName("должен обновлять книгу новым именем")
+    @Test
+    public void shouldUpdateGivenBookWithNewName() {
+        String oldBookName = "testBook4";
+        String newBookName = "testBookUpdated";
+        BookDto expected = new BookDto(newBookName, "testAuthor3", "testGenre3",
+                Collections.singletonList(new CommentDto("testBookComment4")));
+
+        service.updateBook(oldBookName, newBookName);
+
+        assertAll(
+                () -> assertThat(service.findBookByName(oldBookName)).isNull(),
+                () -> assertThat(service.findBookByName(newBookName)).isNotNull().isEqualTo(expected)
+        );
+    }
+
+    @DisplayName("должен обновлять автора новым именем")
+    @Test
+    public void shouldUpdateGivenAuthorWithNewName() {
+        String oldAuthorName = "testAuthor2";
+        String newAuthorName = "testAuthorUpdated";
+
+        service.updateAuthor(oldAuthorName, newAuthorName);
+        List<BookDto> booksByOldAuthor = service.findBooksByAuthor(oldAuthorName);
+        List<BookDto> booksByNewAuthor = service.findBooksByAuthor(newAuthorName);
+        assertAll(
+                () -> assertThat(booksByOldAuthor).isEmpty(),
+                () -> assertThat(booksByNewAuthor).hasSize(2)
+        );
+    }
+
+    @DisplayName("должен обновлять жанр новым именем")
+    @Test
+    public void shouldUpdateGivenGenreWithNewName() {
+        String oldGenreName = "testGenre4";
+        String newGenreName = "testGenreUpdated";
+
+        service.updateGenre(oldGenreName, newGenreName);
+        List<BookDto> booksByOldGenre = service.findBooksByGenre(oldGenreName);
+        List<BookDto> booksByNewGenre = service.findBooksByGenre(newGenreName);
+        assertAll(
+                () -> assertThat(booksByOldGenre).isEmpty(),
+                () -> assertThat(booksByNewGenre).hasSize(2)
+        );
+    }
+
+    @DisplayName("должен обновлять заданный комментарий заданной книги новым контентом")
+    @Test
+    public void shouldUpdateGivenCommentOfGivenBookWithNewContent() {
+        String bookName = "testBook5";
+        String oldBookComment = "testBookComment5";
+        String newBookComment = "testBookCommentUpdated";
+
+        service.updateBookComment(bookName, oldBookComment, newBookComment);
+
+        List<CommentDto> actual = service.findBookByName(bookName).getComments();
+
+        assertThat(actual).hasSize(1).element(0).hasFieldOrPropertyWithValue("content", newBookComment);
+    }
+
+    @DisplayName("должен удалять заданную книгу")
+    @Test
+    public void shouldDeleteGivenBook() {
+        String bookName = "testBook3";
+
+        service.deleteBook(bookName);
+
+        assertThat(service.findBookByName(bookName)).isNull();
+    }
+
+    @DisplayName("должен удалять заданный комментарий заданной книги")
+    @Test
+    public void shouldDeleteGivenCommentOfGivenBook() {
+        String bookName = "testBook2";
+        String commentContent = "testBookComment2";
+
+        service.deleteBookComment(bookName, commentContent);
+
+        assertThat(service.findBookByName(bookName).getComments()).isEmpty();
     }
 }

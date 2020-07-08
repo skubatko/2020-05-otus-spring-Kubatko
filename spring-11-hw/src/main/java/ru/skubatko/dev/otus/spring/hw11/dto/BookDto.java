@@ -2,13 +2,17 @@ package ru.skubatko.dev.otus.spring.hw11.dto;
 
 import ru.skubatko.dev.otus.spring.hw11.domain.Book;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Accessors(chain = true)
 public class BookDto {
     private String name;
