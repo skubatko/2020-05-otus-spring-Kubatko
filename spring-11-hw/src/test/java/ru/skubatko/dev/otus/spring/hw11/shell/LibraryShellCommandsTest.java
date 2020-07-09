@@ -1,11 +1,10 @@
 package ru.skubatko.dev.otus.spring.hw11.shell;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
 
-import ru.skubatko.dev.otus.spring.hw11.domain.Author;
-import ru.skubatko.dev.otus.spring.hw11.domain.Book;
-import ru.skubatko.dev.otus.spring.hw11.domain.Comment;
-import ru.skubatko.dev.otus.spring.hw11.domain.Genre;
+import ru.skubatko.dev.otus.spring.hw11.dto.BookDto;
+import ru.skubatko.dev.otus.spring.hw11.dto.CommentDto;
 import ru.skubatko.dev.otus.spring.hw11.service.LibraryService;
 
 import org.apache.commons.lang3.StringUtils;
@@ -17,15 +16,13 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.shell.CommandNotCurrentlyAvailable;
 import org.springframework.shell.Shell;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@DisplayName("Команды shell работы с книгами библиотеки должны")
-@Transactional
+@DisplayName("Команды shell работы с библиотекой")
 @SpringBootTest
 class LibraryShellCommandsTest {
 
@@ -36,95 +33,71 @@ class LibraryShellCommandsTest {
     private Shell shell;
 
     private static final String LOGIN_COMMAND = "l";
-    private static final String FIND_BOOK_COMMAND = "fb";
     private static final String FIND_BOOK_BY_NAME_COMMAND = "fbn";
     private static final String FIND_ALL_BOOKS_COMMAND = "fab";
+    private static final String FIND_BOOKS_BY_AUTHOR_COMMAND = "fba";
+    private static final String FIND_BOOKS_BY_GENRE_COMMAND = "fbg";
     private static final String ADD_BOOK_COMMAND = "ab";
+    private static final String ADD_BOOK_COMMENT_COMMAND = "abc";
     private static final String UPDATE_BOOK_COMMAND = "ub";
+    private static final String UPDATE_AUTHOR_COMMAND = "ua";
+    private static final String UPDATE_GENRE_COMMAND = "ug";
+    private static final String UPDATE_BOOK_COMMENT_COMMAND = "ubc";
     private static final String DELETE_BOOK_COMMAND = "db";
+    private static final String DELETE_BOOK_COMMENT_COMMAND = "dbc";
 
-    @DisplayName("возвращать CommandNotCurrentlyAvailable при запросе незалогиненного пользователя")
+    @DisplayName("должны возвращать CommandNotCurrentlyAvailable при запросе незалогиненного пользователя")
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     public void shouldReturnCommandNotCurrentlyAvailableWhenUserNotLoggedInAfterLogoutCommandEvaluated() {
-        Object actual = shell.evaluate(() -> FIND_BOOK_COMMAND);
+        Object actual = shell.evaluate(() -> FIND_BOOK_BY_NAME_COMMAND);
         assertThat(actual).isInstanceOf(CommandNotCurrentlyAvailable.class);
     }
 
-    @DisplayName("возвращать ожидаемую книгу по её id при выполнении команды fb после логина пользователя")
-    @Test
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
-    public void shouldReturnBookWhenUserAlreadyLoggedInAfterFindBookCommandEvaluated() {
-        Author author = new Author(1, "testAuthor");
-        Genre genre = new Genre(1, "testGenre");
-        Comment comment = new Comment(1L, "testBookComment1", null);
-        Book book = new Book(1, "testBook", author, genre, Collections.singletonList(comment));
-        comment.setBook(book);
-
-//        given(bookService.findById(1L)).willReturn(book);
-//        given(authorService.findById(1L)).willReturn(author);
-//        given(genreService.findById(1L)).willReturn(genre);
-//
-        String expected = String.format("Book: %s \"%s\" by %s has comment(s): %s",
-                genre.getName(), book.getName(), author.getName(), comment.getContent());
-
-        shell.evaluate(() -> LOGIN_COMMAND);
-        String actual = (String) shell.evaluate(() -> FIND_BOOK_COMMAND + " 1");
-
-        assertThat(actual).isEqualTo(expected);
-    }
-
-    @DisplayName("возвращать ожидаемую книгу по её имени при выполнении команды fbn после логина пользователя")
+    @DisplayName("должны возвращать ожидаемую книгу по её имени при выполнении команды fbn после логина пользователя")
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     public void shouldReturnBookByNameWhenUserAlreadyLoggedInAfterFindBookCommandEvaluated() {
-        Author author = new Author(1, "testAuthor");
-        Genre genre = new Genre(1, "testGenre");
-        String name = "testBook";
-        Comment comment = new Comment(1L, "testBookComment1", null);
-        Book book = new Book(1, "testBook", author, genre, Collections.singletonList(comment));
-        comment.setBook(book);
+        String bookName = "testBook";
+        String author = "testAuthor";
+        String genre = "testGenre";
+        String comment = "testComment";
+        BookDto book = new BookDto(bookName, author, genre, Collections.singletonList(new CommentDto(comment)));
 
-//        given(bookService.findByName(name)).willReturn(book);
-//        given(authorService.findById(1L)).willReturn(author);
-//        given(genreService.findById(1L)).willReturn(genre);
+        given(service.findBookByName(bookName)).willReturn(book);
 
         String expected = String.format("Book: %s \"%s\" by %s has comment(s): %s",
-                genre.getName(), book.getName(), author.getName(), comment.getContent());
+                genre, bookName, author, comment);
 
         shell.evaluate(() -> LOGIN_COMMAND);
-        String actual = (String) shell.evaluate(() -> FIND_BOOK_BY_NAME_COMMAND + StringUtils.SPACE + name);
+        String actual = (String) shell.evaluate(() -> FIND_BOOK_BY_NAME_COMMAND + StringUtils.SPACE + bookName);
 
         assertThat(actual).isEqualTo(expected);
     }
 
-    @DisplayName("возвращать все книги библиотеки при выполнении команды fab после логина пользователя")
+    @DisplayName("должны возвращать все книги библиотеки при выполнении команды fab после логина пользователя")
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     public void shouldReturnAllBooksWhenUserAlreadyLoggedInAfterFindAllBooksCommandEvaluated() {
-        Author author = new Author(1, "testAuthor");
-        Genre genre = new Genre(1, "testGenre");
-        Comment comment1 = new Comment(1L, "testBookComment1", null);
-        Comment comment2 = new Comment(2L, "testBookComment2", null);
-        Book book1 = new Book(1, "testBook1", author, genre, Collections.singletonList(comment1));
-        Book book2 = new Book(2, "testBook2", author, genre, Collections.singletonList(comment2));
-        comment1.setBook(book1);
-        comment2.setBook(book2);
-        List<Book> books = Arrays.asList(book1, book2);
+        BookDto book1 = new BookDto("testBook1", "testAuthor1", "testGenre",
+                Collections.singletonList(new CommentDto("testComment1")));
+        BookDto book2 = new BookDto("testBook2", "testAuthor2", "testGenre",
+                Collections.singletonList(new CommentDto("testComment2")));
+        List<BookDto> books = Arrays.asList(book1, book2);
 
-//        given(bookService.findAll()).willReturn(books);
+        given(service.findAllBooks()).willReturn(books);
 
         String expected = String.format("Available books: %n%s",
                 books.stream()
                         .map(book -> String.join(
                                 StringUtils.SPACE,
-                                book.getGenre().getName(),
+                                book.getGenre(),
                                 "\"" + book.getName() + "\"",
                                 "by",
-                                book.getAuthor().getName(),
+                                book.getAuthor(),
                                 "has comment(s):",
                                 book.getComments().stream()
-                                        .map(Comment::getContent)
+                                        .map(CommentDto::getContent)
                                         .collect(Collectors.joining(", "))
                         ))
                         .collect(Collectors.joining("\n")));
@@ -135,25 +108,103 @@ class LibraryShellCommandsTest {
         assertThat(actual).isEqualTo(expected);
     }
 
-    @DisplayName("добавлять ожидаемую книгу при выполнении команды ab после логина пользователя")
+    @DisplayName("должны возвращать книги заданного автора при выполнении команды fba после логина пользователя")
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
-    public void shouldAddBookWhenUserAlreadyLoggedInAfterAddBookCommandEvaluated() {
-        String bookName = "testBook";
-        String authorName = "testAuthor";
-        String genreName = "testGenre";
+    public void shouldReturnBooksByAuthorWhenUserAlreadyLoggedInAfterFindBooksByAuthorCommandEvaluated() {
+        String author = "testAuthor";
+        BookDto book1 = new BookDto("testBook1", author, "testGenre1",
+                Collections.singletonList(new CommentDto("testComment1")));
+        BookDto book2 = new BookDto("testBook2", author, "testGenre2",
+                Collections.singletonList(new CommentDto("testComment2")));
+        List<BookDto> books = Arrays.asList(book1, book2);
 
-        String expected = String.format("Book %s added", bookName);
+        given(service.findBooksByAuthor(author)).willReturn(books);
+
+        String expected = String.format("Available books: %n%s",
+                books.stream()
+                        .map(book -> String.join(
+                                StringUtils.SPACE,
+                                book.getGenre(),
+                                "\"" + book.getName() + "\"",
+                                "by",
+                                book.getAuthor(),
+                                "has comment(s):",
+                                book.getComments().stream()
+                                        .map(CommentDto::getContent)
+                                        .collect(Collectors.joining(", "))
+                        ))
+                        .collect(Collectors.joining("\n")));
 
         shell.evaluate(() -> LOGIN_COMMAND);
-        String actual = (String) shell.evaluate(() -> ADD_BOOK_COMMAND + StringUtils.SPACE
-                                                              + bookName + StringUtils.SPACE
-                                                              + authorName + StringUtils.SPACE
-                                                              + genreName);
+        String actual = (String) shell.evaluate(() -> FIND_BOOKS_BY_AUTHOR_COMMAND + StringUtils.SPACE + author);
+
         assertThat(actual).isEqualTo(expected);
     }
 
-    @DisplayName("обновлять ожидаемую книгу при выполнении команды ub после логина пользователя")
+    @DisplayName("должны возвращать книги заданного жанра при выполнении команды fbg после логина пользователя")
+    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
+    public void shouldReturnBooksByGenreWhenUserAlreadyLoggedInAfterFindBooksByGenreCommandEvaluated() {
+        String genre = "testGenre";
+        BookDto book1 = new BookDto("testBook1", "testAuthor1", genre,
+                Collections.singletonList(new CommentDto("testComment1")));
+        BookDto book2 = new BookDto("testBook2", "testAuthor2", genre,
+                Collections.singletonList(new CommentDto("testComment2")));
+        List<BookDto> books = Arrays.asList(book1, book2);
+
+        given(service.findBooksByGenre(genre)).willReturn(books);
+
+        String expected = String.format("Available books: %n%s",
+                books.stream()
+                        .map(book -> String.join(
+                                StringUtils.SPACE,
+                                book.getGenre(),
+                                "\"" + book.getName() + "\"",
+                                "by",
+                                book.getAuthor(),
+                                "has comment(s):",
+                                book.getComments().stream()
+                                        .map(CommentDto::getContent)
+                                        .collect(Collectors.joining(", "))
+                        ))
+                        .collect(Collectors.joining("\n")));
+
+        shell.evaluate(() -> LOGIN_COMMAND);
+        String actual = (String) shell.evaluate(() -> FIND_BOOKS_BY_GENRE_COMMAND + StringUtils.SPACE + genre);
+
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @DisplayName("должны добавлять книгу при выполнении команды ab после логина пользователя")
+    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
+    public void shouldAddBookWhenUserAlreadyLoggedInAfterAddBookCommandEvaluated() {
+        String expected = "Book added";
+
+        shell.evaluate(() -> LOGIN_COMMAND);
+        String actual = (String) shell.evaluate(() -> ADD_BOOK_COMMAND + StringUtils.SPACE
+                                                              + "testBook" + StringUtils.SPACE
+                                                              + "testAuthor" + StringUtils.SPACE
+                                                              + "testGenre");
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @DisplayName("должны добавлять комментарий книги при выполнении команды abc после логина пользователя")
+    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
+    public void shouldAddBookCommentWhenUserAlreadyLoggedInAfterAddBookCommentCommandEvaluated() {
+        String expected = "Comment added";
+
+        shell.evaluate(() -> LOGIN_COMMAND);
+        String actual = (String) shell.evaluate(() -> ADD_BOOK_COMMENT_COMMAND + StringUtils.SPACE
+                                                              + "testBook" + StringUtils.SPACE
+                                                              + "testComment");
+        assertThat(actual).isEqualTo(expected);
+    }
+
+/*
+    @DisplayName("должны обновлять ожидаемую книгу при выполнении команды ub после логина пользователя")
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     public void shouldUpdateBookWhenUserAlreadyLoggedInAfterUpdateBookCommandEvaluated() {
@@ -172,7 +223,7 @@ class LibraryShellCommandsTest {
         assertThat(actual).isEqualTo(expected);
     }
 
-    @DisplayName("удалять ожидаемую книгу при выполнении команды db после логина пользователя")
+    @DisplayName("должны удалять ожидаемую книгу при выполнении команды db после логина пользователя")
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     public void shouldDeleteBookWhenUserAlreadyLoggedInAfterDeleteBookCommandEvaluated() {
@@ -190,4 +241,5 @@ class LibraryShellCommandsTest {
 
         assertThat(actual).isEqualTo(expected);
     }
+*/
 }
