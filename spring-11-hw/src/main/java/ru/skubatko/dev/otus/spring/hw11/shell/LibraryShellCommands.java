@@ -161,7 +161,7 @@ public class LibraryShellCommands {
 
     @ShellMethod(value = "Delete book from the library", key = {"db", "deleteBook"})
     @ShellMethodAvailability(value = "loggedIn")
-    public String deleteBookById(@ShellOption(defaultValue = "unnamed") String bookName) {
+    public String deleteBook(@ShellOption(defaultValue = "unnamed") String bookName) {
         libraryService.deleteBook(bookName);
 
         return "Book deleted";

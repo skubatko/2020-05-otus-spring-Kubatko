@@ -203,43 +203,82 @@ class LibraryShellCommandsTest {
         assertThat(actual).isEqualTo(expected);
     }
 
-/*
-    @DisplayName("должны обновлять ожидаемую книгу при выполнении команды ub после логина пользователя")
+    @DisplayName("должны обновлять книгу при выполнении команды ub после логина пользователя")
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     public void shouldUpdateBookWhenUserAlreadyLoggedInAfterUpdateBookCommandEvaluated() {
-        Author author = new Author(1, "testAuthor");
-        Genre genre = new Genre(1, "testGenre");
-        Book book = new Book(1, "testBook", author, genre, Collections.emptyList());
-        String updatedBookName = "testBookUpdated";
-
-//        given(bookService.findById(1)).willReturn(book);
-
-        String expected = String.format("Book with id = %s updated", 1);
+        String expected = "Book updated";
 
         shell.evaluate(() -> LOGIN_COMMAND);
-        String actual = (String) shell.evaluate(() -> UPDATE_BOOK_COMMAND + " 1 " + updatedBookName);
-
+        String actual = (String) shell.evaluate(() -> UPDATE_BOOK_COMMAND + StringUtils.SPACE
+                                                              + "oldBookName" + StringUtils.SPACE
+                                                              + "newBookName");
         assertThat(actual).isEqualTo(expected);
     }
 
-    @DisplayName("должны удалять ожидаемую книгу при выполнении команды db после логина пользователя")
+    @DisplayName("должны обновлять автора при выполнении команды ua после логина пользователя")
+    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
+    public void shouldUpdateAuthorWhenUserAlreadyLoggedInAfterUpdateAuthorCommandEvaluated() {
+        String expected = "Author updated";
+
+        shell.evaluate(() -> LOGIN_COMMAND);
+        String actual = (String) shell.evaluate(() -> UPDATE_AUTHOR_COMMAND + StringUtils.SPACE
+                                                              + "oldAuthorName" + StringUtils.SPACE
+                                                              + "newAuthorName");
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @DisplayName("должны обновлять жанр при выполнении команды ug после логина пользователя")
+    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
+    public void shouldUpdateGenreWhenUserAlreadyLoggedInAfterUpdateGenreCommandEvaluated() {
+        String expected = "Genre updated";
+
+        shell.evaluate(() -> LOGIN_COMMAND);
+        String actual = (String) shell.evaluate(() -> UPDATE_GENRE_COMMAND + StringUtils.SPACE
+                                                              + "oldGenreName" + StringUtils.SPACE
+                                                              + "newGenreName");
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @DisplayName("должны обновлять комментарий книги при выполнении команды ubc после логина пользователя")
+    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
+    public void shouldUpdateBookCommentWhenUserAlreadyLoggedInAfterUpdateBookCommentCommandEvaluated() {
+        String expected = "Comment updated";
+
+        shell.evaluate(() -> LOGIN_COMMAND);
+        String actual = (String) shell.evaluate(() -> UPDATE_BOOK_COMMENT_COMMAND + StringUtils.SPACE
+                                                              + "bookName" + StringUtils.SPACE
+                                                              + "oldCommentContent" + StringUtils.SPACE
+                                                              + "newCommentContent");
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @DisplayName("должны удалять книгу при выполнении команды db после логина пользователя")
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     public void shouldDeleteBookWhenUserAlreadyLoggedInAfterDeleteBookCommandEvaluated() {
-        Author author = new Author(1, "testAuthor");
-        Genre genre = new Genre(1, "testGenre");
-        String bookName = "testBook";
-        Book book = new Book(1, bookName, author, genre, Collections.emptyList());
-
-//        given(bookService.findById(1)).willReturn(book);
-
-        String expected = "Book with id = 1 deleted successfully";
+        String expected = "Book deleted";
 
         shell.evaluate(() -> LOGIN_COMMAND);
-        String actual = (String) shell.evaluate(() -> DELETE_BOOK_COMMAND + " 1 ");
+        String actual = (String) shell.evaluate(() -> DELETE_BOOK_COMMAND + StringUtils.SPACE + "testBookName");
 
         assertThat(actual).isEqualTo(expected);
     }
-*/
+
+    @DisplayName("должны удалять комментарий книги при выполнении команды db после логина пользователя")
+    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
+    public void shouldDeleteBookCommentWhenUserAlreadyLoggedInAfterDeleteBookCommentCommandEvaluated() {
+        String expected = "Comment deleted";
+
+        shell.evaluate(() -> LOGIN_COMMAND);
+        String actual = (String) shell.evaluate(() -> DELETE_BOOK_COMMENT_COMMAND + StringUtils.SPACE
+                                                              + "testBookName" + StringUtils.SPACE
+                                                              + "testBookComment");
+
+        assertThat(actual).isEqualTo(expected);
+    }
 }
