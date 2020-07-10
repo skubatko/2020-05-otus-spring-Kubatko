@@ -25,3 +25,6 @@ DAO на Spring JDBC
 
 * spring-09-hw - домашнее задание к уроку 9
 JPQL, Spring ORM, DAO на основе Spring ORM + JPA
+
+* spring-11-hw - домашнее задание к уроку 11
+"Белая магия" Spring Data: Spring Data JPA
