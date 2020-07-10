@@ -5,11 +5,11 @@ import ru.skubatko.dev.otus.spring.hw11.domain.Book;
 import ru.skubatko.dev.otus.spring.hw11.domain.Comment;
 import ru.skubatko.dev.otus.spring.hw11.domain.Genre;
 import ru.skubatko.dev.otus.spring.hw11.dto.BookDto;
-import ru.skubatko.dev.otus.spring.hw11.exception.AuthorNotFoundException;
-import ru.skubatko.dev.otus.spring.hw11.exception.BookAlreadyExistsException;
-import ru.skubatko.dev.otus.spring.hw11.exception.BookNotFoundException;
-import ru.skubatko.dev.otus.spring.hw11.exception.CommentNotFoundException;
-import ru.skubatko.dev.otus.spring.hw11.exception.GenreNotFoundException;
+import ru.skubatko.dev.otus.spring.hw11.exception.library.service.AuthorNotFoundLibraryServiceException;
+import ru.skubatko.dev.otus.spring.hw11.exception.library.service.BookAlreadyExistsLibraryServiceException;
+import ru.skubatko.dev.otus.spring.hw11.exception.library.service.BookNotFoundLibraryServiceException;
+import ru.skubatko.dev.otus.spring.hw11.exception.library.service.CommentNotFoundLibraryServiceException;
+import ru.skubatko.dev.otus.spring.hw11.exception.library.service.GenreNotFoundLibraryServiceException;
 import ru.skubatko.dev.otus.spring.hw11.repository.AuthorRepository;
 import ru.skubatko.dev.otus.spring.hw11.repository.BookRepository;
 import ru.skubatko.dev.otus.spring.hw11.repository.CommentRepository;
@@ -31,7 +31,6 @@ public class LibraryService {
     private final GenreRepository genreRepository;
     private final CommentRepository commentRepository;
 
-    @Transactional(readOnly = true)
     public BookDto findBookByName(String bookName) {
         return BookDto.toDto(bookRepository.findByName(bookName));
     }
@@ -57,7 +56,7 @@ public class LibraryService {
     public void addBook(String bookName, String authorName, String genreName) {
         Book book = bookRepository.findByName(bookName);
         if (book != null) {
-            throw new BookAlreadyExistsException();
+            throw new BookAlreadyExistsLibraryServiceException();
         }
 
         Author author = authorRepository.findByName(authorName);
@@ -96,7 +95,7 @@ public class LibraryService {
     public void updateAuthor(String oldAuthorName, String newAuthorName) {
         Author author = authorRepository.findByName(oldAuthorName);
         if (author == null) {
-            throw new AuthorNotFoundException();
+            throw new AuthorNotFoundLibraryServiceException();
         }
 
         author.setName(newAuthorName);
@@ -107,7 +106,7 @@ public class LibraryService {
     public void updateGenre(String oldGenreName, String newGenreName) {
         Genre genre = genreRepository.findByName(oldGenreName);
         if (genre == null) {
-            throw new GenreNotFoundException();
+            throw new GenreNotFoundLibraryServiceException();
         }
 
         genre.setName(newGenreName);
@@ -141,7 +140,7 @@ public class LibraryService {
         Book book = getBookByName(bookName);
         Comment comment = commentRepository.findByBookAndContent(book, commentContent);
         if (comment == null) {
-            throw new CommentNotFoundException();
+            throw new CommentNotFoundLibraryServiceException();
         }
 
         return comment;
@@ -150,7 +149,7 @@ public class LibraryService {
     private Book getBookByName(String bookName) {
         Book book = bookRepository.findByName(bookName);
         if (book == null) {
-            throw new BookNotFoundException();
+            throw new BookNotFoundLibraryServiceException();
         }
 
         return book;
