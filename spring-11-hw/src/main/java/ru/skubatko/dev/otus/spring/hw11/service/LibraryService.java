@@ -31,6 +31,7 @@ public class LibraryService {
     private final GenreRepository genreRepository;
     private final CommentRepository commentRepository;
 
+    @Transactional(readOnly = true)
     public BookDto findBookByName(String bookName) {
         return BookDto.toDto(bookRepository.findByName(bookName));
     }
