@@ -31,7 +31,7 @@ public class Comment {
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "book_id",nullable = false)
+    @JoinColumn(name = "book_id", nullable = false)
     private Book book;
 
     public Comment(Book book, String commentContent) {
