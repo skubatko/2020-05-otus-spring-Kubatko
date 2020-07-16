@@ -15,10 +15,10 @@ public class Comment {
     @Id
     private String id;
     private String content;
-    private Book book;
+    private String bookName;
 
-    public Comment(String content, Book book) {
+    public Comment(String content, String bookName) {
         this.content = content;
-        this.book = book;
+        this.bookName = bookName;
     }
 }

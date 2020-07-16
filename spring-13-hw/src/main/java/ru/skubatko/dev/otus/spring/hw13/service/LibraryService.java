@@ -49,11 +49,10 @@ public class LibraryService {
     }
 
     public void addBookComment(String bookName, String commentContent) {
-        Book book = getBookByName(bookName);
-
-        Comment comment = new Comment(commentContent, book);
+        Comment comment = new Comment(commentContent, bookName);
         commentRepository.save(comment);
 
+        Book book = getBookByName(bookName);
         book.getComments().add(comment);
         bookRepository.save(book);
     }
@@ -85,9 +84,15 @@ public class LibraryService {
 
     public void updateBookComment(String bookName, String oldCommentContent, String newCommentContent) {
         Comment comment = getBookComment(bookName, oldCommentContent);
+        Book book = getBookByName(bookName);
+        List<Comment> bookComments = book.getComments();
+        bookComments.remove(comment);
 
         comment.setContent(newCommentContent);
         commentRepository.save(comment);
+
+        bookComments.add(comment);
+        bookRepository.save(book);
     }
 
     public void deleteBook(String bookName) {
@@ -96,14 +101,14 @@ public class LibraryService {
 
     public void deleteBookComment(String bookName, String commentContent) {
         Comment comment = getBookComment(bookName, commentContent);
-        Book book = comment.getBook();
+        Book book = getBookByName(bookName);
         book.getComments().remove(comment);
         bookRepository.save(book);
+        commentRepository.delete(comment);
     }
 
     private Comment getBookComment(String bookName, String commentContent) {
-        Book book = getBookByName(bookName);
-        Comment comment = commentRepository.findByBookAndContent(book, commentContent);
+        Comment comment = commentRepository.findByBookNameAndContent(bookName, commentContent);
         if (comment == null) {
             throw new CommentNotFoundLibraryServiceException();
         }

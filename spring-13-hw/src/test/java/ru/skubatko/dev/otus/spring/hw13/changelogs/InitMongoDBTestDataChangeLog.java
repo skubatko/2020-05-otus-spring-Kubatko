@@ -10,9 +10,9 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 
 import java.util.Collections;
 
-@ChangeLog(order = "001")
+@ChangeLog(order = "999")
 @SuppressWarnings("unused")
-public class InitMongoDBDataChangeLog {
+public class InitMongoDBTestDataChangeLog {
 
     private MongoTemplate template;
 
@@ -25,15 +25,12 @@ public class InitMongoDBDataChangeLog {
     public void initLibrary(MongoTemplate template) {
         this.template = template;
 
-        addBook("War and Peace", "Lev Tolstoy", "novel", "good novel");
-        addBook("Resurrection", "Lev Tolstoy", "novel", "well written");
-        addBook("The Three Hermits", "Lev Tolstoy", "poem", "classic");
-        addBook("Ruslan and Ludmila", "Alexander Pushkin", "fable", "unbelievable");
-        addBook("The Tale of the Fisherman and the Fish", "Alexander Pushkin", "fable", "good story");
-        addBook("Snowstorm", "Alexander Pushkin", "novel", "epic");
-        addBook("A Crow and a fox", "Ivan Krylov", "fable", "as always");
-        addBook("Two dogs", "Ivan Krylov", "fable", "never mind");
-        addBook("Mouses", "Ivan Krylov", "fable", "true story");
+        addBook("testBook1", "testAuthor1", "testGenre1", "testBookComment1");
+        addBook("testBook2", "testAuthor2", "testGenre3", "testBookComment2");
+        addBook("testBook3", "testAuthor2", "testGenre4", "testBookComment3");
+        addBook("testBook4", "testAuthor3", "testGenre3", "testBookComment4");
+        addBook("testBook5", "testAuthor3", "testGenre4", "testBookComment5");
+        addBook("testBook6", "testAuthor3", "testGenre2", "testBookComment6");
     }
 
     private void addBook(String bookName, String author, String genre, String commentContent) {

@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 
 @DisplayName("Команды shell работы с библиотекой")
 @SpringBootTest
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class LibraryShellCommandsTest {
 
     @MockBean
@@ -48,7 +49,6 @@ class LibraryShellCommandsTest {
 
     @DisplayName("должны возвращать CommandNotCurrentlyAvailable при запросе незалогиненного пользователя")
     @Test
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     public void shouldReturnCommandNotCurrentlyAvailableWhenUserNotLoggedInAfterLogoutCommandEvaluated() {
         Object actual = shell.evaluate(() -> FIND_BOOK_BY_NAME_COMMAND);
         assertThat(actual).isInstanceOf(CommandNotCurrentlyAvailable.class);
@@ -56,7 +56,6 @@ class LibraryShellCommandsTest {
 
     @DisplayName("должны возвращать ожидаемую книгу по её имени при выполнении команды fbn после логина пользователя")
     @Test
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     public void shouldReturnBookByNameWhenUserAlreadyLoggedInAfterFindBookCommandEvaluated() {
         String bookName = "testBook";
         String author = "testAuthor";
@@ -77,7 +76,6 @@ class LibraryShellCommandsTest {
 
     @DisplayName("должны возвращать все книги библиотеки при выполнении команды fab после логина пользователя")
     @Test
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     public void shouldReturnAllBooksWhenUserAlreadyLoggedInAfterFindAllBooksCommandEvaluated() {
         BookDto book1 = new BookDto("testBook1", "testAuthor1", "testGenre",
                 Collections.singletonList(new CommentDto("testComment1")));
@@ -110,7 +108,6 @@ class LibraryShellCommandsTest {
 
     @DisplayName("должны возвращать книги заданного автора при выполнении команды fba после логина пользователя")
     @Test
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     public void shouldReturnBooksByAuthorWhenUserAlreadyLoggedInAfterFindBooksByAuthorCommandEvaluated() {
         String author = "testAuthor";
         BookDto book1 = new BookDto("testBook1", author, "testGenre1",
@@ -144,7 +141,6 @@ class LibraryShellCommandsTest {
 
     @DisplayName("должны возвращать книги заданного жанра при выполнении команды fbg после логина пользователя")
     @Test
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     public void shouldReturnBooksByGenreWhenUserAlreadyLoggedInAfterFindBooksByGenreCommandEvaluated() {
         String genre = "testGenre";
         BookDto book1 = new BookDto("testBook1", "testAuthor1", genre,
@@ -178,7 +174,6 @@ class LibraryShellCommandsTest {
 
     @DisplayName("должны добавлять книгу при выполнении команды ab после логина пользователя")
     @Test
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     public void shouldAddBookWhenUserAlreadyLoggedInAfterAddBookCommandEvaluated() {
         String expected = "Book added";
 
@@ -192,7 +187,6 @@ class LibraryShellCommandsTest {
 
     @DisplayName("должны добавлять комментарий книги при выполнении команды abc после логина пользователя")
     @Test
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     public void shouldAddBookCommentWhenUserAlreadyLoggedInAfterAddBookCommentCommandEvaluated() {
         String expected = "Comment added";
 
@@ -205,7 +199,6 @@ class LibraryShellCommandsTest {
 
     @DisplayName("должны обновлять книгу при выполнении команды ub после логина пользователя")
     @Test
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     public void shouldUpdateBookWhenUserAlreadyLoggedInAfterUpdateBookCommandEvaluated() {
         String expected = "Book updated";
 
@@ -218,7 +211,6 @@ class LibraryShellCommandsTest {
 
     @DisplayName("должны обновлять автора при выполнении команды ua после логина пользователя")
     @Test
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     public void shouldUpdateAuthorWhenUserAlreadyLoggedInAfterUpdateAuthorCommandEvaluated() {
         String expected = "Author updated";
 
@@ -231,7 +223,6 @@ class LibraryShellCommandsTest {
 
     @DisplayName("должны обновлять жанр при выполнении команды ug после логина пользователя")
     @Test
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     public void shouldUpdateGenreWhenUserAlreadyLoggedInAfterUpdateGenreCommandEvaluated() {
         String expected = "Genre updated";
 
@@ -244,7 +235,6 @@ class LibraryShellCommandsTest {
 
     @DisplayName("должны обновлять комментарий книги при выполнении команды ubc после логина пользователя")
     @Test
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     public void shouldUpdateBookCommentWhenUserAlreadyLoggedInAfterUpdateBookCommentCommandEvaluated() {
         String expected = "Comment updated";
 
@@ -258,7 +248,6 @@ class LibraryShellCommandsTest {
 
     @DisplayName("должны удалять книгу при выполнении команды db после логина пользователя")
     @Test
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     public void shouldDeleteBookWhenUserAlreadyLoggedInAfterDeleteBookCommandEvaluated() {
         String expected = "Book deleted";
 
@@ -270,7 +259,6 @@ class LibraryShellCommandsTest {
 
     @DisplayName("должны удалять комментарий книги при выполнении команды db после логина пользователя")
     @Test
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     public void shouldDeleteBookCommentWhenUserAlreadyLoggedInAfterDeleteBookCommentCommandEvaluated() {
         String expected = "Comment deleted";
 
