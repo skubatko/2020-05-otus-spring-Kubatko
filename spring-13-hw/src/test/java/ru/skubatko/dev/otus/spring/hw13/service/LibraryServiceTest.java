@@ -3,21 +3,19 @@ package ru.skubatko.dev.otus.spring.hw13.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import ru.skubatko.dev.otus.spring.hw11.dto.BookDto;
-import ru.skubatko.dev.otus.spring.hw11.dto.CommentDto;
+import ru.skubatko.dev.otus.spring.hw13.dto.BookDto;
+import ru.skubatko.dev.otus.spring.hw13.dto.CommentDto;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 @DisplayName("Сервис для работы с библиотекой")
-@Transactional
 @SpringBootTest
 class LibraryServiceTest {
 

@@ -3,9 +3,9 @@ package ru.skubatko.dev.otus.spring.hw13.shell;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 
-import ru.skubatko.dev.otus.spring.hw11.dto.BookDto;
-import ru.skubatko.dev.otus.spring.hw11.dto.CommentDto;
-import ru.skubatko.dev.otus.spring.hw11.service.LibraryService;
+import ru.skubatko.dev.otus.spring.hw13.dto.BookDto;
+import ru.skubatko.dev.otus.spring.hw13.dto.CommentDto;
+import ru.skubatko.dev.otus.spring.hw13.service.LibraryService;
 
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.DisplayName;
