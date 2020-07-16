@@ -28,3 +28,6 @@ JPQL, Spring ORM, DAO на основе Spring ORM + JPA
 
 * spring-11-hw - домашнее задание к уроку 11
 "Белая магия" Spring Data: Spring Data JPA
+
+* spring-13-hw - домашнее задание к уроку 13
+Spring Data для подключения к нереляционным БД
