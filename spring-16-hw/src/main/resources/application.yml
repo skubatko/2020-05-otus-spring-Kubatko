@@ -18,8 +18,8 @@ spring:
 logging:
   level:
     root: INFO
-    org.springframework.web: DEBUG
-    org.hibernate: DEBUG
+    org.springframework.web: INFO
+    org.hibernate: INFO
     ru.skubatko.dev: DEBUG
   file:
     name: ./logs/app.log
