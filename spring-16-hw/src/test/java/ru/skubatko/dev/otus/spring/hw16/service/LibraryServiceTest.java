@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import ru.skubatko.dev.otus.spring.hw16.dto.BookDto;
-import ru.skubatko.dev.otus.spring.hw16.dto.CommentDto;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,7 +12,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 @DisplayName("Сервис для работы с библиотекой")
@@ -35,9 +33,7 @@ class LibraryServiceTest {
                 () -> assertThat(actual).isNotNull().hasFieldOrPropertyWithValue("name", name),
                 () -> assertThat(actual.getAuthor()).isEqualTo("testAuthor1"),
                 () -> assertThat(actual.getGenre()).isEqualTo("testGenre1"),
-                () -> assertThat(actual.getComments())
-                              .hasSize(1)
-                              .element(0).hasFieldOrPropertyWithValue("content", "testBookComment1")
+                () -> assertThat(actual.getComments()).isEqualTo("testBookComment1")
         );
     }
 
@@ -45,18 +41,12 @@ class LibraryServiceTest {
     @Test
     public void shouldFindAllExpectedBooks() {
         List<BookDto> expected = Arrays.asList(
-                new BookDto("testBook1", "testAuthor1", "testGenre1",
-                        Collections.singletonList(new CommentDto("testBookComment1"))),
-                new BookDto("testBook2", "testAuthor2", "testGenre3",
-                        Collections.singletonList(new CommentDto("testBookComment2"))),
-                new BookDto("testBook3", "testAuthor2", "testGenre4",
-                        Collections.singletonList(new CommentDto("testBookComment3"))),
-                new BookDto("testBook4", "testAuthor3", "testGenre3",
-                        Collections.singletonList(new CommentDto("testBookComment4"))),
-                new BookDto("testBook5", "testAuthor3", "testGenre4",
-                        Collections.singletonList(new CommentDto("testBookComment5"))),
-                new BookDto("testBook6", "testAuthor3", "testGenre2",
-                        Collections.singletonList(new CommentDto("testBookComment6")))
+                new BookDto("testBook1", "testAuthor1", "testGenre1", "testBookComment1"),
+                new BookDto("testBook2", "testAuthor2", "testGenre3", "testBookComment2"),
+                new BookDto("testBook3", "testAuthor2", "testGenre4", "testBookComment3"),
+                new BookDto("testBook4", "testAuthor3", "testGenre3", "testBookComment4"),
+                new BookDto("testBook5", "testAuthor3", "testGenre4", "testBookComment5"),
+                new BookDto("testBook6", "testAuthor3", "testGenre2", "testBookComment6")
         );
 
         List<BookDto> actual = service.findAllBooks();
@@ -69,10 +59,8 @@ class LibraryServiceTest {
     public void shouldFindExpectedBooksByAuthor() {
         String author = "testAuthor2";
         List<BookDto> expected = Arrays.asList(
-                new BookDto("testBook2", "testAuthor2", "testGenre3",
-                        Collections.singletonList(new CommentDto("testBookComment2"))),
-                new BookDto("testBook3", "testAuthor2", "testGenre4",
-                        Collections.singletonList(new CommentDto("testBookComment3")))
+                new BookDto("testBook2", "testAuthor2", "testGenre3", "testBookComment2"),
+                new BookDto("testBook3", "testAuthor2", "testGenre4", "testBookComment3")
         );
 
         List<BookDto> actual = service.findBooksByAuthor(author);
@@ -85,10 +73,8 @@ class LibraryServiceTest {
     public void shouldFindExpectedBooksByGenre() {
         String genre = "testGenre4";
         List<BookDto> expected = Arrays.asList(
-                new BookDto("testBook3", "testAuthor2", "testGenre4",
-                        Collections.singletonList(new CommentDto("testBookComment3"))),
-                new BookDto("testBook5", "testAuthor3", "testGenre4",
-                        Collections.singletonList(new CommentDto("testBookComment5")))
+                new BookDto("testBook3", "testAuthor2", "testGenre4", "testBookComment3"),
+                new BookDto("testBook5", "testAuthor3", "testGenre4", "testBookComment5")
         );
 
         List<BookDto> actual = service.findBooksByGenre(genre);
@@ -121,8 +107,7 @@ class LibraryServiceTest {
     public void shouldAddCommentToGivenBook() {
         String bookName = "testBook6";
         String comment = "testComment";
-        BookDto expected = new BookDto(bookName, "testAuthor3", "testGenre2",
-                Arrays.asList(new CommentDto("testBookComment6"), new CommentDto(comment)));
+        BookDto expected = new BookDto(bookName, "testAuthor3", "testGenre2", "testBookComment6, " + comment);
 
         service.addBookComment(bookName, comment);
 
@@ -136,8 +121,7 @@ class LibraryServiceTest {
     public void shouldUpdateGivenBookWithNewName() {
         String oldBookName = "testBook4";
         String newBookName = "testBookUpdated";
-        BookDto expected = new BookDto(newBookName, "testAuthor3", "testGenre3",
-                Collections.singletonList(new CommentDto("testBookComment4")));
+        BookDto expected = new BookDto(newBookName, "testAuthor3", "testGenre3", "testBookComment4");
 
         service.updateBook(oldBookName, newBookName);
 
@@ -186,9 +170,9 @@ class LibraryServiceTest {
 
         service.updateBookComment(bookName, oldBookComment, newBookComment);
 
-        List<CommentDto> actual = service.findBookByName(bookName).getComments();
+        String actual = service.findBookByName(bookName).getComments();
 
-        assertThat(actual).hasSize(1).element(0).hasFieldOrPropertyWithValue("content", newBookComment);
+        assertThat(actual).isEqualTo(newBookComment);
     }
 
     @DisplayName("должен удалять заданную книгу")
