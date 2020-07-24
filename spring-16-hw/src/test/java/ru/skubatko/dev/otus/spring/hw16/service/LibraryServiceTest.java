@@ -103,7 +103,7 @@ class LibraryServiceTest {
         String authorName = "testAuthorName";
         String genreName = "testGenreName";
 
-        service.addBook(bookName, authorName, genreName);
+        service.addBook(new BookDto(bookName, authorName, genreName));
 
         BookDto actual = service.findBookByName(bookName);
 

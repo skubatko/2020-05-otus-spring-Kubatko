@@ -65,6 +65,6 @@ public class LibraryController {
     public String deleteBook(@PathVariable("name") String name, Model model) {
         service.deleteBook(name);
         model.addAttribute("books", service.findAllBooks());
-        return "index";
+        return "redirect:/library/books";
     }
 }

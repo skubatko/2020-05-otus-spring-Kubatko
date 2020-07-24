@@ -22,6 +22,7 @@
                   <th>Name</th>
                   <th>Author</th>
                   <th>Genre</th>
+                  <th>Comments</th>
                   <th>Edit</th>
                   <th>Delete</th>
                 </tr>
@@ -31,6 +32,7 @@
                   <td th:text="${book.name}"></td>
                   <td th:text="${book.author}"></td>
                   <td th:text="${book.genre}"></td>
+                  <td th:text="${book.comments}"></td>
                   <td>
                     <a th:href="@{/library/books/edit/{name}(name=${book.name})}" class="btn btn-primary"><i class="fas fa-edit ml-2"></i></a>
                   </td>
