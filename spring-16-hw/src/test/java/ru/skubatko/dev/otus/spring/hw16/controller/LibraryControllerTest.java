@@ -95,9 +95,9 @@ class LibraryControllerTest {
         verify(service).addBook(book);
     }
 
-    @DisplayName("должен возвращать страницу успешного добавления ожидаемой книги когда выполняется запрос GET по пути /library/books/add/success")
+    @DisplayName("должен возвращать страницу успешного добавления ожидаемой книги когда выполняется запрос GET по пути /library/books/add/success с флеш-атрибутом book")
     @Test
-    void shouldReturnPageOfSuccessfulAddExpectedBookWhenPerformedGetRequestOnLibraryBooksAddSuccessPath() throws Exception {
+    void shouldReturnPageOfSuccessfulAddExpectedBookWhenPerformedGetRequestOnLibraryBooksAddSuccessPathWithBookFlashAttr() throws Exception {
         mockMvc.perform(get("/library/books/add/success")
                                 .flashAttr("book", mock(BookDto.class)))
                 .andDo(print())
@@ -105,6 +105,15 @@ class LibraryControllerTest {
                 .andExpect(model().attribute("book", any(BookDto.class)))
                 .andExpect(view().name("add-book-success"))
                 .andExpect(content().string(containsString("Book added")));
+    }
+
+    @DisplayName("должен перенаправлять на страницу списка книг когда выполняется запрос GET по пути /library/books/add/success")
+    @Test
+    void shouldRedirectToPageOfBooksListWhenPerformedGetRequestOnLibraryBooksAddSuccessPath() throws Exception {
+        mockMvc.perform(get("/library/books/add/success"))
+                .andDo(print())
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/library/books"));
     }
 
 }
