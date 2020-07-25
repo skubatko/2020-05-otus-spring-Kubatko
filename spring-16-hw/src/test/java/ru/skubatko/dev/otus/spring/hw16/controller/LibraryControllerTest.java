@@ -142,6 +142,7 @@ class LibraryControllerTest {
         String bookUpdatedName = "";
         String author = "testAuthor";
         String genre = "testGenre";
+
         String bookName = "testBookName";
 
         mockMvc.perform(post(String.format("/library/books/update/%s", bookName))
@@ -153,6 +154,27 @@ class LibraryControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attribute("error", "Book's name is mandatory"))
                 .andExpect(redirectedUrl(String.format("/library/books/edit/%s", bookName)));
+    }
+
+    @DisplayName("должен перенаправлять на страницу списка книг и обновлять имя книги когда выполняется запрос POST по пути /library/books/update/{name}")
+    @Test
+    void shouldRedirectToBooksListPageAmdUpdateBookNameWhenPerformedPostRequestOnLibraryBooksUpdateNamePath() throws Exception {
+        String bookUpdatedName = "testBookUpdatedName";
+        String author = "testAuthor";
+        String genre = "testGenre";
+
+        String bookName = "testBookName";
+
+        mockMvc.perform(post(String.format("/library/books/update/%s", bookName))
+                                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                                .param("name", bookUpdatedName)
+                                .param("author", author)
+                                .param("genre", genre))
+                .andDo(print())
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/library/books"));
+
+        verify(service).updateBook(bookName, bookUpdatedName);
     }
 
 }
