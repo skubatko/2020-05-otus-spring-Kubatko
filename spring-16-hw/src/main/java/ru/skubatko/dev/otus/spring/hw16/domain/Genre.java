@@ -11,7 +11,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.validation.constraints.NotBlank;
 
 @Entity
 @Getter
@@ -26,7 +25,6 @@ public class Genre {
     private long id;
 
     @Column(name = "name")
-    @NotBlank(message = "Name is mandatory")
     private String name;
 
     public Genre(String name) {

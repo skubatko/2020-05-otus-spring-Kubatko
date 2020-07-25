@@ -14,7 +14,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.NotBlank;
 
 @Entity
 @Getter
@@ -29,7 +28,6 @@ public class Comment {
     private long id;
 
     @Column(name = "content")
-    @NotBlank(message = "Content is mandatory")
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

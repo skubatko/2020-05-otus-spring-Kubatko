@@ -17,7 +17,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,7 +34,6 @@ public class Book {
     private long id;
 
     @Column(name = "name")
-    @NotBlank(message = "Name is mandatory")
     private String name;
 
     @ManyToOne

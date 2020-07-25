@@ -33,16 +33,22 @@ public class LibraryController {
     }
 
     @GetMapping("/library/books/add")
-    public String showAddBookForm(Model model) {
+    public String showAddBookForm(HttpServletRequest request, Model model) {
+        Map<String, ?> inputFlashMap = RequestContextUtils.getInputFlashMap(request);
+        if (Objects.nonNull(inputFlashMap)) {
+            model.addAttribute("error", inputFlashMap.get("error"));
+        }
+
         model.addAttribute("book", new BookDto());
         return "add-book";
     }
 
     @PostMapping("/library/books/add")
-    public RedirectView addBookPost(@ModelAttribute @Valid BookDto book,
+    public RedirectView addBookPost(@ModelAttribute("book") @Valid BookDto book,
                                     BindingResult result,
                                     RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
+            redirectAttributes.addFlashAttribute("error", result.getAllErrors().get(0).getDefaultMessage());
             return new RedirectView("/library/books/add", true);
         }
 
@@ -64,31 +70,35 @@ public class LibraryController {
     }
 
     @GetMapping("/library/books/edit/{name}")
-    public String showUpdateBookForm(@PathVariable("name") String name, Model model) {
+    public String showUpdateBookForm(@PathVariable("name") String name,
+                                     HttpServletRequest request,
+                                     Model model) {
+        Map<String, ?> inputFlashMap = RequestContextUtils.getInputFlashMap(request);
+        if (Objects.nonNull(inputFlashMap)) {
+            model.addAttribute("error", inputFlashMap.get("error"));
+        }
+
         BookDto book = service.findBookByName(name);
         model.addAttribute("book", book);
         return "update-book";
     }
 
     @PostMapping("/library/books/update/{name}")
-    public String updateBook(@PathVariable("name") String name,
-                             @ModelAttribute @Valid BookDto book,
-                             BindingResult result,
-                             Model model) {
-        if (result.hasErrors()) {
-            book.setName(name);
-            return "update-book";
+    public RedirectView updateBook(@PathVariable("name") String name,
+                                   @ModelAttribute("book") BookDto book,
+                                   RedirectAttributes redirectAttributes) {
+        if (book.getName().isEmpty()) {
+            redirectAttributes.addFlashAttribute("error", "Book's name is mandatory");
+            return new RedirectView(String.format("/library/books/edit/%s", name), true);
         }
 
         service.updateBook(name, book.getName());
-        model.addAttribute("books", service.findAllBooks());
-        return "redirect:/library/books";
+        return new RedirectView("/library/books", true);
     }
 
     @GetMapping("/library/books/delete/{name}")
     public String deleteBook(@PathVariable("name") String name, Model model) {
         service.deleteBook(name);
-        model.addAttribute("books", service.findAllBooks());
         return "redirect:/library/books";
     }
 }
