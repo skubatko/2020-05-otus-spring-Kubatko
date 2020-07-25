@@ -116,4 +116,24 @@ class LibraryControllerTest {
                 .andExpect(redirectedUrl("/library/books"));
     }
 
+    @DisplayName("должен возвращать страницу обновления книги когда выполняется запрос GET по пути /library/books/edit/{name}}")
+    @Test
+    void shouldReturnPageOfUpdateBookWhenPerformedGetRequestOnLibraryBooksEditNamePath() throws Exception {
+        String bookName = "testBookName";
+        String author = "testAuthor";
+        String genre = "testGenre";
+        BookDto book = new BookDto(bookName, author, genre);
+
+        given(service.findBookByName(bookName)).willReturn(book);
+
+        mockMvc.perform(get(String.format("/library/books/edit/%s", bookName))
+                                .flashAttr("error", "errorMessage"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(model().attribute("book", book))
+                .andExpect(model().attribute("error", "errorMessage"))
+                .andExpect(view().name("update-book"))
+                .andExpect(content().string(containsString("Update Book")));
+    }
+
 }
