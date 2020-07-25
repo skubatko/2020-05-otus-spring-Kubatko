@@ -158,7 +158,7 @@ class LibraryControllerTest {
 
     @DisplayName("должен перенаправлять на страницу списка книг и обновлять имя книги когда выполняется запрос POST по пути /library/books/update/{name}")
     @Test
-    void shouldRedirectToBooksListPageAmdUpdateBookNameWhenPerformedPostRequestOnLibraryBooksUpdateNamePath() throws Exception {
+    void shouldRedirectToBooksListPageAndUpdateBookNameWhenPerformedPostRequestOnLibraryBooksUpdateNamePath() throws Exception {
         String bookUpdatedName = "testBookUpdatedName";
         String author = "testAuthor";
         String genre = "testGenre";
@@ -177,4 +177,16 @@ class LibraryControllerTest {
         verify(service).updateBook(bookName, bookUpdatedName);
     }
 
+    @DisplayName("должен перенаправлять на страницу списка книг и удалять книгу когда выполняется запрос GET по пути /library/books/delete/{name}")
+    @Test
+    void shouldRedirectToBooksListPageAndDeleteBookWhenPerformedGetRequestOnLibraryBooksDeleteNamePath() throws Exception {
+        String bookName = "testBookName";
+
+        mockMvc.perform(get(String.format("/library/books/delete/%s", bookName)))
+                .andDo(print())
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/library/books"));
+
+        verify(service).deleteBook(bookName);
+    }
 }
