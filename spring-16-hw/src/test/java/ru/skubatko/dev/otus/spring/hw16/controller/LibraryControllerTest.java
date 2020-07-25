@@ -41,7 +41,7 @@ class LibraryControllerTest {
 
     @DisplayName("должен возвращать страницу со списком ожидаемых книг когда выполняется запрос GET по пути /library/books")
     @Test
-    public void shouldReturnPageOfExpectedBooksWhenPerformedGetRequestOnLibraryBooksPath() throws Exception {
+    void shouldReturnPageOfExpectedBooksWhenPerformedGetRequestOnLibraryBooksPath() throws Exception {
         String bookName = "testBookName";
         String author = "testAuthor";
         String genre = "testGenre";
@@ -61,7 +61,7 @@ class LibraryControllerTest {
 
     @DisplayName("должен возвращать страницу добавления новой книги когда выполняется запрос GET по пути /library/books/add")
     @Test
-    public void shouldReturnPageOfAddBookWhenPerformedGetRequestOnLibraryBooksAddPath() throws Exception {
+    void shouldReturnPageOfAddBookWhenPerformedGetRequestOnLibraryBooksAddPath() throws Exception {
         mockMvc.perform(get("/library/books/add"))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -72,7 +72,7 @@ class LibraryControllerTest {
 
     @DisplayName("должен возвращать страницу со списком ожидаемых книг когда выполняется запрос POST по пути /library/books")
     @Test
-    public void shouldReturnPageOfExpectedBooksWhenPerformedPostRequestOnLibraryBooksPath() throws Exception {
+    void shouldReturnPageOfExpectedBooksWhenPerformedPostRequestOnLibraryBooksPath() throws Exception {
         String bookName = "testBookName";
         String author = "testAuthor";
         String genre = "testGenre";
