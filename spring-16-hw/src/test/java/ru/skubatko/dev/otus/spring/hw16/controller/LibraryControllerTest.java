@@ -136,4 +136,23 @@ class LibraryControllerTest {
                 .andExpect(content().string(containsString("Update Book")));
     }
 
+    @DisplayName("должен перенаправлять на страницу обновления ожидаемой книги когда выполняется запрос POST по пути /library/books/update/{name} с пустым обновленным именем книги")
+    @Test
+    void shouldRedirectToExpectedBookUpdatePageWhenPerformedPostRequestOnLibraryBooksUpdateNamePathWithEmptyUpdatedBookName() throws Exception {
+        String bookUpdatedName = "";
+        String author = "testAuthor";
+        String genre = "testGenre";
+        String bookName = "testBookName";
+
+        mockMvc.perform(post(String.format("/library/books/update/%s", bookName))
+                                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                                .param("name", bookUpdatedName)
+                                .param("author", author)
+                                .param("genre", genre))
+                .andDo(print())
+                .andExpect(status().is3xxRedirection())
+                .andExpect(flash().attribute("error", "Book's name is mandatory"))
+                .andExpect(redirectedUrl(String.format("/library/books/edit/%s", bookName)));
+    }
+
 }
