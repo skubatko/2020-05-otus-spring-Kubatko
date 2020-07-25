@@ -34,17 +34,17 @@
                   <td th:text="${book.genre}"></td>
                   <td th:text="${book.comments}"></td>
                   <td>
-                    <a th:href="@{/library/books/edit/{name}(name=${book.name})}" class="btn btn-primary"><i class="fas fa-edit ml-2"></i></a>
+                    <a th:href="@{/library/books/edit/{name}(name=${book.name})}" class="btn btn-primary"><i class="fas fa-edit"></i></a>
                   </td>
                   <td>
-                    <a th:href="@{/library/books/delete/{name}(name=${book.name})}" class="btn btn-primary"><i class="fas fa-minus ml-2"></i></a>
+                    <a th:href="@{/library/books/delete/{name}(name=${book.name})}" class="btn btn-primary"><i class="fas fa-minus"></i></a>
                   </td>
                 </tr>
               </tbody>
             </table>
           </div>
           <p class="my-5">
-            <a href="add-book.html" th:href="@{/library/books/add}" class="btn btn-primary"><i class="fas fa-plus ml-2"></i></a>
+            <a href="add-book.html" th:href="@{/library/books/add}" class="btn btn-primary"><i class="fas fa-plus m-2"></i></a>
           </p>
         </div>
       </div>

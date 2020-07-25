@@ -8,10 +8,17 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.support.RequestContextUtils;
+import org.springframework.web.servlet.view.RedirectView;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.Map;
+import java.util.Objects;
 
 @Controller
 @RequiredArgsConstructor
@@ -19,38 +26,55 @@ public class LibraryController {
 
     private final LibraryService service;
 
-    @GetMapping("/library/books")
+    @GetMapping({"/library/books", "/"})
     public String listBooks(Model model) {
         model.addAttribute("books", service.findAllBooks());
         return "index";
     }
 
     @GetMapping("/library/books/add")
-    public String addBook(Model model) {
+    public String showAddBookForm(Model model) {
         model.addAttribute("book", new BookDto());
         return "add-book";
     }
 
     @PostMapping("/library/books/add")
-    public String addBook(@Valid BookDto book, BindingResult result, Model model) {
+    public RedirectView addBookPost(@ModelAttribute @Valid BookDto book,
+                                    BindingResult result,
+                                    RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
-            return "add-book";
+            return new RedirectView("/library/books/add", true);
         }
 
         service.addBook(book);
-        model.addAttribute("books", service.findAllBooks());
-        return "redirect:/library/books";
+        redirectAttributes.addFlashAttribute("book", book);
+        return new RedirectView("/library/books/add/success", true);
+    }
+
+    @GetMapping("/library/books/add/success")
+    public String showAddBookSuccessForm(HttpServletRequest request, Model model) {
+        Map<String, ?> inputFlashMap = RequestContextUtils.getInputFlashMap(request);
+        if (Objects.nonNull(inputFlashMap)) {
+            BookDto book = (BookDto) inputFlashMap.get("book");
+            model.addAttribute("book", book);
+            return "add-book-success";
+        } else {
+            return "redirect:/library/books";
+        }
     }
 
     @GetMapping("/library/books/edit/{name}")
-    public String showUpdateForm(@PathVariable("name") String name, Model model) {
+    public String showUpdateBookForm(@PathVariable("name") String name, Model model) {
         BookDto book = service.findBookByName(name);
         model.addAttribute("book", book);
         return "update-book";
     }
 
     @PostMapping("/library/books/update/{name}")
-    public String updateBook(@PathVariable("name") String name, @Valid BookDto book, BindingResult result, Model model) {
+    public String updateBook(@PathVariable("name") String name,
+                             @ModelAttribute @Valid BookDto book,
+                             BindingResult result,
+                             Model model) {
         if (result.hasErrors()) {
             book.setName(name);
             return "update-book";
