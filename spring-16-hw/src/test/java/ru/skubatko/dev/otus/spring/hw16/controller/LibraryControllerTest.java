@@ -5,6 +5,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -70,9 +71,9 @@ class LibraryControllerTest {
                 .andExpect(content().string(containsString("Add Book")));
     }
 
-    @DisplayName("должен возвращать страницу со списком ожидаемых книг когда выполняется запрос POST по пути /library/books")
+    @DisplayName("должен перенаправлять на страницу успешного добавления ожидаемой книги когда выполняется запрос POST по пути /library/books/add")
     @Test
-    void shouldReturnPageOfExpectedBooksWhenPerformedPostRequestOnLibraryBooksPath() throws Exception {
+    void shouldRedirectToExpectedBookAddSuccessPageWhenPerformedPostRequestOnLibraryBooksAddPath() throws Exception {
         String bookName = "testBookName";
         String author = "testAuthor";
         String genre = "testGenre";
@@ -92,6 +93,18 @@ class LibraryControllerTest {
                 .andExpect(redirectedUrl("/library/books/add/success"));
 
         verify(service).addBook(book);
+    }
+
+    @DisplayName("должен возвращать страницу успешного добавления ожидаемой книги когда выполняется запрос GET по пути /library/books/add/success")
+    @Test
+    void shouldReturnPageOfSuccessfulAddExpectedBookWhenPerformedGetRequestOnLibraryBooksAddSuccessPath() throws Exception {
+        mockMvc.perform(get("/library/books/add/success")
+                                .flashAttr("book", mock(BookDto.class)))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(model().attribute("book", any(BookDto.class)))
+                .andExpect(view().name("add-book-success"))
+                .andExpect(content().string(containsString("Book added")));
     }
 
 }

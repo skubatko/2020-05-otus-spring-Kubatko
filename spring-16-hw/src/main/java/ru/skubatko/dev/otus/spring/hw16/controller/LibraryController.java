@@ -44,7 +44,7 @@ public class LibraryController {
     }
 
     @PostMapping("/library/books/add")
-    public RedirectView addBookPost(@ModelAttribute("book") @Valid BookDto book,
+    public RedirectView addBook(@ModelAttribute("book") @Valid BookDto book,
                                     BindingResult result,
                                     RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
