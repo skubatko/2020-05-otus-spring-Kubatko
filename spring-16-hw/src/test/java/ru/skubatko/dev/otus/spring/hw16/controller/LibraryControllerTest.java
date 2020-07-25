@@ -87,7 +87,9 @@ class LibraryControllerTest {
                 .andDo(print())
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attribute("book", hasProperty("name", equalTo(bookName))))
-                .andExpect(redirectedUrl("/library/books"));
+                .andExpect(flash().attribute("book", hasProperty("author", equalTo(author))))
+                .andExpect(flash().attribute("book", hasProperty("genre", equalTo(genre))))
+                .andExpect(redirectedUrl("/library/books/add/success"));
 
         verify(service).addBook(book);
     }
