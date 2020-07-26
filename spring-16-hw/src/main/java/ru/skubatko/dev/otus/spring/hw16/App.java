@@ -14,6 +14,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 public class App {
 
     public static void main(String[] args) {
-        SpringApplication.run(ru.skubatko.dev.otus.spring.hw16.App.class, args);
+        SpringApplication.run(App.class, args);
     }
 }
