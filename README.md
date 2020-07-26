@@ -31,3 +31,6 @@ JPQL, Spring ORM, DAO на основе Spring ORM + JPA
 
 * spring-13-hw - домашнее задание к уроку 13
 Spring Data для подключения к нереляционным БД
+
+* spring-16-hw - домашнее задание к уроку 16
+Spring MVC View
