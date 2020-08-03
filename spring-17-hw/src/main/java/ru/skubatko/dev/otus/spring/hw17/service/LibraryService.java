@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -54,29 +55,33 @@ public class LibraryService {
     }
 
     @Transactional
-    public void addBook(BookDto book) {
-        String bookName = book.getName();
-        Book entity = bookRepository.findByName(bookName);
-        if (entity != null) {
+    public void addBook(BookDto bookDto) {
+        String bookName = bookDto.getName();
+        Book repoBook = bookRepository.findByName(bookName);
+        if (repoBook != null) {
             throw new BookAlreadyExistsLibraryServiceException();
         }
 
-        String authorName = book.getAuthor();
+        String authorName = bookDto.getAuthor();
         Author author = authorRepository.findByName(authorName);
         if (author == null) {
             author = new Author(authorName);
             authorRepository.save(author);
         }
 
-        String genreName = book.getGenre();
+        String genreName = bookDto.getGenre();
         Genre genre = genreRepository.findByName(genreName);
         if (genre == null) {
             genre = new Genre(genreName);
             genreRepository.save(genre);
         }
 
-        entity = new Book(bookName, author, genre);
-        bookRepository.save(entity);
+        Book book = new Book(bookName, author, genre);
+        bookRepository.save(book);
+
+        Arrays.stream(bookDto.getComments().split(",")).forEach(
+                content -> commentRepository.save(new Comment(book, content.trim()))
+        );
     }
 
     @Transactional
