@@ -93,7 +93,7 @@ function saveBook(oldBookName) {
     contentType: "application/json; charset=utf-8",
     dataType: "json",
     success: function (receivedBook) {
-      updateBookInList(receivedBook);
+      updateBookInList(oldBookName, receivedBook);
     },
     error: onError
   });
@@ -114,7 +114,7 @@ function insertBookInList(book, idx) {
   const row = booksTable.insertRow(idx);
 
   const rowIdAttr = document.createAttribute('id');
-  rowIdAttr.value = book.id;
+  rowIdAttr.value = book.name;
   row.attributes.setNamedItem(rowIdAttr);
 
   const cellIdx = row.insertCell(-1);
@@ -130,8 +130,8 @@ function insertBookInList(book, idx) {
   cellDeleteBtn.innerHTML = `<button class="btn btn-danger" onclick="deleteBook('${book.name}')"><span class="glyphicon glyphicon-trash"></span> Delete</button>`;
 }
 
-function updateBookInList(book) {
-  let row = booksTable.rows.namedItem(book.id);
+function updateBookInList(oldBookName, book) {
+  let row = booksTable.rows.namedItem(oldBookName);
   const idx = row.sectionRowIndex;
 
   row.remove();

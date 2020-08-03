@@ -39,7 +39,7 @@ public class BooksResource {
         return bookDto;
     }
 
-    @DeleteMapping("/api/books{bookName}")
+    @DeleteMapping("/api/books/{bookName}")
     public void delete(@PathVariable("bookName") String bookName) {
         service.deleteBook(bookName);
     }
