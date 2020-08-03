@@ -1,4 +1,4 @@
-package ru.skubatko.dev.otus.spring.hw17.controller.web;
+package ru.skubatko.dev.otus.spring.hw17.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;

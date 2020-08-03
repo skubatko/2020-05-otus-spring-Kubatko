@@ -1,4 +1,4 @@
-package ru.skubatko.dev.otus.spring.hw17.controller.api;
+package ru.skubatko.dev.otus.spring.hw17.api;
 
 import ru.skubatko.dev.otus.spring.hw17.dto.BookDto;
 import ru.skubatko.dev.otus.spring.hw17.service.LibraryService;
