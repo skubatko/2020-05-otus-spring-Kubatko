@@ -18,6 +18,10 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-devtools'
 
+    implementation 'org.webjars:bootstrap:3.3.7'
+    implementation 'org.webjars:jquery:2.2.4'
+    implementation 'org.webjars:webjars-locator:0.30'
+
     implementation 'com.h2database:h2'
     implementation 'org.liquibase:liquibase-core'
 
