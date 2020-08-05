@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,6 +32,8 @@ public class LibraryService {
     private final AuthorRepository authorRepository;
     private final GenreRepository genreRepository;
     private final CommentRepository commentRepository;
+
+    private static final String COMMA = ",";
 
     @Transactional(readOnly = true)
     public BookDto findBookByName(String bookName) {
@@ -79,9 +82,12 @@ public class LibraryService {
         Book book = new Book(bookName, author, genre);
         bookRepository.save(book);
 
-        Arrays.stream(bookDto.getComments().split(",")).forEach(
-                content -> commentRepository.save(new Comment(book, content.trim()))
-        );
+        String comments = bookDto.getComments();
+        if (Objects.nonNull(comments)) {
+            Arrays.stream(comments.split(COMMA)).forEach(
+                    content -> commentRepository.save(new Comment(book, content.trim()))
+            );
+        }
     }
 
     @Transactional
