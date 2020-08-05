@@ -17,14 +17,4 @@ public class LibraryController {
     public String books() {
         return "books";
     }
-
-    @GetMapping("/authors")
-    public String authors() {
-        return "authors";
-    }
-
-    @GetMapping("/genres")
-    public String genres() {
-        return "genres";
-    }
 }

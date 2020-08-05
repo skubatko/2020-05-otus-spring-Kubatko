@@ -13,8 +13,6 @@ function showMenu() {
                 <ul class="nav navbar-nav">
                     <li><a href="/index">Home</a></li>
                     <li><a href="/books">Books</a></li>
-                    <li><a href="/authors">Authors</a></li>
-                    <li><a href="/genres">Genres</a></li>
                 </ul>
             </div>
         </nav>
