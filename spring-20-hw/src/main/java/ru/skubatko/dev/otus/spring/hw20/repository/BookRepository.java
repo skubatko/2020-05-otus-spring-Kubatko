@@ -1,23 +1,16 @@
 package ru.skubatko.dev.otus.spring.hw20.repository;
 
-import ru.skubatko.dev.otus.spring.hw20.domain.Author;
 import ru.skubatko.dev.otus.spring.hw20.domain.Book;
-import ru.skubatko.dev.otus.spring.hw20.domain.Genre;
 
-import org.springframework.data.jpa.repository.EntityGraph;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;
 
-public interface BookRepository extends JpaRepository<Book, Long> {
-
-    @EntityGraph(attributePaths = {"author", "genre", "comments"})
-    @Override
-    List<Book> findAll();
+public interface BookRepository extends MongoRepository<Book, String> {
 
     Book findByName(String name);
 
-    List<Book> findByAuthor(Author author);
+    List<Book> findByAuthor(String author);
 
-    List<Book> findByGenre(Genre genre);
+    List<Book> findByGenre(String genre);
 }

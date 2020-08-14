@@ -3,14 +3,14 @@
  */
 package ru.skubatko.dev.otus.spring.hw20;
 
-import ru.skubatko.dev.otus.spring.hw20.config.AppProps;
+import ru.skubatko.dev.otus.spring.hw20.config.MongoProps;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
 @SpringBootApplication
-@EnableConfigurationProperties(AppProps.class)
+@EnableConfigurationProperties(MongoProps.class)
 public class App {
 
     public static void main(String[] args) {

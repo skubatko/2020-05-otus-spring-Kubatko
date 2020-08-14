@@ -1,7 +1,5 @@
 package ru.skubatko.dev.otus.spring.hw20.dto;
 
-import ru.skubatko.dev.otus.spring.hw20.domain.Comment;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
