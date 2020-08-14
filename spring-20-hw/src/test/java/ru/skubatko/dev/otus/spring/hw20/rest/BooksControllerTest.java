@@ -1,4 +1,4 @@
-package ru.skubatko.dev.otus.spring.hw20.api;
+package ru.skubatko.dev.otus.spring.hw20.rest;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.BDDMockito.given;
@@ -12,8 +12,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import ru.skubatko.dev.otus.spring.hw20.dto.BookDto;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,8 +24,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.List;
 
 @DisplayName("Ресурс работы с книгами")
-@WebMvcTest(BooksResource.class)
-class BooksResourceTest {
+@WebMvcTest(BooksController.class)
+class BooksControllerTest {
 
     @Autowired
     private MockMvc mockMvc;

@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
-import javax.validation.constraints.NotBlank;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Data
@@ -13,23 +13,10 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @Accessors(chain = true)
 public class BookDto {
-
-    @NotBlank(message = "Book's name is mandatory")
     private String name;
-
-    @NotBlank(message = "Author is mandatory")
     private String author;
-
-    @NotBlank(message = "Genre is mandatory")
     private String genre;
-
-    private String comments;
-
-    public BookDto(String name, String author, String genre) {
-        this.name = name;
-        this.author = author;
-        this.genre = genre;
-    }
+    private List<CommentDto> comments;
 
     public static BookDto toDto(Book book) {
         if (book == null) {
@@ -38,11 +25,10 @@ public class BookDto {
 
         return new BookDto()
                        .setName(book.getName())
-                       .setAuthor(book.getAuthor().getName())
-                       .setGenre(book.getGenre().getName())
+                       .setAuthor(book.getAuthor())
+                       .setGenre(book.getGenre())
                        .setComments(book.getComments().stream()
                                             .map(CommentDto::toDto)
-                                            .map(CommentDto::getContent)
-                                            .collect(Collectors.joining(", ")));
+                                            .collect(Collectors.toList()));
     }
 }

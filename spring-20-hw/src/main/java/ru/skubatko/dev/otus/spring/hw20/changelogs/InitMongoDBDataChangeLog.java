@@ -1,8 +1,5 @@
 package ru.skubatko.dev.otus.spring.hw20.changelogs;
 
-import ru.skubatko.dev.otus.spring.hw20.domain.Book;
-import ru.skubatko.dev.otus.spring.hw20.domain.Comment;
-
 import com.github.cloudyrock.mongock.ChangeLog;
 import com.github.cloudyrock.mongock.ChangeSet;
 import com.mongodb.client.MongoDatabase;

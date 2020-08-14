@@ -1,7 +1,8 @@
-package ru.skubatko.dev.otus.spring.hw20.api;
+package ru.skubatko.dev.otus.spring.hw20.rest;
 
 import ru.skubatko.dev.otus.spring.hw20.dto.BookDto;
-import ru.skubatko.dev.otus.spring.hw20.service.LibraryService;
+import ru.skubatko.dev.otus.spring.hw20.repository.BookRepository;
+import ru.skubatko.dev.otus.spring.hw20.repository.CommentRepository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -13,40 +14,41 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @RestController
 @RequiredArgsConstructor
-public class BooksResource {
+public class BooksController {
 
-    private final LibraryService service;
+    private final BookRepository bookRepository;
+    private final CommentRepository commentRepository;
 
     @GetMapping("/api/books")
     @ResponseStatus(HttpStatus.OK)
-    public List<BookDto> getBooks() {
-        return service.findAllBooks();
+    public Flux<BookDto> getBooks() {
+        return bookRepository.findAll().map(BookDto::toDto);
     }
 
     @PostMapping("/api/books")
     @ResponseStatus(HttpStatus.CREATED)
-    public BookDto create(@RequestBody BookDto bookDto) {
-        service.addBook(bookDto);
+    public Mono<BookDto> create(@RequestBody BookDto bookDto) {
+        bookRepository.(bookDto);
         return bookDto;
     }
 
     @PutMapping("/api/books/{oldBookName}")
     @ResponseStatus(HttpStatus.OK)
-    public BookDto update(
+    public Mono<BookDto> update(
             @PathVariable("oldBookName") String oldBookName,
             @RequestBody final BookDto bookDto) {
-        service.updateBook(oldBookName, bookDto.getName());
+        bookRepository.updateBook(oldBookName, bookDto.getName());
         return bookDto;
     }
 
     @DeleteMapping("/api/books/{bookName}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable("bookName") String bookName) {
-        service.deleteBook(bookName);
+        bookRepository.deleteBook(bookName);
     }
 }

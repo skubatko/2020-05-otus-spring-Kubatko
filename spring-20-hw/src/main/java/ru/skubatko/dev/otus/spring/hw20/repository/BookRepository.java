@@ -2,15 +2,15 @@ package ru.skubatko.dev.otus.spring.hw20.repository;
 
 import ru.skubatko.dev.otus.spring.hw20.domain.Book;
 
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
-import java.util.List;
+public interface BookRepository extends ReactiveMongoRepository<Book, String> {
 
-public interface BookRepository extends MongoRepository<Book, String> {
+    @Override
+    Flux<Book> findAll();
 
-    Book findByName(String name);
-
-    List<Book> findByAuthor(String author);
-
-    List<Book> findByGenre(String genre);
+    @Override
+    Mono<Book> save(Book book);
 }
