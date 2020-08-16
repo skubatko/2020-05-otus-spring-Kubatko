@@ -1,102 +1,106 @@
 package ru.skubatko.dev.otus.spring.hw20.rest;
 
-import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import ru.skubatko.dev.otus.spring.hw20.domain.Book;
+import ru.skubatko.dev.otus.spring.hw20.domain.Comment;
+import ru.skubatko.dev.otus.spring.hw20.dto.BookDto;
+import ru.skubatko.dev.otus.spring.hw20.repository.BookRepository;
+import ru.skubatko.dev.otus.spring.hw20.repository.CommentRepository;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.reactive.server.WebTestClient;
+import reactor.core.publisher.Flux;
 
+import java.util.Collections;
 import java.util.List;
 
-@DisplayName("Ресурс работы с книгами")
-@WebMvcTest(BooksController.class)
+@DisplayName("Контроллер работы с книгами")
+@WebFluxTest(BooksController.class)
 class BooksControllerTest {
 
     @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
+    private WebTestClient webTestClient;
 
     @MockBean
-    private LibraryService service;
+    private BookRepository bookRepository;
+    @MockBean
+    private CommentRepository commentRepository;
 
-    private String baseUrl = "/api/books";
-    private BookDto book = new BookDto("testName", "testAuthor", "testGenre", "testComments");
+    private final String baseUrl = "/api/books";
+    private final String bookName = "testName";
+
+    private Book book;
+    private BookDto bookDto;
+
+    @BeforeEach
+    void setUp() {
+        book = new Book(bookName, "testAuthor", "testGenre", Collections.singletonList(new Comment("testComments", bookName)));
+        bookDto = BookDto.toDto(book);
+    }
 
     @DisplayName("должен возвращать статус OK и все ожидаемые книги когда выполняется запрос GET по пути /api/books")
     @Test
-    void shouldReturnStatusOkAndAllExpectedBooksWhenPerformsGetOnApiBooks() throws Exception {
-        List<BookDto> books = List.of(book);
-        given(service.findAllBooks()).willReturn(books);
+    void shouldReturnStatusOkAndAllExpectedBooksWhenPerformsGetOnApiBooks() {
+        List<BookDto> books = List.of(bookDto);
+        given(bookRepository.findAll()).willReturn(Flux.just(book));
 
-        mockMvc.perform(
-                get(baseUrl))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(content().json(objectMapper.writeValueAsString(books)));
+        webTestClient.get().uri(baseUrl)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBodyList(BookDto.class)
+                .hasSize(1)
+                .isEqualTo(books);
     }
 
     @DisplayName("должен возвращать статус CREATED и ожидаемую книгу когда выполняется запрос POST по пути /api/books")
     @Test
-    void shouldReturnStatusCreatedAndExpectedBookWhenPerformsPostOnApiBooks() throws Exception {
-        mockMvc.perform(
-                post(baseUrl)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(book)))
-                .andDo(print())
-                .andExpect(status().isCreated())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().json(objectMapper.writeValueAsString(book)));
+    void shouldReturnStatusCreatedAndExpectedBookWhenPerformsPostOnApiBooks() {
+        webTestClient.post().uri(baseUrl)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(bookDto, BookDto.class)
+                .exchange()
+                .expectStatus().isCreated()
+                .expectBody(BookDto.class)
+                .isEqualTo(bookDto);
 
-        verify(service).addBook(book);
+        verify(commentRepository).saveAll(book.getComments());
+        verify(bookRepository).insert(book);
     }
 
     @DisplayName("должен возвращать статус OK и ожидаемую книгу когда выполняется запрос PUT по пути /api/books/{oldBookName}")
     @Test
-    void shouldReturnStatusOkAndExpectedBookWhenPerformsPutOnApiBooksWithOldBookName() throws Exception {
+    void shouldReturnStatusOkAndExpectedBookWhenPerformsPutOnApiBooksWithOldBookName() {
         String oldBookName = "oldBookName";
         String url = baseUrl + "/%s";
 
-        mockMvc.perform(
-                put(String.format(url, oldBookName))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(book)))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().json(objectMapper.writeValueAsString(book)));
+        webTestClient.put().uri(String.format(url, oldBookName))
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(bookDto, BookDto.class)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(BookDto.class)
+                .isEqualTo(bookDto);
 
-        verify(service).updateBook(oldBookName, book.getName());
+        verify(bookRepository).save(book);
     }
 
     @DisplayName("должен возвращать статус NO_CONTENT и когда выполняется запрос DELETE по пути /api/books/{bookName}")
     @Test
-    void shouldReturnStatusNoContentWhenPerformsDeleteOnApiBooks() throws Exception {
+    void shouldReturnStatusNoContentWhenPerformsDeleteOnApiBooks() {
         String url = baseUrl + "/%s";
 
-        mockMvc.perform(
-                delete(String.format(url, book.getName())))
-                .andDo(print())
-                .andExpect(status().isNoContent());
+        webTestClient.delete().uri(String.format(url, bookDto.getName()))
+                .exchange()
+                .expectStatus().isNoContent();
 
-        verify(service).deleteBook(book.getName());
+        verify(bookRepository).deleteByName(bookName);
     }
 }

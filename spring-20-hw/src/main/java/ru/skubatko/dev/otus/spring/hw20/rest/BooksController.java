@@ -61,7 +61,7 @@ public class BooksController {
     @ResponseStatus(HttpStatus.OK)
     public Mono<BookDto> update(
             @PathVariable("oldBookName") String oldBookName,
-            @RequestBody final BookDto dto) {
+            @RequestBody BookDto dto) {
 
         return Mono.just(dto)
                        .flatMap(bookDto -> bookRepository.findByName(oldBookName))
