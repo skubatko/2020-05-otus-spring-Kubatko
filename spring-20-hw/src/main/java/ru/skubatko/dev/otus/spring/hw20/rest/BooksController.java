@@ -41,6 +41,10 @@ public class BooksController {
     @PostMapping("/api/books")
     @ResponseStatus(HttpStatus.CREATED)
     public Mono<BookDto> create(@RequestBody BookDto dto) {
+        if (dto.getName().isBlank()) {
+            return Mono.empty();
+        }
+
         return commentRepository.saveAll(getComments(dto))
                        .collectList()
                        .flatMap(comments -> bookRepository.insert(new Book(dto.getName(), dto.getAuthor(), dto.getGenre(), comments)))
