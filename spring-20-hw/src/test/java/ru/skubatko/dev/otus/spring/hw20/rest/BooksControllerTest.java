@@ -1,7 +1,7 @@
 package ru.skubatko.dev.otus.spring.hw20.rest;
 
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import ru.skubatko.dev.otus.spring.hw20.domain.Book;
 import ru.skubatko.dev.otus.spring.hw20.domain.Comment;
@@ -18,6 +18,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.Collections;
 import java.util.List;
@@ -63,16 +64,18 @@ class BooksControllerTest {
     @DisplayName("должен возвращать статус CREATED и ожидаемую книгу когда выполняется запрос POST по пути /api/books")
     @Test
     void shouldReturnStatusCreatedAndExpectedBookWhenPerformsPostOnApiBooks() {
+        List<Comment> comments = book.getComments();
+
+        when(commentRepository.saveAll(comments)).thenReturn(Flux.fromIterable(comments));
+        when(bookRepository.insert(book)).thenReturn(Mono.just(book));
+
         webTestClient.post().uri(baseUrl)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(bookDto, BookDto.class)
+                .bodyValue(bookDto)
                 .exchange()
                 .expectStatus().isCreated()
                 .expectBody(BookDto.class)
                 .isEqualTo(bookDto);
-
-        verify(commentRepository).saveAll(book.getComments());
-        verify(bookRepository).insert(book);
     }
 
     @DisplayName("должен возвращать статус OK и ожидаемую книгу когда выполняется запрос PUT по пути /api/books/{oldBookName}")
@@ -81,26 +84,29 @@ class BooksControllerTest {
         String oldBookName = "oldBookName";
         String url = baseUrl + "/%s";
 
+        when(bookRepository.findByName(oldBookName)).thenReturn(Mono.just(book));
+        when(bookRepository.save(book)).thenReturn(Mono.just(book));
+
         webTestClient.put().uri(String.format(url, oldBookName))
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(bookDto, BookDto.class)
+                .bodyValue(bookDto)
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody(BookDto.class)
                 .isEqualTo(bookDto);
-
-        verify(bookRepository).save(book);
     }
 
     @DisplayName("должен возвращать статус NO_CONTENT и когда выполняется запрос DELETE по пути /api/books/{bookName}")
     @Test
     void shouldReturnStatusNoContentWhenPerformsDeleteOnApiBooks() {
         String url = baseUrl + "/%s";
+        String bookName = bookDto.getName();
 
-        webTestClient.delete().uri(String.format(url, bookDto.getName()))
+        when(bookRepository.deleteByName(bookName)).thenReturn(Mono.empty());
+        when(commentRepository.deleteAllByBookName(bookName)).thenReturn(Mono.empty());
+
+        webTestClient.delete().uri(String.format(url, bookName))
                 .exchange()
                 .expectStatus().isNoContent();
-
-        verify(bookRepository).deleteByName(bookName);
     }
 }
