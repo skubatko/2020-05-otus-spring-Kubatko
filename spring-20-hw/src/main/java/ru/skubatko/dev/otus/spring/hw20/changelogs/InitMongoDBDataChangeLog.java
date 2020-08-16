@@ -1,5 +1,8 @@
 package ru.skubatko.dev.otus.spring.hw20.changelogs;
 
+import ru.skubatko.dev.otus.spring.hw20.domain.Book;
+import ru.skubatko.dev.otus.spring.hw20.domain.Comment;
+
 import com.github.cloudyrock.mongock.ChangeLog;
 import com.github.cloudyrock.mongock.ChangeSet;
 import com.mongodb.client.MongoDatabase;
@@ -36,8 +39,7 @@ public class InitMongoDBDataChangeLog {
     private void addBook(String bookName, String author, String genre, String commentContent) {
         Comment comment = new Comment(commentContent, bookName);
         template.save(comment);
-        Book book = new Book(bookName, author, genre);
-        book.setComments(Collections.singletonList(comment));
+        Book book = new Book(bookName, author, genre, Collections.singletonList(comment));
         template.save(book);
     }
 }

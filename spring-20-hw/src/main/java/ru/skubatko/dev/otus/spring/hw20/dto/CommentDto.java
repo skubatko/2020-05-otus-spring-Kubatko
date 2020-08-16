@@ -1,5 +1,7 @@
 package ru.skubatko.dev.otus.spring.hw20.dto;
 
+import ru.skubatko.dev.otus.spring.hw20.domain.Comment;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,6 +12,7 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor
 @Accessors(chain = true)
 public class CommentDto {
+
     private String content;
 
     public static CommentDto toDto(Comment comment) {

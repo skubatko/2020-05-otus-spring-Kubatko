@@ -1,7 +1,7 @@
 spring:
   data:
     mongodb:
-      uri: mongodb://localhost
+      host: localhost
       port: 27017
       database: library
 

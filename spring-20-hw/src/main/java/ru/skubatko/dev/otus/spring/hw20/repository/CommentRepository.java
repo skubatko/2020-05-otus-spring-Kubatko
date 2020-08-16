@@ -1,9 +1,11 @@
 package ru.skubatko.dev.otus.spring.hw20.repository;
 
-import org.springframework.data.mongodb.repository.MongoRepository;
+import ru.skubatko.dev.otus.spring.hw20.domain.Comment;
+
+import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import reactor.core.publisher.Mono;
 
-public interface CommentRepository extends MongoRepository<Comment, String> {
+public interface CommentRepository extends ReactiveMongoRepository<Comment, String> {
 
-    Mono<Comment> findByBookNameAndContent(String bookName, String content);
+    Mono<Void> deleteAllByBookName(String bookName);
 }
