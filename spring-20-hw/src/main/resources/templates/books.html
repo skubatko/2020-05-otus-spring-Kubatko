@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Books</title>
+
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" type="text/css" href="/css/style.css" />
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css" />
+
+    <script src="/webjars/jquery/jquery.min.js"></script>
+</head>
+
+<body>
+<div id="main_menu"></div>
+
+<div class="container">
+    <h2>Books</h2>
+
+    <table id="booksTable" class="table table-striped table-bordered">
+        <tr>
+            <th width="50" align="center">#</th>
+            <th width="350" align="center">TITLE</th>
+            <th width="250" align="center">AUTHOR</th>
+            <th width="250" align="center">GENRE</th>
+            <th width="450" align="center">COMMENTS</th>
+            <th></th>
+            <th></th>
+        </tr>
+        <tr>
+            <td></td>
+            <td align="left"><input type="text" id="createBookName" placeholder="Title" class="form-control" /></td>
+            <td align="left"><input type="text" id="createBookAuthor" placeholder="Author" class="form-control" /></td>
+            <td align="left"><input type="text" id="createBookGenre" placeholder="Genre" class="form-control" /></td>
+            <td align="left"><input type="text" id="createBookComments" placeholder="Comments" class="form-control" /></td>
+            <td>
+                <button class="btn btn-primary form-control" onclick="createBook()">
+                    <span class="glyphicon glyphicon-plus"></span> Create
+                </button>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<script src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+<script src="/js/menu.js"></script>
+<script src="/js//books.js"></script>
+</body>
+</html>

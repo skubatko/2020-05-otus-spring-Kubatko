@@ -1,0 +1,13 @@
+spring:
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: library
+
+logging:
+  level:
+    root: INFO
+    ru.skubatko.dev: DEBUG
+  file:
+    name: ./logs/app.log
