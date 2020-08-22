@@ -5,6 +5,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -17,26 +18,45 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import ru.skubatko.dev.otus.spring.hw22.dto.BookDto;
 import ru.skubatko.dev.otus.spring.hw22.service.LibraryService;
+import ru.skubatko.dev.otus.spring.hw22.service.UserDetailsServiceImpl;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.RequestPostProcessor;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.util.List;
 
 @DisplayName("Контроллер библиотеки")
-@WebMvcTest(LibraryController.class)
+//@WebMvcTest(LibraryController.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class LibraryControllerTest {
 
     @Autowired
-    private MockMvc mockMvc;
+    private WebApplicationContext context;
+    @Autowired
+    private UserDetailsServiceImpl userDetailsService;
 
     @MockBean
     private LibraryService service;
+
+    private MockMvc mockMvc;
+
+    @BeforeEach
+    public void setup() {
+        mockMvc = MockMvcBuilders
+                          .webAppContextSetup(context)
+                          .apply(springSecurity())
+                          .build();
+    }
 
     @DisplayName("должен возвращать страницу со списком ожидаемых книг когда выполняется запрос GET по пути /library/books")
     @Test
@@ -46,9 +66,12 @@ class LibraryControllerTest {
         String genre = "testGenre";
         String comments = "testComments";
         BookDto book = new BookDto(bookName, author, genre, comments);
+
         given(service.findAllBooks()).willReturn(List.of(book));
 
-        mockMvc.perform(get("/library/books"))
+        mockMvc.perform(
+                get("/library/books")
+                        .with(authenticatedUser()))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("Books")))
@@ -61,7 +84,9 @@ class LibraryControllerTest {
     @DisplayName("должен возвращать страницу добавления новой книги когда выполняется запрос GET по пути /library/books/add")
     @Test
     void shouldReturnPageOfAddBookWhenPerformedGetRequestOnLibraryBooksAddPath() throws Exception {
-        mockMvc.perform(get("/library/books/add"))
+        mockMvc.perform(
+                get("/library/books/add")
+                        .with(authenticatedUser()))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("book", new BookDto()))
@@ -76,13 +101,16 @@ class LibraryControllerTest {
         String author = "testAuthor";
         String genre = "testGenre";
         BookDto book = new BookDto(bookName, author, genre);
+
         given(service.findAllBooks()).willReturn(List.of(book));
 
-        mockMvc.perform(post("/library/books/add")
-                                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                                .param("name", bookName)
-                                .param("author", author)
-                                .param("genre", genre))
+        mockMvc.perform(
+                post("/library/books/add")
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                        .param("name", bookName)
+                        .param("author", author)
+                        .param("genre", genre)
+                        .with(authenticatedUser()))
                 .andDo(print())
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attribute("book", hasProperty("name", equalTo(bookName))))
@@ -96,8 +124,10 @@ class LibraryControllerTest {
     @DisplayName("должен возвращать страницу успешного добавления ожидаемой книги когда выполняется запрос GET по пути /library/books/add/success с флеш-атрибутом book")
     @Test
     void shouldReturnPageOfSuccessfulAddExpectedBookWhenPerformedGetRequestOnLibraryBooksAddSuccessPathWithBookFlashAttr() throws Exception {
-        mockMvc.perform(get("/library/books/add/success")
-                                .flashAttr("book", new BookDto()))
+        mockMvc.perform(
+                get("/library/books/add/success")
+                        .flashAttr("book", new BookDto())
+                        .with(authenticatedUser()))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("book", new BookDto()))
@@ -108,7 +138,9 @@ class LibraryControllerTest {
     @DisplayName("должен перенаправлять на страницу списка книг когда выполняется запрос GET по пути /library/books/add/success")
     @Test
     void shouldRedirectToPageOfBooksListWhenPerformedGetRequestOnLibraryBooksAddSuccessPath() throws Exception {
-        mockMvc.perform(get("/library/books/add/success"))
+        mockMvc.perform(
+                get("/library/books/add/success")
+                        .with(authenticatedUser()))
                 .andDo(print())
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/library/books"));
@@ -124,8 +156,10 @@ class LibraryControllerTest {
 
         given(service.findBookByName(bookName)).willReturn(book);
 
-        mockMvc.perform(get(String.format("/library/books/edit/%s", bookName))
-                                .flashAttr("error", "errorMessage"))
+        mockMvc.perform(
+                get(String.format("/library/books/edit/%s", bookName))
+                        .flashAttr("error", "errorMessage")
+                        .with(authenticatedUser()))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("book", book))
@@ -143,11 +177,13 @@ class LibraryControllerTest {
 
         String bookName = "testBookName";
 
-        mockMvc.perform(post(String.format("/library/books/update/%s", bookName))
-                                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                                .param("name", bookUpdatedName)
-                                .param("author", author)
-                                .param("genre", genre))
+        mockMvc.perform(
+                post(String.format("/library/books/update/%s", bookName))
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                        .param("name", bookUpdatedName)
+                        .param("author", author)
+                        .param("genre", genre)
+                        .with(authenticatedUser()))
                 .andDo(print())
                 .andExpect(status().is3xxRedirection())
                 .andExpect(flash().attribute("error", "Book's name is mandatory"))
@@ -163,11 +199,13 @@ class LibraryControllerTest {
 
         String bookName = "testBookName";
 
-        mockMvc.perform(post(String.format("/library/books/update/%s", bookName))
-                                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                                .param("name", bookUpdatedName)
-                                .param("author", author)
-                                .param("genre", genre))
+        mockMvc.perform(
+                post(String.format("/library/books/update/%s", bookName))
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                        .param("name", bookUpdatedName)
+                        .param("author", author)
+                        .param("genre", genre)
+                        .with(authenticatedUser()))
                 .andDo(print())
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/library/books"));
@@ -180,11 +218,18 @@ class LibraryControllerTest {
     void shouldRedirectToBooksListPageAndDeleteBookWhenPerformedGetRequestOnLibraryBooksDeleteNamePath() throws Exception {
         String bookName = "testBookName";
 
-        mockMvc.perform(get(String.format("/library/books/delete/%s", bookName)))
+        mockMvc.perform(
+                get(String.format("/library/books/delete/%s", bookName))
+                        .with(authenticatedUser()))
                 .andDo(print())
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/library/books"));
 
         verify(service).deleteBook(bookName);
+    }
+
+    private RequestPostProcessor authenticatedUser() {
+        return SecurityMockMvcRequestPostProcessors
+                       .user(userDetailsService.loadUserByUsername("admin"));
     }
 }

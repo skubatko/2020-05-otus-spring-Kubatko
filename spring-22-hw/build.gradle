@@ -28,7 +28,7 @@ dependencies {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
     testImplementation 'org.mockito:mockito-junit-jupiter'
-    testImplementation 'org.springframework.boot:spring-security-test'
+    testImplementation 'org.springframework.security:spring-security-test'
 }
 
 application {
