@@ -101,4 +101,9 @@ public class LibraryController {
         service.deleteBook(name);
         return "redirect:/library/books";
     }
+
+    @GetMapping("/error")
+    public String errorPage() {
+        return "error";
+    }
 }
