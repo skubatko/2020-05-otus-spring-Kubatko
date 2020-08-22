@@ -40,3 +40,6 @@ Spring MVC View
 
 * spring-20-hw - домашнее задание к уроку 20
 Spring WebFlux
+
+* spring-22-hw - домашнее задание к уроку 22
+Spring Security: Механизмы аутентификации
