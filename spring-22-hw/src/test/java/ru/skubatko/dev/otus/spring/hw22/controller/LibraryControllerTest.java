@@ -36,7 +36,6 @@ import org.springframework.web.context.WebApplicationContext;
 import java.util.List;
 
 @DisplayName("Контроллер библиотеки")
-//@WebMvcTest(LibraryController.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class LibraryControllerTest {
 
