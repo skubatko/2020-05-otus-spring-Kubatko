@@ -1,0 +1,3 @@
+id;user_name;password;active;roles
+1;admin;$2a$10$8.UnVuG9HHgffUDAlk8qfOuVGkqRzgVymGe07xd00DMxs.AQubh4a;1;ADMIN
+2;user;$2a$10$8.UnVuG9HHgffUDAlk8qfOuVGkqRzgVymGe07xd00DMxs.AQubh4a;1;USER
