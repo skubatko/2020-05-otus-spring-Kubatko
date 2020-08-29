@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -18,13 +19,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserDetailsService userDetailsService;
 
     @Override
+    public void configure(WebSecurity web) {
+        web.ignoring()
+                .antMatchers("/static/js/*")
+                .antMatchers("/webjars/**")
+                .antMatchers("/h2-console/**");
+    }
+
+    @Override
     public void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
                 .and()
-                .authorizeRequests().antMatchers("/error").anonymous()
+                .authorizeRequests().antMatchers("/","/index","/error").permitAll()
                 .and()
-                .authorizeRequests().antMatchers("/", "/**").authenticated()
+                .authorizeRequests().antMatchers("/library/**").authenticated()
                 .and()
                 .formLogin();
     }

@@ -26,10 +26,10 @@ public class LibraryController {
 
     private final LibraryService service;
 
-    @GetMapping({"/library/books", "/"})
+    @GetMapping({"/library/books"})
     public String listBooks(Model model) {
         model.addAttribute("books", service.findAllBooks());
-        return "index";
+        return "list-books";
     }
 
     @GetMapping("/library/books/add")
@@ -100,10 +100,5 @@ public class LibraryController {
     public String deleteBook(@PathVariable("name") String name) {
         service.deleteBook(name);
         return "redirect:/library/books";
-    }
-
-    @GetMapping("/error")
-    public String errorPage() {
-        return "error";
     }
 }
