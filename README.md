@@ -43,3 +43,6 @@ Spring WebFlux
 
 * spring-22-hw - домашнее задание к уроку 22
 Spring Security: Механизмы аутентификации
+
+* spring-24-hw - домашнее задание к уроку 24
+Spring Security: ACL

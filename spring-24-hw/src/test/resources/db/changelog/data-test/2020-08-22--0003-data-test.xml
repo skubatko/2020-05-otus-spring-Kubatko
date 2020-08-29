@@ -1,0 +1,16 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="2020-08-22--0003-data-test-users" author="skubatko" runOnChange="true">
+        <loadUpdateData tableName="users"
+                        primaryKey="id"
+                        file="csv/2020-08-22--0003-data-test-users.csv"
+                        relativeToChangelogFile="true"
+                        quotchar="*"
+                        separator=";"
+                        encoding="UTF-8" />
+    </changeSet>
+
+</databaseChangeLog>
