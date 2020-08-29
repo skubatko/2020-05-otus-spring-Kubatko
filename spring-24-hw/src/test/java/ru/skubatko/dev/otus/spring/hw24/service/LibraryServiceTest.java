@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -30,10 +31,10 @@ class LibraryServiceTest {
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
 
-    @DisplayName("должен находить ожидаемую книгу по её имени")
+    @DisplayName("должен находить ожидаемую книгу по её имени для аутентифицированного пользователя")
     @WithMockUser(username = "authenticatedUser")
     @Test
-    void shouldFindExpectedBookByName() {
+    void shouldFindExpectedBookByNameForAuthenticatedUser() {
         String name = "testBook1";
 
         BookDto actual = libraryService.findBookByName(name);
@@ -46,10 +47,19 @@ class LibraryServiceTest {
         );
     }
 
-    @DisplayName("должен находить все ожидаемые книги библиотеки")
+    @DisplayName("должен отклонять нахождение книги по её имени для неаутентифицированного пользователя")
+    @Test
+    void shouldDenyToFindExpectedBookByNameForNonAuthenticatedUser() {
+        String name = "testBook";
+
+        assertThatThrownBy(() -> libraryService.findBookByName(name))
+                .isInstanceOf(AuthenticationCredentialsNotFoundException.class);
+    }
+
+    @DisplayName("должен находить все ожидаемые книги библиотеки для аутентифицированного пользователя")
     @WithMockUser(username = "authenticatedUser")
     @Test
-    void shouldFindAllExpectedBooks() {
+    void shouldFindAllExpectedBooksForAuthenticatedUser() {
         List<BookDto> expected = Arrays.asList(
                 new BookDto("testBook1", "testAuthor1", "testGenre1", "testBookComment1"),
                 new BookDto("testBook2", "testAuthor2", "testGenre3", "testBookComment2"),
@@ -62,6 +72,14 @@ class LibraryServiceTest {
         List<BookDto> actual = libraryService.findAllBooks();
 
         assertThat(actual).hasSize(expected.size()).containsExactlyInAnyOrderElementsOf(expected);
+    }
+
+    @DisplayName("должен отклонять нахождение всех книг библиотеки для неаутентифицированного пользователя")
+    @Test
+    void shouldDenyToFindAllExpectedBooksForNonAuthenticatedUser() {
+
+        assertThatThrownBy(() -> libraryService.findAllBooks())
+                .isInstanceOf(AuthenticationCredentialsNotFoundException.class);
     }
 
     @DisplayName("должен находить ожидаемые книги указанного автора")
@@ -82,7 +100,7 @@ class LibraryServiceTest {
     @DisplayName("должен находить ожидаемые книги указанного жанра")
     @WithMockUser(username = "authenticatedUser")
     @Test
-    public void shouldFindExpectedBooksByGenre() {
+    void shouldFindExpectedBooksByGenre() {
         String genre = "testGenre4";
         List<BookDto> expected = Arrays.asList(
                 new BookDto("testBook3", "testAuthor2", "testGenre4", "testBookComment3"),
@@ -112,20 +130,18 @@ class LibraryServiceTest {
                               .hasFieldOrPropertyWithValue("name", bookName)
                               .hasFieldOrPropertyWithValue("author", authorName)
                               .hasFieldOrPropertyWithValue("genre", genreName),
-                () -> assertThat(actual.getComments()).hasSize(0)
+                () -> assertThat(actual.getComments()).isEmpty()
         );
     }
 
     @DisplayName("должен отклонять добавление книги в библиотеку для пользователя без прав админа")
     @Test
     void shouldDenyToAddBookToLibraryForNonAdminUser() {
-        String bookName = "testBookName";
-        String authorName = "testAuthorName";
-        String genreName = "testGenreName";
+        BookDto book = new BookDto("testBookName", "testAuthorName", "testGenreName");
 
         setAuthenticatedAsUser();
 
-        assertThatThrownBy(() -> libraryService.addBook(new BookDto(bookName, authorName, genreName)))
+        assertThatThrownBy(() -> libraryService.addBook(book))
                 .isInstanceOf(AccessDeniedException.class);
     }
 
