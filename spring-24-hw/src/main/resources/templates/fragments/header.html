@@ -1,4 +1,6 @@
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity">
   <head>
     <div th:fragment="header-head">
       <meta charset="utf-8" />
@@ -23,6 +25,9 @@
             <ul class="nav navbar-nav">
               <li><a th:href="@{/index}"><i class="fas fa-home m-2"></i> Home</a></li>
               <li><a th:href="@{/library/books}"><i class="fas fa-book-open m-2"></i> Books</a></li>
+            </ul>
+            <ul sec:authorize="not isAuthenticated()" class="nav navbar-nav navbar-right">
+              <li><a href="/login">Login</a></li>
             </ul>
           </div>
         </div>
