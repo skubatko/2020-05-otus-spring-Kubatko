@@ -33,7 +33,7 @@ class LibraryServiceTest {
     @DisplayName("должен находить ожидаемую книгу по её имени")
     @WithMockUser(username = "authenticatedUser")
     @Test
-    public void shouldFindExpectedBookByName() {
+    void shouldFindExpectedBookByName() {
         String name = "testBook1";
 
         BookDto actual = libraryService.findBookByName(name);
@@ -49,7 +49,7 @@ class LibraryServiceTest {
     @DisplayName("должен находить все ожидаемые книги библиотеки")
     @WithMockUser(username = "authenticatedUser")
     @Test
-    public void shouldFindAllExpectedBooks() {
+    void shouldFindAllExpectedBooks() {
         List<BookDto> expected = Arrays.asList(
                 new BookDto("testBook1", "testAuthor1", "testGenre1", "testBookComment1"),
                 new BookDto("testBook2", "testAuthor2", "testGenre3", "testBookComment2"),
@@ -67,7 +67,7 @@ class LibraryServiceTest {
     @DisplayName("должен находить ожидаемые книги указанного автора")
     @WithMockUser(username = "authenticatedUser")
     @Test
-    public void shouldFindExpectedBooksByAuthor() {
+    void shouldFindExpectedBooksByAuthor() {
         String author = "testAuthor2";
         List<BookDto> expected = Arrays.asList(
                 new BookDto("testBook2", "testAuthor2", "testGenre3", "testBookComment2"),
@@ -96,7 +96,7 @@ class LibraryServiceTest {
 
     @DisplayName("должен добавлять книгу в библиотеку для пользователя с правами админа")
     @Test
-    public void shouldAddBookToLibraryForAdminUser() {
+    void shouldAddBookToLibraryForAdminUser() {
         String bookName = "testBookName";
         String authorName = "testAuthorName";
         String genreName = "testGenreName";
@@ -118,7 +118,7 @@ class LibraryServiceTest {
 
     @DisplayName("должен отклонять добавление книги в библиотеку для пользователя без прав админа")
     @Test
-    public void shouldDenyToAddBookToLibraryForNonAdminUser() {
+    void shouldDenyToAddBookToLibraryForNonAdminUser() {
         String bookName = "testBookName";
         String authorName = "testAuthorName";
         String genreName = "testGenreName";
@@ -131,7 +131,7 @@ class LibraryServiceTest {
 
     @DisplayName("должен добавлять комментарий к заданной книге для пользователя с правами админа")
     @Test
-    public void shouldAddCommentToGivenBookForAdminUser() {
+    void shouldAddCommentToGivenBookForAdminUser() {
         String bookName = "testBook6";
         String comment = "testComment";
         BookDto expected = new BookDto(bookName, "testAuthor3", "testGenre2", "testBookComment6, " + comment);
@@ -147,7 +147,7 @@ class LibraryServiceTest {
 
     @DisplayName("должен отклонять добавление комментария к заданной книге для пользователя без прав админа")
     @Test
-    public void shouldDenyToAddCommentToGivenBookForNonAdminUser() {
+    void shouldDenyToAddCommentToGivenBookForNonAdminUser() {
         String bookName = "testBook";
         String comment = "testComment";
 
@@ -159,7 +159,7 @@ class LibraryServiceTest {
 
     @DisplayName("должен обновлять книгу новым именем для пользователя с правами админа")
     @Test
-    public void shouldUpdateGivenBookWithNewNameForAdminUser() {
+    void shouldUpdateGivenBookWithNewNameForAdminUser() {
         String oldBookName = "testBook4";
         String newBookName = "testBookUpdated";
         BookDto expected = new BookDto(newBookName, "testAuthor3", "testGenre3", "testBookComment4");
@@ -176,8 +176,8 @@ class LibraryServiceTest {
 
     @DisplayName("должен отклонять обновление книги новым именем для пользователя без прав админа")
     @Test
-    public void shouldDenyToUpdateGivenBookWithNewNameForNonAdminUser() {
-        String oldBookName = "testBook4";
+    void shouldDenyToUpdateGivenBookWithNewNameForNonAdminUser() {
+        String oldBookName = "testBook";
         String newBookName = "testBookUpdated";
 
         setAuthenticatedAsUser();
@@ -188,7 +188,7 @@ class LibraryServiceTest {
 
     @DisplayName("должен обновлять автора новым именем для пользователя с правами админа")
     @Test
-    public void shouldUpdateGivenAuthorWithNewNameForAdminUser() {
+    void shouldUpdateGivenAuthorWithNewNameForAdminUser() {
         String oldAuthorName = "testAuthor2";
         String newAuthorName = "testAuthorUpdated";
 
@@ -206,7 +206,7 @@ class LibraryServiceTest {
 
     @DisplayName("должен отклонять обновление автора новым именем для пользователя без прав админа")
     @Test
-    public void shouldDenyToUpdateGivenAuthorWithNewNameForNonAdminUser() {
+    void shouldDenyToUpdateGivenAuthorWithNewNameForNonAdminUser() {
         String oldAuthorName = "testAuthor";
         String newAuthorName = "testAuthorUpdated";
 
@@ -216,13 +216,16 @@ class LibraryServiceTest {
                 .isInstanceOf(AccessDeniedException.class);
     }
 
-    @DisplayName("должен обновлять жанр новым именем")
+    @DisplayName("должен обновлять жанр новым именем для пользователя с правами админа")
     @Test
-    public void shouldUpdateGivenGenreWithNewName() {
+    void shouldUpdateGivenGenreWithNewNameForAdminUser() {
         String oldGenreName = "testGenre4";
         String newGenreName = "testGenreUpdated";
 
+        setAuthenticatedAsAdmin();
+
         libraryService.updateGenre(oldGenreName, newGenreName);
+
         List<BookDto> booksByOldGenre = libraryService.findBooksByGenre(oldGenreName);
         List<BookDto> booksByNewGenre = libraryService.findBooksByGenre(newGenreName);
         assertAll(
@@ -231,12 +234,26 @@ class LibraryServiceTest {
         );
     }
 
-    @DisplayName("должен обновлять заданный комментарий заданной книги новым контентом")
+    @DisplayName("должен отклонять обновление жанра новым именем для пользователя без прав админа")
     @Test
-    public void shouldUpdateGivenCommentOfGivenBookWithNewContent() {
+    void shouldDenyToUpdateGivenGenreWithNewNameForNonAdminUser() {
+        String oldGenreName = "testGenre";
+        String newGenreName = "testGenreUpdated";
+
+        setAuthenticatedAsUser();
+
+        assertThatThrownBy(() -> libraryService.updateGenre(oldGenreName, newGenreName))
+                .isInstanceOf(AccessDeniedException.class);
+    }
+
+    @DisplayName("должен обновлять заданный комментарий заданной книги новым контентом для пользователя с правами админа")
+    @Test
+    void shouldUpdateGivenCommentOfGivenBookWithNewContentForAdminUser() {
         String bookName = "testBook5";
         String oldBookComment = "testBookComment5";
         String newBookComment = "testBookCommentUpdated";
+
+        setAuthenticatedAsAdmin();
 
         libraryService.updateBookComment(bookName, oldBookComment, newBookComment);
 
@@ -245,25 +262,65 @@ class LibraryServiceTest {
         assertThat(actual).isEqualTo(newBookComment);
     }
 
-    @DisplayName("должен удалять заданную книгу")
+    @DisplayName("должен отклонять обновление заданного комментария заданной книги новым контентом для пользователя без прав админа")
     @Test
-    public void shouldDeleteGivenBook() {
+    void shouldDenyToUpdateGivenCommentOfGivenBookWithNewContentForNonAdminUser() {
+        String bookName = "testBook";
+        String oldBookComment = "testBookComment";
+        String newBookComment = "testBookCommentUpdated";
+
+        setAuthenticatedAsUser();
+
+        assertThatThrownBy(() -> libraryService.updateBookComment(bookName, oldBookComment, newBookComment))
+                .isInstanceOf(AccessDeniedException.class);
+    }
+
+    @DisplayName("должен удалять заданную книгу для пользователя с правами админа")
+    @Test
+    void shouldDeleteGivenBookForAdminUser() {
         String bookName = "testBook3";
+
+        setAuthenticatedAsAdmin();
 
         libraryService.deleteBook(bookName);
 
         assertThat(libraryService.findBookByName(bookName)).isNull();
     }
 
-    @DisplayName("должен удалять заданный комментарий заданной книги")
+    @DisplayName("должен отклонять удаление заданной книги для пользователя без прав админа")
     @Test
-    public void shouldDeleteGivenCommentOfGivenBook() {
+    void shouldDenyToDeleteGivenBookForNonAdminUser() {
+        String bookName = "testBook";
+
+        setAuthenticatedAsUser();
+
+        assertThatThrownBy(() -> libraryService.deleteBook(bookName))
+                .isInstanceOf(AccessDeniedException.class);
+    }
+
+    @DisplayName("должен удалять заданный комментарий заданной книги с правами админа")
+    @Test
+    void shouldDeleteGivenCommentOfGivenBookForAdminUser() {
         String bookName = "testBook2";
         String commentContent = "testBookComment2";
+
+        setAuthenticatedAsAdmin();
 
         libraryService.deleteBookComment(bookName, commentContent);
 
         assertThat(libraryService.findBookByName(bookName).getComments()).isEmpty();
+    }
+
+    @DisplayName("должен отклонять удаление заданного комментария заданной книги без прав админа")
+    @Test
+    void shouldDenyToDeleteGivenCommentOfGivenBookForNonAdminUser() {
+        String bookName = "testBook";
+        String commentContent = "testBookComment";
+
+        setAuthenticatedAsUser();
+
+        assertThatThrownBy(() -> libraryService.deleteBookComment(bookName, commentContent))
+                .isInstanceOf(AccessDeniedException.class);
     }
 
     private void setAuthenticatedAsAdmin() {
