@@ -82,10 +82,10 @@ class LibraryServiceTest {
                 .isInstanceOf(AuthenticationCredentialsNotFoundException.class);
     }
 
-    @DisplayName("должен находить ожидаемые книги указанного автора")
+    @DisplayName("должен находить ожидаемые книги указанного автора для аутентифицированного пользователя")
     @WithMockUser(username = "authenticatedUser")
     @Test
-    void shouldFindExpectedBooksByAuthor() {
+    void shouldFindExpectedBooksByAuthorForAuthenticatedUser() {
         String author = "testAuthor2";
         List<BookDto> expected = Arrays.asList(
                 new BookDto("testBook2", "testAuthor2", "testGenre3", "testBookComment2"),
@@ -97,10 +97,19 @@ class LibraryServiceTest {
         assertThat(actual).hasSize(expected.size()).containsExactlyInAnyOrderElementsOf(expected);
     }
 
-    @DisplayName("должен находить ожидаемые книги указанного жанра")
+    @DisplayName("должен отклонять нахождение книг указанного автора для неаутентифицированного пользователя")
+    @Test
+    void shouldDenyToFindBooksByAuthorForNonAuthenticatedUser() {
+        String author = "testAuthor";
+
+        assertThatThrownBy(() -> libraryService.findBooksByAuthor(author))
+                .isInstanceOf(AuthenticationCredentialsNotFoundException.class);
+    }
+
+    @DisplayName("должен находить ожидаемые книги указанного жанра для аутентифицированного пользователя")
     @WithMockUser(username = "authenticatedUser")
     @Test
-    void shouldFindExpectedBooksByGenre() {
+    void shouldFindExpectedBooksByGenreForAuthenticatedUser() {
         String genre = "testGenre4";
         List<BookDto> expected = Arrays.asList(
                 new BookDto("testBook3", "testAuthor2", "testGenre4", "testBookComment3"),
@@ -110,6 +119,15 @@ class LibraryServiceTest {
         List<BookDto> actual = libraryService.findBooksByGenre(genre);
 
         assertThat(actual).hasSize(expected.size()).containsExactlyInAnyOrderElementsOf(expected);
+    }
+
+    @DisplayName("должен отклонять нахождение книг указанного жанра для неаутентифицированного пользователя")
+    @Test
+    void shouldDenyToFindBooksByGenreForNonAuthenticatedUser() {
+        String genre = "testGenre";
+
+        assertThatThrownBy(() -> libraryService.findBooksByGenre(genre))
+                .isInstanceOf(AuthenticationCredentialsNotFoundException.class);
     }
 
     @DisplayName("должен добавлять книгу в библиотеку для пользователя с правами админа")
