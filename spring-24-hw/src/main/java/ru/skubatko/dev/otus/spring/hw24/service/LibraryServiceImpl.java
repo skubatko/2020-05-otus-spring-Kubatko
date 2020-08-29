@@ -16,6 +16,7 @@ import ru.skubatko.dev.otus.spring.hw24.repository.CommentRepository;
 import ru.skubatko.dev.otus.spring.hw24.repository.GenreRepository;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,18 +33,21 @@ public class LibraryServiceImpl implements LibraryService {
     private final CommentRepository commentRepository;
 
     @Override
+    @PreAuthorize("isAuthenticated()")
     @Transactional(readOnly = true)
     public BookDto findBookByName(String bookName) {
         return BookDto.toDto(bookRepository.findByName(bookName));
     }
 
     @Override
+    @PreAuthorize("isAuthenticated()")
     @Transactional(readOnly = true)
     public List<BookDto> findAllBooks() {
         return bookRepository.findAll().stream().map(BookDto::toDto).collect(Collectors.toList());
     }
 
     @Override
+    @PreAuthorize("isAuthenticated()")
     @Transactional(readOnly = true)
     public List<BookDto> findBooksByAuthor(String authorName) {
         Author author = authorRepository.findByName(authorName);
@@ -51,6 +55,7 @@ public class LibraryServiceImpl implements LibraryService {
     }
 
     @Override
+    @PreAuthorize("isAuthenticated()")
     @Transactional(readOnly = true)
     public List<BookDto> findBooksByGenre(String genreName) {
         Genre genre = genreRepository.findByName(genreName);
@@ -58,6 +63,7 @@ public class LibraryServiceImpl implements LibraryService {
     }
 
     @Override
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Transactional
     public void addBook(BookDto book) {
         String bookName = book.getName();
@@ -85,6 +91,7 @@ public class LibraryServiceImpl implements LibraryService {
     }
 
     @Override
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Transactional
     public void addBookComment(String bookName, String commentContent) {
         Book book = getBookByName(bookName);
@@ -94,6 +101,7 @@ public class LibraryServiceImpl implements LibraryService {
     }
 
     @Override
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Transactional
     public void updateBook(String oldBookName, String newBookName) {
         Book book = getBookByName(oldBookName);
@@ -103,6 +111,7 @@ public class LibraryServiceImpl implements LibraryService {
     }
 
     @Override
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Transactional
     public void updateAuthor(String oldAuthorName, String newAuthorName) {
         Author author = authorRepository.findByName(oldAuthorName);
@@ -115,6 +124,7 @@ public class LibraryServiceImpl implements LibraryService {
     }
 
     @Override
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Transactional
     public void updateGenre(String oldGenreName, String newGenreName) {
         Genre genre = genreRepository.findByName(oldGenreName);
@@ -127,6 +137,7 @@ public class LibraryServiceImpl implements LibraryService {
     }
 
     @Override
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Transactional
     public void updateBookComment(String bookName, String oldCommentContent, String newCommentContent) {
         Comment comment = getBookComment(bookName, oldCommentContent);
@@ -136,6 +147,7 @@ public class LibraryServiceImpl implements LibraryService {
     }
 
     @Override
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Transactional
     public void deleteBook(String bookName) {
         Book book = getBookByName(bookName);
@@ -144,6 +156,7 @@ public class LibraryServiceImpl implements LibraryService {
     }
 
     @Override
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Transactional
     public void deleteBookComment(String bookName, String commentContent) {
         Comment comment = getBookComment(bookName, commentContent);
