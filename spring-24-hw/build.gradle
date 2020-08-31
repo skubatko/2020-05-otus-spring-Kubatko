@@ -1,0 +1,60 @@
+plugins {
+    id 'java'
+    id 'idea'
+    id 'eclipse'
+    id 'application'
+    id 'org.springframework.boot' version '2.3.3.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.10.RELEASE'
+}
+
+group = 'ru.skubatko.dev'
+description = 'spring-24-hw'
+version = '0.0.1'
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
+
+application {
+    mainClassName = 'ru.skubatko.dev.otus.spring.hw24.App'
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    jcenter()
+    mavenLocal()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+    implementation 'com.h2database:h2'
+    implementation 'org.liquibase:liquibase-core'
+
+    implementation 'org.webjars:bootstrap:3.3.7'
+    implementation 'org.webjars:jquery:2.2.4'
+    implementation 'org.webjars:webjars-locator:0.30'
+    implementation 'org.webjars:font-awesome:5.4.1'
+
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+    testImplementation 'org.springframework.security:spring-security-test'
+}
+
+test {
+    useJUnitPlatform()
+}
