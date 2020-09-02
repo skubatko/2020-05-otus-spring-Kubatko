@@ -46,3 +46,6 @@ Spring Security: Механизмы аутентификации
 
 * spring-24-hw - домашнее задание к уроку 24
 Spring Security: ACL
+
+* spring-25-hw - домашнее задание к уроку 25
+Spring Batch
