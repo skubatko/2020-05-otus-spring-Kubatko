@@ -10,7 +10,11 @@ import ru.skubatko.dev.otus.spring.hw25.repository.nosql.NoSqlBookRepository;
 import ru.skubatko.dev.otus.spring.hw25.service.SqlLibraryService;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobExecution;
+import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.explore.JobExplorer;
+import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 
@@ -22,11 +26,19 @@ import java.util.stream.Collectors;
 @SuppressWarnings("unused")
 public class BatchCommands {
 
+    private final Job transferLibraryJob;
+    private final JobLauncher jobLauncher;
     private final SqlLibraryService libraryService;
     private final NoSqlBookRepository noSqlBookRepository;
     private final JobExplorer jobExplorer;
 
     private static final String SPACE = " ";
+
+    @ShellMethod(value = "startTransferLibraryJob", key = "t")
+    public void startTransferLibraryJob() throws Exception {
+        JobExecution execution = jobLauncher.run(transferLibraryJob, new JobParameters());
+        System.out.println(execution);
+    }
 
     @ShellMethod(value = "getAllSqlBooks", key = "sql")
     public String getAllSqlBooks() {
@@ -67,8 +79,9 @@ public class BatchCommands {
     }
 
     @ShellMethod(value = "showInfo", key = "i")
-    public void showInfo() {
-        System.out.println(jobExplorer.getJobNames());
-        System.out.println(jobExplorer.getLastJobInstance(TRANSFER_LIBRARY_JOB_NAME));
+    public String showInfo() {
+        return
+                jobExplorer.getJobNames() + "\n" +
+                        jobExplorer.getLastJobInstance(TRANSFER_LIBRARY_JOB_NAME);
     }
 }

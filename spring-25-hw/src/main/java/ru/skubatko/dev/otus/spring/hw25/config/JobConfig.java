@@ -39,7 +39,7 @@ public class JobConfig {
     private final JobBuilderFactory jobBuilderFactory;
     private final StepBuilderFactory stepBuilderFactory;
 
-    public static final String TRANSFER_LIBRARY_JOB_NAME = "transferLibrary";
+    public static final String TRANSFER_LIBRARY_JOB_NAME = "transferLibraryJob";
     private static final int CHUNK_SIZE = 5;
 
     @StepScope
@@ -48,7 +48,7 @@ public class JobConfig {
         return new JpaPagingItemReaderBuilder<SqlBook>()
                        .name("BookReader")
                        .entityManagerFactory(entityManagerFactory)
-                       .queryString("SELECT b FROM SqlBook b INNER JOIN FETCH b.comments c")
+                       .queryString("SELECT b FROM SqlBook b")
                        .build();
     }
 
@@ -68,7 +68,7 @@ public class JobConfig {
     }
 
     @Bean
-    public Job transferBookJob(Step transferBook) {
+    public Job transferLibraryJob(Step transferBook) {
         return jobBuilderFactory.get(TRANSFER_LIBRARY_JOB_NAME)
                        .incrementer(new RunIdIncrementer())
                        .flow(transferBook)
