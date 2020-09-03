@@ -1,7 +1,7 @@
 package ru.skubatko.dev.otus.spring.hw25;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static ru.skubatko.dev.otus.spring.hw25.JobConfig.TRANSFER_LIBRARY_JOB_NAME;
+import static ru.skubatko.dev.otus.spring.hw25.config.JobConfig.TRANSFER_LIBRARY_JOB_NAME;
 
 import ru.skubatko.dev.otus.spring.hw25.service.NoSqlLibraryService;
 

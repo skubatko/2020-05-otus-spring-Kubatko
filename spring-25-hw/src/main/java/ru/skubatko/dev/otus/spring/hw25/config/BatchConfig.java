@@ -1,4 +1,4 @@
-package ru.skubatko.dev.otus.spring.hw25;
+package ru.skubatko.dev.otus.spring.hw25.config;
 
 import org.springframework.batch.core.configuration.JobRegistry;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;

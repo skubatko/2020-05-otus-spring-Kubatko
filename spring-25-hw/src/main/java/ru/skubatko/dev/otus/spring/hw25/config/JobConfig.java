@@ -1,4 +1,4 @@
-package ru.skubatko.dev.otus.spring.hw25;
+package ru.skubatko.dev.otus.spring.hw25.config;
 
 import ru.skubatko.dev.otus.spring.hw25.model.nosql.NoSqlBook;
 import ru.skubatko.dev.otus.spring.hw25.model.sql.SqlBook;

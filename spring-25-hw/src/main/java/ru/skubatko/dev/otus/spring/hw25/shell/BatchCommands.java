@@ -1,7 +1,7 @@
 package ru.skubatko.dev.otus.spring.hw25.shell;
 
 
-import static ru.skubatko.dev.otus.spring.hw25.JobConfig.TRANSFER_LIBRARY_JOB_NAME;
+import static ru.skubatko.dev.otus.spring.hw25.config.JobConfig.TRANSFER_LIBRARY_JOB_NAME;
 
 import ru.skubatko.dev.otus.spring.hw25.dto.BookDto;
 import ru.skubatko.dev.otus.spring.hw25.model.nosql.NoSqlBook;
@@ -35,9 +35,9 @@ public class BatchCommands {
     private static final String SPACE = " ";
 
     @ShellMethod(value = "startTransferLibraryJob", key = "t")
-    public void startTransferLibraryJob() throws Exception {
+    public String startTransferLibraryJob() throws Exception {
         JobExecution execution = jobLauncher.run(transferLibraryJob, new JobParameters());
-        System.out.println(execution);
+        return execution.toString();
     }
 
     @ShellMethod(value = "getAllSqlBooks", key = "sql")

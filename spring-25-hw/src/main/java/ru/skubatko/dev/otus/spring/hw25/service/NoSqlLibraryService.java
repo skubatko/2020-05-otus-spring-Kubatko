@@ -18,7 +18,7 @@ public class NoSqlLibraryService {
         return repository.findAll();
     }
 
-    public void deleteAll(){
+    public void deleteAll() {
         repository.deleteAll();
     }
 }

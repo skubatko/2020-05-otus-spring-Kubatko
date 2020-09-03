@@ -7,7 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
-import javax.validation.constraints.NotBlank;
 import java.util.stream.Collectors;
 
 @Data
@@ -16,15 +15,9 @@ import java.util.stream.Collectors;
 @Accessors(chain = true)
 public class BookDto {
 
-    @NotBlank(message = "Book's name is mandatory")
     private String name;
-
-    @NotBlank(message = "Author is mandatory")
     private String author;
-
-    @NotBlank(message = "Genre is mandatory")
     private String genre;
-
     private String comments;
 
     public static BookDto toDto(SqlBook book) {

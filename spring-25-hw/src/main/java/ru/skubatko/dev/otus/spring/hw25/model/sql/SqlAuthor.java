@@ -26,8 +26,4 @@ public class SqlAuthor {
 
     @Column(name = "name")
     private String name;
-
-    public SqlAuthor(String name) {
-        this.name = name;
-    }
 }

@@ -26,8 +26,4 @@ public class SqlGenre {
 
     @Column(name = "name")
     private String name;
-
-    public SqlGenre(String name) {
-        this.name = name;
-    }
 }
