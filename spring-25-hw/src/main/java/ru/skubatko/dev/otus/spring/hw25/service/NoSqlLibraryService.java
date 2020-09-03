@@ -17,4 +17,8 @@ public class NoSqlLibraryService {
     public List<NoSqlBook> findAllBooks() {
         return repository.findAll();
     }
+
+    public void deleteAll(){
+        repository.deleteAll();
+    }
 }
