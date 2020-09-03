@@ -33,9 +33,4 @@ public class SqlComment {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "book_id", nullable = false)
     private SqlBook book;
-
-    public SqlComment(SqlBook book, String commentContent) {
-        this.book = book;
-        this.content = commentContent;
-    }
 }

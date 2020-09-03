@@ -46,10 +46,4 @@ public class SqlBook {
 
     @OneToMany(mappedBy = "book", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SqlComment> comments = new ArrayList<>();
-
-    public SqlBook(String bookName, SqlAuthor author, SqlGenre genre) {
-        this.name = bookName;
-        this.author = author;
-        this.genre = genre;
-    }
 }

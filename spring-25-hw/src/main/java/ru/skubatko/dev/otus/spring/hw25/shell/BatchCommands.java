@@ -6,7 +6,7 @@ import static ru.skubatko.dev.otus.spring.hw25.config.JobConfig.TRANSFER_LIBRARY
 import ru.skubatko.dev.otus.spring.hw25.dto.BookDto;
 import ru.skubatko.dev.otus.spring.hw25.model.nosql.NoSqlBook;
 import ru.skubatko.dev.otus.spring.hw25.model.nosql.NoSqlComment;
-import ru.skubatko.dev.otus.spring.hw25.repository.nosql.NoSqlBookRepository;
+import ru.skubatko.dev.otus.spring.hw25.service.NoSqlLibraryService;
 import ru.skubatko.dev.otus.spring.hw25.service.SqlLibraryService;
 
 import lombok.RequiredArgsConstructor;
@@ -28,8 +28,8 @@ public class BatchCommands {
 
     private final Job transferLibraryJob;
     private final JobLauncher jobLauncher;
-    private final SqlLibraryService libraryService;
-    private final NoSqlBookRepository noSqlBookRepository;
+    private final SqlLibraryService sqlLibraryService;
+    private final NoSqlLibraryService noSqlLibraryService;
     private final JobExplorer jobExplorer;
 
     private static final String SPACE = " ";
@@ -42,7 +42,7 @@ public class BatchCommands {
 
     @ShellMethod(value = "getAllSqlBooks", key = "sql")
     public String getAllSqlBooks() {
-        List<BookDto> books = libraryService.findAllBooks();
+        List<BookDto> books = sqlLibraryService.findAllBooks();
 
         return String.format("Available SQL books: %n%s",
                 books.stream()
@@ -60,7 +60,7 @@ public class BatchCommands {
 
     @ShellMethod(value = "getAllNoSqlBooks", key = "nosql")
     public String getAllNoSqlBooks() {
-        List<NoSqlBook> books = noSqlBookRepository.findAll();
+        List<NoSqlBook> books = noSqlLibraryService.findAllBooks();
 
         return String.format("Available NoSQL books: %n%s",
                 books.stream()

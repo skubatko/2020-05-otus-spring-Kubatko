@@ -42,13 +42,12 @@ public class JobConfig {
     public static final String TRANSFER_LIBRARY_JOB_NAME = "transferLibraryJob";
     private static final int CHUNK_SIZE = 5;
 
-    @StepScope
     @Bean
     public ItemReader<SqlBook> reader(EntityManagerFactory entityManagerFactory) {
         return new JpaPagingItemReaderBuilder<SqlBook>()
                        .name("BookReader")
                        .entityManagerFactory(entityManagerFactory)
-                       .queryString("SELECT b FROM SqlBook b")
+                       .queryString("SELECT b FROM SqlBook b JOIN FETCH b.comments")
                        .build();
     }
 
@@ -62,7 +61,7 @@ public class JobConfig {
     @Bean
     public ItemWriter<NoSqlBook> writer(MongoTemplate mongoTemplate) {
         return new MongoItemWriterBuilder<NoSqlBook>()
-                       .collection("library")
+                       .collection("books")
                        .template(mongoTemplate)
                        .build();
     }

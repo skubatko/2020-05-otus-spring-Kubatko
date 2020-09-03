@@ -27,12 +27,6 @@ public class BookDto {
 
     private String comments;
 
-    public BookDto(String name, String author, String genre) {
-        this.name = name;
-        this.author = author;
-        this.genre = genre;
-    }
-
     public static BookDto toDto(SqlBook book) {
         if (book == null) {
             return null;

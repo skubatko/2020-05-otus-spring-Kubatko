@@ -1,7 +1,7 @@
 package ru.skubatko.dev.otus.spring.hw25.service;
 
 import ru.skubatko.dev.otus.spring.hw25.dto.BookDto;
-import ru.skubatko.dev.otus.spring.hw25.repository.sql.SqlBookRepository;
+import ru.skubatko.dev.otus.spring.hw25.repository.SqlBookRepository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
