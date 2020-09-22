@@ -49,3 +49,6 @@ Spring Security: ACL
 
 * spring-25-hw - домашнее задание к уроку 25
 Spring Batch
+
+* spring-28-hw - домашнее задание к уроку 28
+Spring Integration: Endpoints и Flow Components
