@@ -38,7 +38,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-devtools'
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
-    implementation 'org.springframework.data:spring-data-rest-hal-browser:3.0.8.RELEASE'
+    implementation 'org.springdoc:springdoc-openapi-ui:1.4.3'
+    implementation 'org.springframework.data:spring-data-rest-hal-browser'
 
     implementation 'com.h2database:h2'
     implementation 'org.liquibase:liquibase-core'
@@ -49,6 +50,10 @@ dependencies {
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
+}
+
+springBoot {
+    buildInfo()
 }
 
 test {

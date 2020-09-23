@@ -53,6 +53,11 @@ public class LibraryService {
         return bookRepository.findByGenre(genre).stream().map(BookDto::toDto).collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
+    public long countBooks() {
+        return bookRepository.count();
+    }
+
     @Transactional
     public void addBook(BookDto book) {
         String bookName = book.getName();

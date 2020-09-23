@@ -15,12 +15,22 @@ spring:
     enabled: true
     change-log: classpath:db/changelog/db.changelog-master.xml
 
+  data:
+    rest:
+      basePath: /rest
+
+springdoc:
+  swagger-ui:
+    path: /api
+    groups-order: DESC
+  show-actuator: true
+
 logging:
   level:
     root: INFO
-    org.springframework.web: INFO
+    org.springframework.web: DEBUG
     org.hibernate: INFO
-    ru.skubatko.dev: DEBUG
+    ru.skubatko.dev: TRACE
   file:
     name: ./logs/app.log
 
@@ -35,6 +45,8 @@ management:
   endpoint:
     health:
       show-details: always
+    logfile:
+      enabled: true
   health:
     defaults:
       enabled: true

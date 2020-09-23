@@ -13,3 +13,11 @@
 3. Реализовать свой собственный HealthCheck индикатор
 4. UI для данных от Spring Boot Actuator реализовывать не нужно.
 5. Опционально: переписать приложение на HATEOAS принципах с помощью Spring Data REST Repository
+
+## Links
+http://localhost:8080/ - основное приложение
+http://localhost:8080/api - swagger
+http://localhost:8080/rest - HAL browser
+http://localhost:8080/rest/books - HATEOAS
+http://localhost:8080/actuator/info - информация по сборке
+http://localhost:8080/actuator/health - статус работы системы
