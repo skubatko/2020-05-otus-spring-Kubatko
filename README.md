@@ -52,3 +52,6 @@ Spring Batch
 
 * spring-28-hw - домашнее задание к уроку 28
 Spring Integration: Endpoints и Flow Components
+
+* spring-29-hw - домашнее задание к уроку 29
+Монолиты vs. Microservices (Round 2), Spring Boot Actuator - must have в микросервисах
