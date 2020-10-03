@@ -4,6 +4,9 @@ networks:
   default:
     driver: bridge
 
+volumes:
+  postgres-data:
+
 services:
   db:
     container_name: db
@@ -32,7 +35,6 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/library
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
-      SPRING_KAFKA_BOOTSTRAP-SERVERS: kafka:9092
     ports:
       - 18081:8081
       - 15005:5005
@@ -41,6 +43,3 @@ services:
     restart: unless-stopped
     depends_on:
       - db
-
-volumes:
-  postgres-data:
