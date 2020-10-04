@@ -6,7 +6,7 @@
     <changeSet id="2020-07-01--0002-data-comments" author="skubatko" runOnChange="true">
         <loadUpdateData tableName="comments"
                         primaryKey="id"
-                        file="csv/2020-07-01--0002-data-comments.csv"
+                        file="csv/2020-07-01--0004-data-comments.csv"
                         relativeToChangelogFile="true"
                         quotchar="*"
                         separator=";"

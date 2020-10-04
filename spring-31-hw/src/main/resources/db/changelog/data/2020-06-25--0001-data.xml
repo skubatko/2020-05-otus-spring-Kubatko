@@ -17,7 +17,7 @@
     <changeSet id="2020-06-25--0002-data-genres" author="skubatko" runOnChange="true">
         <loadUpdateData tableName="genres"
                         primaryKey="id"
-                        file="csv/2020-06-25--0001-data-genres.csv"
+                        file="csv/2020-06-25--0002-data-genres.csv"
                         relativeToChangelogFile="true"
                         quotchar="*"
                         separator=";"
@@ -27,7 +27,7 @@
     <changeSet id="2020-06-25--0003-data-books" author="skubatko" runOnChange="true">
         <loadUpdateData tableName="books"
                         primaryKey="id"
-                        file="csv/2020-06-25--0001-data-books.csv"
+                        file="csv/2020-06-25--0003-data-books.csv"
                         relativeToChangelogFile="true"
                         quotchar="*"
                         separator=";"
