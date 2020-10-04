@@ -10,12 +10,11 @@ plugins {
 group = 'ru.skubatko.dev'
 description = 'spring-31-hw'
 version = '0.0.1'
+
 sourceCompatibility = JavaVersion.VERSION_11
 targetCompatibility = JavaVersion.VERSION_11
 
-application {
-    mainClassName = 'ru.skubatko.dev.otus.spring.hw31.App'
-}
+mainClassName = 'ru.skubatko.dev.otus.spring.hw31.App'
 
 configurations {
     compileOnly {
@@ -24,8 +23,8 @@ configurations {
 }
 
 repositories {
-    jcenter()
     mavenLocal()
+    jcenter()
 }
 
 dependencies {

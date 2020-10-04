@@ -1,10 +1,10 @@
-id;content;book_id
-1;good novel;1
-2;well written;2
-3;classic;3
-4;unbelievable;4
-5;good story;5
-6;epic;6
-7;as always;7
-8;never mind;8
-9;true story;9
+content;book_id
+good novel;1
+well written;2
+classic;3
+unbelievable;4
+good story;5
+epic;6
+as always;7
+never mind;8
+true story;9
