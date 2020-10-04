@@ -55,3 +55,6 @@ Spring Integration: Endpoints и Flow Components
 
 * spring-29-hw - домашнее задание к уроку 29
 Монолиты vs. Microservices (Round 2), Spring Boot Actuator - must have в микросервисах
+
+* spring-31-hw - домашнее задание к уроку 31
+Docker, оркестрация, облака, облачные хостинги

@@ -1,0 +1,52 @@
+server:
+  port: 8081
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/library
+    username: postgres
+    password: postgres
+
+  jpa:
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: true
+
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/db.changelog-master.xml
+
+  data:
+    rest:
+      basePath: /rest
+
+springdoc:
+  swagger-ui:
+    path: /api
+    groups-order: DESC
+  show-actuator: true
+
+logging:
+  level:
+    root: INFO
+    org.springframework.web: DEBUG
+    org.hibernate: INFO
+    ru.skubatko.dev: TRACE
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+    logfile:
+      enabled: true
+  health:
+    defaults:
+      enabled: true
